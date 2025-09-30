@@ -64,6 +64,12 @@ With Sistine Starter, you can:
 - PostgreSQL database
 - AI coding assistant (Cursor, Claude Code, or Windsurf)
 
+#### Get Access
+
+**申请 GitHub 仓库权限**: [https://applysistine.vercel.app/](https://applysistine.vercel.app/)
+
+获得权限后，按照以下步骤开始：
+
 #### Installation
 
 1. **Clone the repository**
@@ -216,6 +222,12 @@ MIT License - see [LICENSE](./LICENSE) for details.
 - Node.js 18+
 - PostgreSQL 数据库
 - AI 编程助手（Cursor、Claude Code 或 Windsurf）
+
+#### 获取访问权限
+
+**申请 GitHub 仓库权限**: [https://applysistine.vercel.app/](https://applysistine.vercel.app/)
+
+获得权限后，按照以下步骤开始：
 
 #### 安装步骤
 
