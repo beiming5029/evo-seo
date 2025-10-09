@@ -415,7 +415,7 @@ export default function ImagePage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left Panel - Control Card */}
           <div className="lg:col-span-4">
-            <div className="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 overflow-visible">
+            <div className="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800" style={{ overflow: 'visible' }}>
               <div className="p-6 space-y-4">
                 {/* Prompt Input */}
                 <div>
@@ -533,7 +533,7 @@ export default function ImagePage() {
                 </div>
 
                 {/* Settings */}
-                <div>
+                <div className="overflow-visible">
                   <button
                     onClick={() => setShowSettings(!showSettings)}
                     className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:text-black dark:hover:text-white transition-colors"
@@ -551,7 +551,7 @@ export default function ImagePage() {
                       </svg>
                     </motion.div>
                   </button>
-                  
+
                   <AnimatePresence>
                     {showSettings && (
                       <motion.div
@@ -559,7 +559,7 @@ export default function ImagePage() {
                         animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.2 }}
-                        className="overflow-visible"
+                        style={{ overflow: 'visible' }}
                       >
                         <div className="pt-3 space-y-4">
                           {/* Resolution */}

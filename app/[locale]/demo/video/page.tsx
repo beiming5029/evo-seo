@@ -114,7 +114,9 @@ export default function VideoPage() {
   const [error, setError] = useState<string | null>(null);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<GenerationResult | null>(null);
-  
+  const [showResolutionDropdown, setShowResolutionDropdown] = useState(false);
+  const resolutionButtonRef = useRef<HTMLButtonElement>(null);
+
   // 轮播相关状态
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
@@ -585,7 +587,7 @@ export default function VideoPage() {
               )}
 
               {/* Advanced Settings */}
-              <div className="mb-6">
+              <div className="mb-6 overflow-visible">
                 <button
                   onClick={() => setShowAdvanced(!showAdvanced)}
                   className="flex items-center gap-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-3"
@@ -593,29 +595,65 @@ export default function VideoPage() {
                   <ChevronDown className={`w-4 h-4 transition-transform ${showAdvanced ? 'rotate-180' : ''}`} />
                   {t('video.advanced.toggle')}
                 </button>
-                
+
                 <AnimatePresence>
                   {showAdvanced && (
                     <motion.div
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
                       exit={{ opacity: 0, height: 0 }}
-                      className="space-y-4 overflow-visible"
+                      className="space-y-4"
+                      style={{ overflow: 'visible' }}
                     >
                       {/* Resolution */}
                       <div>
                         <label className="text-sm text-neutral-600 dark:text-neutral-400 mb-2 block">
                           {t('video.advanced.resolution')}
                         </label>
-                        <select
-                          value={videoResolution}
-                          onChange={(e) => setVideoResolution(e.target.value as '480p' | '720p' | '1080p')}
-                          className="w-full px-3 py-2 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:focus:ring-neutral-600 text-neutral-900 dark:text-neutral-100"
+                        <button
+                          ref={resolutionButtonRef}
+                          type="button"
+                          onClick={() => setShowResolutionDropdown(!showResolutionDropdown)}
+                          className="w-full px-3 py-2 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:focus:ring-neutral-600 text-neutral-900 dark:text-neutral-100 flex items-center justify-between"
                         >
-                          <option value="480p">{t('video.advanced.resolutionOptions.480p')}</option>
-                          <option value="720p">{t('video.advanced.resolutionOptions.720p')}</option>
-                          <option value="1080p">{t('video.advanced.resolutionOptions.1080p')}</option>
-                        </select>
+                          <span>{t(`video.advanced.resolutionOptions.${videoResolution}`)}</span>
+                          <ChevronDown className={`w-4 h-4 transition-transform ${showResolutionDropdown ? 'rotate-180' : ''}`} />
+                        </button>
+
+                        {showResolutionDropdown && resolutionButtonRef.current && (
+                          <>
+                            <div
+                              className="fixed inset-0 z-[9999]"
+                              onClick={() => setShowResolutionDropdown(false)}
+                            />
+                            <div
+                              className="fixed bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg z-[10000] overflow-hidden"
+                              style={{
+                                top: `${resolutionButtonRef.current.getBoundingClientRect().bottom + 4}px`,
+                                left: `${resolutionButtonRef.current.getBoundingClientRect().left}px`,
+                                width: `${resolutionButtonRef.current.getBoundingClientRect().width}px`,
+                              }}
+                            >
+                              {(['480p', '720p', '1080p'] as const).map((resolution) => (
+                                <button
+                                  key={resolution}
+                                  type="button"
+                                  onClick={() => {
+                                    setVideoResolution(resolution);
+                                    setShowResolutionDropdown(false);
+                                  }}
+                                  className={`w-full px-3 py-2 text-left hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors ${
+                                    videoResolution === resolution
+                                      ? 'bg-neutral-100 dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100'
+                                      : 'text-neutral-700 dark:text-neutral-300'
+                                  }`}
+                                >
+                                  {t(`video.advanced.resolutionOptions.${resolution}`)}
+                                </button>
+                              ))}
+                            </div>
+                          </>
+                        )}
                       </div>
                       
                       {/* Duration */}
