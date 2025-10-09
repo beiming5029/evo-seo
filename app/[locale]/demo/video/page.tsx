@@ -402,8 +402,8 @@ export default function VideoPage() {
       <Background />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-8">
-        {/* Header - Sticky positioning */}
-        <div className="sticky top-20 z-40 pb-4 mb-4">
+        {/* Header */}
+        <div className="pb-4 mb-4">
           <div className="flex justify-between items-center mb-2">
             <div>
               <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100 flex items-center gap-3">
@@ -455,7 +455,7 @@ export default function VideoPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Control Panel */}
           <div className="lg:col-span-4">
-              <div className="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 p-6">
+              <div className="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 p-6 overflow-visible">
               <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-6 flex items-center gap-2">
                 <Settings className="w-5 h-5" />
                 {t('video.configuration')}
@@ -600,7 +600,7 @@ export default function VideoPage() {
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
                       exit={{ opacity: 0, height: 0 }}
-                      className="space-y-4 overflow-hidden"
+                      className="space-y-4 overflow-visible"
                     >
                       {/* Resolution */}
                       <div>

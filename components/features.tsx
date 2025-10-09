@@ -47,7 +47,7 @@ export const Features = () => {
         {t('subtitle')}
       </Subheading>
 
-      <div className="relative">
+      <div className="relative overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-6 mt-12">
           {features.map((feature) => (
             <FeatureCard key={feature.title} className={feature.className}>

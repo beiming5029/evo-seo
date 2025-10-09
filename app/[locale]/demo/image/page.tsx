@@ -394,8 +394,8 @@ export default function ImagePage() {
       <Background />
       
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-8">
-        {/* Header with Credits - Sticky positioning */}
-        <div className="sticky top-20 z-40 pb-4 mb-2">
+        {/* Header with Credits */}
+        <div className="pb-4 mb-2">
           <div className="flex justify-between items-center mb-2">
             <h1 className="text-3xl font-bold text-black dark:text-white flex items-center gap-3">
               <ImageIcon className="w-8 h-8" />
@@ -415,7 +415,7 @@ export default function ImagePage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left Panel - Control Card */}
           <div className="lg:col-span-4">
-            <div className="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 overflow-hidden">
+            <div className="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 overflow-visible">
               <div className="p-6 space-y-4">
                 {/* Prompt Input */}
                 <div>
@@ -559,7 +559,7 @@ export default function ImagePage() {
                         animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.2 }}
-                        className="overflow-hidden"
+                        className="overflow-visible"
                       >
                         <div className="pt-3 space-y-4">
                           {/* Resolution */}
