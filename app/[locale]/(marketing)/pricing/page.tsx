@@ -9,14 +9,21 @@ import { Metadata } from "next";
 import { getTranslations } from 'next-intl/server';
 import type { Locale } from "@/i18n.config";
 
-export const metadata: Metadata = {
-  title: "Pricing - Sistine AI SaaS Starter",
-  description:
-    "Choose the perfect plan for your AI SaaS. This pricing section is built with Sistine Starter - fully integrated with Creem for recurring payments.",
-  openGraph: {
-    images: ["https://ai-saas-template-aceternity.vercel.app/banner.png"],
-  },
-};
+export async function generateMetadata({
+  params
+}: {
+  params: { locale: Locale }
+}): Promise<Metadata> {
+  const t = await getTranslations({ locale: params.locale, namespace: 'seo' });
+
+  return {
+    title: t('pricing.title'),
+    description: t('pricing.description'),
+    openGraph: {
+      images: [t('pricing.ogImage')],
+    },
+  };
+}
 
 export default async function PricingPage({
   params: { locale },

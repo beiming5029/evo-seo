@@ -1,10 +1,23 @@
 /* eslint-disable react/no-unescaped-entities */
 import { Metadata } from "next";
+import { getTranslations } from 'next-intl/server';
+import type { Locale } from "@/i18n.config";
 
-export const metadata: Metadata = {
-  title: "Terms of Service",
-  description: "Terms of service for our platform",
-};
+export async function generateMetadata({
+  params
+}: {
+  params: { locale: Locale }
+}): Promise<Metadata> {
+  const t = await getTranslations({ locale: params.locale, namespace: 'seo' });
+
+  return {
+    title: t('terms.title'),
+    description: t('terms.description'),
+    openGraph: {
+      images: [t('terms.ogImage')],
+    },
+  };
+}
 
 export default function TermsPage() {
   return (

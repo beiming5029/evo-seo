@@ -9,9 +9,13 @@ export default getRequestConfig(async ({ locale }) => {
   if (!locale) {
     console.log('Locale is undefined, using default locale: en');
     const messages = (await import(`../messages/en.json`)).default;
+    const seoMessages = (await import(`../messages/seo.en.json`)).default;
     return {
       locale: 'en',
-      messages
+      messages: {
+        ...messages,
+        seo: seoMessages
+      }
     };
   }
   
@@ -23,10 +27,14 @@ export default getRequestConfig(async ({ locale }) => {
 
   try {
     const messages = (await import(`../messages/${locale}.json`)).default;
+    const seoMessages = (await import(`../messages/seo.${locale}.json`)).default;
     console.log('Messages loaded for locale:', locale);
     return {
       locale,
-      messages
+      messages: {
+        ...messages,
+        seo: seoMessages
+      }
     };
   } catch (error) {
     console.error('Error loading messages for locale:', locale, error);

@@ -1,10 +1,23 @@
 /* eslint-disable react/no-unescaped-entities */
 import { Metadata } from "next";
+import { getTranslations } from 'next-intl/server';
+import type { Locale } from "@/i18n.config";
 
-export const metadata: Metadata = {
-  title: "Refund Policy",
-  description: "Refund policy for our platform",
-};
+export async function generateMetadata({
+  params
+}: {
+  params: { locale: Locale }
+}): Promise<Metadata> {
+  const t = await getTranslations({ locale: params.locale, namespace: 'seo' });
+
+  return {
+    title: t('refund.title'),
+    description: t('refund.description'),
+    openGraph: {
+      images: [t('refund.ogImage')],
+    },
+  };
+}
 
 export default function RefundPage() {
   return (

@@ -1,10 +1,23 @@
 /* eslint-disable react/no-unescaped-entities */
 import { Metadata } from "next";
+import { getTranslations } from 'next-intl/server';
+import type { Locale } from "@/i18n.config";
 
-export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description: "Privacy policy for our platform",
-};
+export async function generateMetadata({
+  params
+}: {
+  params: { locale: Locale }
+}): Promise<Metadata> {
+  const t = await getTranslations({ locale: params.locale, namespace: 'seo' });
+
+  return {
+    title: t('privacy.title'),
+    description: t('privacy.description'),
+    openGraph: {
+      images: [t('privacy.ogImage')],
+    },
+  };
+}
 
 export default function PrivacyPage() {
   return (
