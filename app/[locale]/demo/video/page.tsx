@@ -118,14 +118,27 @@ export default function VideoPage() {
   // 轮播相关状态
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [videoLoaded, setVideoLoaded] = useState<Record<string, boolean>>({});
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoCost = 50;
 
   useEffect(() => {
     // 初始化时加载预设视频
     setGeneratedVideos(presetVideos);
+
+    // 预加载所有预设视频
+    presetVideos.forEach((video) => {
+      if (video.resultUrl) {
+        const videoElement = document.createElement('video');
+        videoElement.src = video.resultUrl;
+        videoElement.preload = 'auto';
+        videoElement.onloadeddata = () => {
+          setVideoLoaded(prev => ({ ...prev, [video.id]: true }));
+        };
+      }
+    });
   }, []);
 
   const fetchUserCredits = useCallback(async () => {
@@ -743,6 +756,28 @@ export default function VideoPage() {
                   
                   {/* 主视频展示 */}
                   <div className="relative aspect-video bg-black rounded-lg overflow-hidden max-w-2xl mx-auto">
+                    {/* 预加载下一个和上一个视频 */}
+                    {generatedVideos.map((video, index) => {
+                      const shouldPreload =
+                        index === currentVideoIndex ||
+                        index === (currentVideoIndex + 1) % generatedVideos.length ||
+                        index === (currentVideoIndex - 1 + generatedVideos.length) % generatedVideos.length;
+
+                      if (!shouldPreload || !video.resultUrl || video.status !== "completed") return null;
+
+                      return (
+                        <video
+                          key={`preload-${video.id}`}
+                          src={video.resultUrl}
+                          preload="auto"
+                          muted
+                          playsInline
+                          className="hidden"
+                          onLoadedData={() => setVideoLoaded(prev => ({ ...prev, [video.id]: true }))}
+                        />
+                      );
+                    })}
+
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={generatedVideos[currentVideoIndex]?.id}
@@ -754,12 +789,14 @@ export default function VideoPage() {
                       >
                         {generatedVideos[currentVideoIndex]?.status === "completed" && generatedVideos[currentVideoIndex]?.resultUrl ? (
                           <video
+                            key={generatedVideos[currentVideoIndex].id}
                             src={generatedVideos[currentVideoIndex].resultUrl}
                             controls
                             autoPlay
                             loop
                             muted
                             playsInline
+                            preload="auto"
                             className="w-full h-full object-contain"
                           />
                         ) : generatedVideos[currentVideoIndex]?.status === "processing" ? (
