@@ -394,21 +394,23 @@ export default function ImagePage() {
       <Background />
       
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-8">
-        {/* Header with Credits */}
-        <div className="flex justify-between items-center mb-2">
-          <h1 className="text-3xl font-bold text-black dark:text-white flex items-center gap-3">
-            <ImageIcon className="w-8 h-8" />
-            {t('image.title')}
-          </h1>
-          {remainingCredits !== null && (
-            <div className="text-sm text-neutral-600 dark:text-neutral-400">
-              {t('credits')}: <span className="font-semibold text-black dark:text-white">{remainingCredits}</span>
-            </div>
-          )}
+        {/* Header with Credits - Sticky positioning */}
+        <div className="sticky top-20 z-40 pb-4 mb-2">
+          <div className="flex justify-between items-center mb-2">
+            <h1 className="text-3xl font-bold text-black dark:text-white flex items-center gap-3">
+              <ImageIcon className="w-8 h-8" />
+              {t('image.title')}
+            </h1>
+            {remainingCredits !== null && (
+              <div className="text-sm text-neutral-600 dark:text-neutral-400">
+                {t('credits')}: <span className="font-semibold text-black dark:text-white">{remainingCredits}</span>
+              </div>
+            )}
+          </div>
+          <p className="text-neutral-600 dark:text-neutral-400">
+            {t('image.description')}
+          </p>
         </div>
-        <p className="text-neutral-600 dark:text-neutral-400 mb-6">
-          {t('image.description')}
-        </p>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left Panel - Control Card */}

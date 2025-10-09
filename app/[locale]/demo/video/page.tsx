@@ -5,6 +5,7 @@ import { useSession } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/button";
+import { Background } from "@/components/background";
 import NextImage from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -385,40 +386,44 @@ export default function VideoPage() {
 
   return (
     <div className="relative min-h-screen bg-neutral-50 dark:bg-neutral-950 pt-16">
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100 flex items-center gap-3">
-              <Video className="w-8 h-8" />
-              {t('video.title')}
-            </h1>
-            <p className="text-neutral-600 dark:text-neutral-400 mt-2">
-              {t('video.description')}
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            {remainingCredits !== null && (
-              <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700">
-                <CreditCard className="w-4 h-4 text-neutral-500" />
-                <span className="text-sm text-neutral-600 dark:text-neutral-400">
-                  {t('credits')}:
-                </span>
-                <span className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
-                  {remainingCredits}
-                </span>
-              </div>
-            )}
-            {session.data?.user && (
-              <Button
-                variant="simple"
-                size="sm"
-                onClick={() => router.push(`/${locale}/dashboard`)}
-                className="text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
-              >
-                {t('backToDashboard')}
-              </Button>
-            )}
+      <Background />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6 py-8">
+        {/* Header - Sticky positioning */}
+        <div className="sticky top-20 z-40 pb-4 mb-4">
+          <div className="flex justify-between items-center mb-2">
+            <div>
+              <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100 flex items-center gap-3">
+                <Video className="w-8 h-8" />
+                {t('video.title')}
+              </h1>
+              <p className="text-neutral-600 dark:text-neutral-400 mt-2">
+                {t('video.description')}
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              {remainingCredits !== null && (
+                <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700">
+                  <CreditCard className="w-4 h-4 text-neutral-500" />
+                  <span className="text-sm text-neutral-600 dark:text-neutral-400">
+                    {t('credits')}:
+                  </span>
+                  <span className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
+                    {remainingCredits}
+                  </span>
+                </div>
+              )}
+              {session.data?.user && (
+                <Button
+                  variant="simple"
+                  size="sm"
+                  onClick={() => router.push(`/${locale}/dashboard`)}
+                  className="text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                >
+                  {t('backToDashboard')}
+                </Button>
+              )}
+            </div>
           </div>
         </div>
 
