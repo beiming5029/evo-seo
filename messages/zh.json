@@ -734,6 +734,13 @@
   "dashboard": {
     "title": "仪表盘",
     "welcome": "欢迎回来",
+    "welcomeBonus": {
+      "title": "🎉 欢迎加入 Sistine!",
+      "message": "恭喜您成功注册！我们已为您的账户赠送 300 积分新人礼包。",
+      "description": "这些积分可用于体验我们的 AI 对话、图像生成、视频生成等功能。",
+      "ctaButton": "立即体验",
+      "dismissButton": "知道了"
+    },
     "cards": {
       "personalInfo": {
         "title": "个人信息",
@@ -793,7 +800,8 @@
         "one_time_pack": "购买积分包",
         "chat_usage": "AI 对话消耗",
         "refund": "退款返还",
-        "adjustment": "系统调整"
+        "adjustment": "系统调整",
+        "registration_bonus": "新人注册礼包"
       }
     }
   },
@@ -842,6 +850,7 @@
         "video_generation": "视频生成",
         "refund": "退款返还",
         "adjustment": "系统调整",
+        "registration_bonus": "新人注册礼包",
         "welcome_bonus": "欢迎奖励",
         "referral_bonus": "推荐奖励"
       }

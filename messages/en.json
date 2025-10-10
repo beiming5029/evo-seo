@@ -734,6 +734,13 @@
   "dashboard": {
     "title": "Dashboard",
     "welcome": "Welcome back",
+    "welcomeBonus": {
+      "title": "🎉 Welcome to Sistine!",
+      "message": "Congratulations on your successful registration! We've added 300 credits welcome bonus to your account.",
+      "description": "Use these credits to try our AI chat, image generation, video generation, and more features.",
+      "ctaButton": "Try Now",
+      "dismissButton": "Got it"
+    },
     "cards": {
       "personalInfo": {
         "title": "Personal Info",
@@ -794,7 +801,8 @@
         "one_time_pack": "Credit Pack Purchase",
         "chat_usage": "AI Chat Usage",
         "refund": "Refund Credits",
-        "adjustment": "System Adjustment"
+        "adjustment": "System Adjustment",
+        "registration_bonus": "New User Welcome Bonus"
       }
     }
   },
@@ -843,6 +851,7 @@
         "video_generation": "Video Generation",
         "refund": "Refund Credits",
         "adjustment": "System Adjustment",
+        "registration_bonus": "New User Welcome Bonus",
         "welcome_bonus": "Welcome Bonus",
         "referral_bonus": "Referral Bonus"
       }
