@@ -18,11 +18,7 @@ import {
   UserMenu,
 } from "./user-menu";
 
-type Props = {
-  navItems?: NavigationItem[];
-};
-
-export const DesktopNavbar = ({ navItems }: Props) => {
+export const DesktopNavbar = () => {
   const t = useTranslations('navigation.main');
   const { scrollY } = useScroll();
 
@@ -40,7 +36,7 @@ export const DesktopNavbar = ({ navItems }: Props) => {
       className={cn(
         "w-full flex relative justify-between px-4 py-2 rounded-full bg-transparent transition duration-200",
         showBackground &&
-          "bg-neutral-50 dark:bg-neutral-900 shadow-[0px_-2px_0px_0px_var(--neutral-100),0px_2px_0px_0px_var(--neutral-100)] dark:shadow-[0px_-2px_0px_0px_var(--neutral-800),0px_2px_0px_0px_var(--neutral-800)]"
+          "bg-secondary shadow-[0px_-2px_0px_0px_hsl(var(--muted)),0px_2px_0px_0px_hsl(var(--muted))]"
       )}
     >
       <AnimatePresence>
@@ -52,7 +48,7 @@ export const DesktopNavbar = ({ navItems }: Props) => {
             transition={{
               duration: 1,
             }}
-            className="absolute inset-0 h-full w-full bg-neutral-100 dark:bg-neutral-800 pointer-events-none [mask-image:linear-gradient(to_bottom,white,transparent,white)] rounded-full"
+            className="absolute inset-0 h-full w-full bg-muted pointer-events-none [mask-image:linear-gradient(to_bottom,white,transparent,white)] rounded-full"
           />
         )}
       </AnimatePresence>

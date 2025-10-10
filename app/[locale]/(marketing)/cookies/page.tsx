@@ -25,7 +25,7 @@ export default function CookiesPage() {
       <div className="prose prose-gray dark:prose-invert max-w-none">
         <h1 className="text-4xl font-bold mb-8">Cookie Policy</h1>
         
-        <p className="text-gray-600 dark:text-gray-400 mb-8">
+        <p className="text-muted-foreground mb-8">
           Effective Date: [Date]
         </p>
 
@@ -100,45 +100,45 @@ export default function CookiesPage() {
           <p>Here are the main cookies we use and their purposes:</p>
           
           <div className="overflow-x-auto mt-4">
-            <table className="min-w-full border-collapse border border-gray-300">
+            <table className="min-w-full border-collapse border border-border">
               <thead>
-                <tr className="bg-gray-100 dark:bg-gray-800">
-                  <th className="border border-gray-300 px-4 py-2 text-left">Cookie Name</th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">Purpose</th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">Duration</th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">Type</th>
+                <tr className="bg-muted">
+                  <th className="border border-border px-4 py-2 text-left">Cookie Name</th>
+                  <th className="border border-border px-4 py-2 text-left">Purpose</th>
+                  <th className="border border-border px-4 py-2 text-left">Duration</th>
+                  <th className="border border-border px-4 py-2 text-left">Type</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td className="border border-gray-300 px-4 py-2">session-token</td>
-                  <td className="border border-gray-300 px-4 py-2">Authentication</td>
-                  <td className="border border-gray-300 px-4 py-2">30 days</td>
-                  <td className="border border-gray-300 px-4 py-2">Essential</td>
+                  <td className="border border-border px-4 py-2">session-token</td>
+                  <td className="border border-border px-4 py-2">Authentication</td>
+                  <td className="border border-border px-4 py-2">30 days</td>
+                  <td className="border border-border px-4 py-2">Essential</td>
                 </tr>
                 <tr>
-                  <td className="border border-gray-300 px-4 py-2">csrf-token</td>
-                  <td className="border border-gray-300 px-4 py-2">Security</td>
-                  <td className="border border-gray-300 px-4 py-2">Session</td>
-                  <td className="border border-gray-300 px-4 py-2">Essential</td>
+                  <td className="border border-border px-4 py-2">csrf-token</td>
+                  <td className="border border-border px-4 py-2">Security</td>
+                  <td className="border border-border px-4 py-2">Session</td>
+                  <td className="border border-border px-4 py-2">Essential</td>
                 </tr>
                 <tr>
-                  <td className="border border-gray-300 px-4 py-2">theme</td>
-                  <td className="border border-gray-300 px-4 py-2">UI preferences</td>
-                  <td className="border border-gray-300 px-4 py-2">1 year</td>
-                  <td className="border border-gray-300 px-4 py-2">Functional</td>
+                  <td className="border border-border px-4 py-2">theme</td>
+                  <td className="border border-border px-4 py-2">UI preferences</td>
+                  <td className="border border-border px-4 py-2">1 year</td>
+                  <td className="border border-border px-4 py-2">Functional</td>
                 </tr>
                 <tr>
-                  <td className="border border-gray-300 px-4 py-2">locale</td>
-                  <td className="border border-gray-300 px-4 py-2">Language preference</td>
-                  <td className="border border-gray-300 px-4 py-2">1 year</td>
-                  <td className="border border-gray-300 px-4 py-2">Functional</td>
+                  <td className="border border-border px-4 py-2">locale</td>
+                  <td className="border border-border px-4 py-2">Language preference</td>
+                  <td className="border border-border px-4 py-2">1 year</td>
+                  <td className="border border-border px-4 py-2">Functional</td>
                 </tr>
                 <tr>
-                  <td className="border border-gray-300 px-4 py-2">_ga, _gid</td>
-                  <td className="border border-gray-300 px-4 py-2">Google Analytics</td>
-                  <td className="border border-gray-300 px-4 py-2">2 years / 24 hours</td>
-                  <td className="border border-gray-300 px-4 py-2">Analytics</td>
+                  <td className="border border-border px-4 py-2">_ga, _gid</td>
+                  <td className="border border-border px-4 py-2">Google Analytics</td>
+                  <td className="border border-border px-4 py-2">2 years / 24 hours</td>
+                  <td className="border border-border px-4 py-2">Analytics</td>
                 </tr>
               </tbody>
             </table>

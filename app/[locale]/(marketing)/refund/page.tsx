@@ -25,7 +25,7 @@ export default function RefundPage() {
       <div className="prose prose-gray dark:prose-invert max-w-none">
         <h1 className="text-4xl font-bold mb-8">Refund Policy</h1>
         
-        <p className="text-gray-600 dark:text-gray-400 mb-8">
+        <p className="text-muted-foreground mb-8">
           Effective Date: [Date]
         </p>
 
@@ -278,7 +278,7 @@ export default function RefundPage() {
             <li><strong>Website:</strong> [Your Website]</li>
           </ul>
           
-          <p className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+          <p className="mt-6 p-4 bg-primary/10 rounded-lg">
             <strong>Note:</strong> This refund policy is part of our commitment to customer satisfaction. We encourage you to contact us with any concerns before requesting a refund, as we may be able to resolve your issue quickly.
           </p>
         </section>

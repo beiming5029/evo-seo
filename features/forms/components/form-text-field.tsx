@@ -23,7 +23,7 @@ type FormTextFieldProps<TFieldValues extends FieldValues> = BaseProps &
   };
 
 const inputClasses =
-  "block w-full rounded-md border-0 bg-white px-4 py-1.5 text-black shadow-aceternity placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:bg-neutral-900 dark:text-white";
+  "block w-full rounded-md border-0 bg-input px-4 py-1.5 text-foreground shadow-aceternity placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring";
 
 export function FormTextField<TFieldValues extends FieldValues>({
   control,
@@ -45,7 +45,7 @@ export function FormTextField<TFieldValues extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel className="text-neutral-700 dark:text-muted-dark" htmlFor={name}>
+          <FormLabel className="text-foreground" htmlFor={name}>
             {label}
           </FormLabel>
           <FormControl>
@@ -60,7 +60,7 @@ export function FormTextField<TFieldValues extends FieldValues>({
             </div>
           </FormControl>
           {description ? (
-            <p className="text-sm text-neutral-500 dark:text-neutral-400">{description}</p>
+            <p className="text-sm text-muted-foreground">{description}</p>
           ) : null}
           <FormMessage />
         </FormItem>
@@ -70,7 +70,7 @@ export function FormTextField<TFieldValues extends FieldValues>({
 }
 
 const textareaClasses =
-  "block w-full resize-none rounded-md border-0 bg-white px-4 py-2 text-black shadow-aceternity placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:bg-neutral-900 dark:text-white";
+  "block w-full resize-none rounded-md border-0 bg-input px-4 py-2 text-foreground shadow-aceternity placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring";
 
 type FormTextareaFieldProps<TFieldValues extends FieldValues> = BaseProps &
   React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
@@ -94,7 +94,7 @@ export function FormTextareaField<TFieldValues extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel className="text-neutral-700 dark:text-muted-dark" htmlFor={name}>
+          <FormLabel className="text-foreground" htmlFor={name}>
             {label}
           </FormLabel>
           <FormControl>
@@ -110,7 +110,7 @@ export function FormTextareaField<TFieldValues extends FieldValues>({
             </div>
           </FormControl>
           {description ? (
-            <p className="text-sm text-neutral-500 dark:text-neutral-400">{description}</p>
+            <p className="text-sm text-muted-foreground">{description}</p>
           ) : null}
           <FormMessage />
         </FormItem>

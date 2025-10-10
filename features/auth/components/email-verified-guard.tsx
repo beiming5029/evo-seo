@@ -54,7 +54,7 @@ export function EmailVerifiedGuard({
   if (session.isPending) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="h-12 w-12 animate-pulse rounded-full bg-gray-300 dark:bg-gray-700" />
+        <div className="h-12 w-12 animate-pulse rounded-full bg-muted" />
       </div>
     );
   }
@@ -67,24 +67,24 @@ export function EmailVerifiedGuard({
   // Email not verified (if verification is required)
   if (requireEmailVerification && !session.data.user.emailVerified) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="max-w-md w-full mx-auto p-6">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
+          <div className="bg-card text-card-foreground rounded-xl shadow-lg p-8">
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-yellow-100 dark:bg-yellow-900/30 rounded-full mb-4">
-                <AlertCircle className="w-8 h-8 text-yellow-600 dark:text-yellow-500" />
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-yellow-500/10 rounded-full mb-4">
+                <AlertCircle className="w-8 h-8 text-yellow-600" />
               </div>
               
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              <h2 className="text-2xl font-bold text-foreground mb-2">
                 {t('title')}
               </h2>
-              
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
+
+              <p className="text-muted-foreground mb-6">
                 {t('description')}
               </p>
-              
-              <div className="bg-gray-100 dark:bg-gray-700 rounded-lg px-4 py-2 mb-6">
-                <p className="font-medium text-gray-800 dark:text-gray-200">
+
+              <div className="bg-muted rounded-lg px-4 py-2 mb-6">
+                <p className="font-medium text-foreground">
                   {session.data.user.email}
                 </p>
               </div>
@@ -92,7 +92,7 @@ export function EmailVerifiedGuard({
               <button
                 onClick={handleResendEmail}
                 disabled={isResending}
-                className="w-full px-4 py-2 bg-gray-900 hover:bg-black disabled:bg-gray-600 dark:bg-white dark:hover:bg-gray-200 dark:disabled:bg-gray-400 text-white dark:text-gray-900 font-medium rounded-lg transition-colors flex items-center justify-center"
+                className="w-full px-4 py-2 bg-primary hover:bg-primary/90 disabled:opacity-50 text-primary-foreground font-medium rounded-lg transition-colors flex items-center justify-center"
               >
                 {isResending ? (
                   <>
@@ -109,21 +109,21 @@ export function EmailVerifiedGuard({
 
               {resendMessage && (
                 <p className={`text-sm mt-4 ${
-                  resendMessage.includes('sent') 
-                    ? 'text-green-600 dark:text-green-400' 
-                    : 'text-red-600 dark:text-red-400'
+                  resendMessage.includes('sent')
+                    ? 'text-green-600'
+                    : 'text-red-600'
                 }`}>
                   {resendMessage}
                 </p>
               )}
 
-              <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+              <div className="mt-6 pt-6 border-t border-border">
                 <button
                   onClick={() => {
                     // Sign out and redirect to login
                     window.location.href = `/${locale}/login`;
                   }}
-                  className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                  className="text-sm text-muted-foreground hover:text-foreground"
                 >
                   {t('signOutLink')}
                 </button>

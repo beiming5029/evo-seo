@@ -7,16 +7,16 @@ import { Switch } from "../switch";
 
 export const SkeletonThree = () => {
   return (
-    <div className="h-full w-full sm:w-[80%] mx-auto bg-white dark:bg-neutral-800  shadow-2xl dark:shadow-white/40 mt-10 group rounded-md">
-      <div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-white via-white dark:from-black dark:via-black to-transparent w-full pointer-events-none z-[11]" />
+    <div className="h-full w-full sm:w-[80%] mx-auto bg-card  shadow-2xl mt-10 group rounded-md">
+      <div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-background via-background to-transparent w-full pointer-events-none z-[11]" />
 
       <div className="flex flex-1 w-full h-full flex-col space-y-2 ">
-        <div className="flex justify-between border-b dark:border-neutral-700 pb-2 p-4">
-          <p className="text-muted text-sm font-bold dark:text-muted-dark">
+        <div className="flex justify-between border-b border-border pb-2 p-4">
+          <p className="text-muted-foreground text-sm font-bold">
             Add LLM
           </p>
-          <p className="shadow-derek text-muted dark:text-muted-dark text-sm px-2 py-1 rounded-md flex-shrink-0 flex space-x-1 items-center dark:bg-neutral-700">
-            <IconPlus className="h-4 w-4 text-muted dark:text-muted-dark" />{" "}
+          <p className="shadow-derek text-muted-foreground text-sm px-2 py-1 rounded-md flex-shrink-0 flex space-x-1 items-center bg-muted">
+            <IconPlus className="h-4 w-4 text-muted-foreground" />{" "}
             <span>Add</span>
           </p>
         </div>
@@ -45,14 +45,14 @@ export const Row = ({
   return (
     <div className="flex justify-between items-center">
       <div className="flex space-x-2 items-center">
-        <p className="text-muted dark:text-muted-dark text-xs shadow-aceternity dark:bg-neutral-700 px-1 py-0.5 rounded-md">
+        <p className="text-muted-foreground text-xs shadow-aceternity bg-muted px-1 py-0.5 rounded-md">
           {title}
         </p>
-        <p className="text-muted dark:text-muted-dark text-xs">{updatedAt}</p>
+        <p className="text-muted-foreground text-xs">{updatedAt}</p>
       </div>
       <div className="flex items-center space-x-1">
         <Switch checked={checked} setChecked={setChecked} />
-        <IconDots className="h-4 w-4 text-muted dark:text-muted-dark" />
+        <IconDots className="h-4 w-4 text-muted-foreground" />
       </div>
     </div>
   );

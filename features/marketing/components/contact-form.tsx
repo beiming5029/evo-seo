@@ -22,21 +22,21 @@ const socials = [
     title: "twitter",
     href: "https://twitter.com/mannupaaji",
     icon: (
-      <IconBrandX className="h-5 w-5 text-muted transition-colors hover:text-black dark:text-muted-dark dark:hover:text-white" />
+      <IconBrandX className="h-5 w-5 text-muted-foreground transition-colors hover:text-foreground" />
     ),
   },
   {
     title: "github",
     href: "https://github.com/manuarora700",
     icon: (
-      <IconBrandGithub className="h-5 w-5 text-muted transition-colors hover:text-black dark:text-muted-dark dark:hover:text-white" />
+      <IconBrandGithub className="h-5 w-5 text-muted-foreground transition-colors hover:text-foreground" />
     ),
   },
   {
     title: "linkedin",
     href: "https://linkedin.com/manuarora28",
     icon: (
-      <IconBrandLinkedin className="h-5 w-5 text-muted transition-colors hover:text-black dark:text-muted-dark dark:hover:text-white" />
+      <IconBrandLinkedin className="h-5 w-5 text-muted-foreground transition-colors hover:text-foreground" />
     ),
   },
 ];

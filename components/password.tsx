@@ -16,7 +16,7 @@ const Password = forwardRef<HTMLInputElement, PasswordProps>(
         type={show ? "text" : type ?? "password"}
         ref={ref}
         className={cn(
-          "block w-full rounded-md border-0 bg-white px-4 pr-10 py-1.5 text-black shadow-aceternity placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:bg-neutral-900 dark:text-white",
+          "block w-full rounded-md border-0 bg-input px-4 pr-10 py-1.5 text-foreground shadow-aceternity placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring",
           className
         )}
       />
@@ -24,13 +24,13 @@ const Password = forwardRef<HTMLInputElement, PasswordProps>(
         {!show && (
           <EyeIcon
             onClick={() => setShow(true)}
-            className="text-gray-400 cursor-pointer h-4"
+            className="text-muted-foreground cursor-pointer h-4"
           />
         )}
         {show && (
           <EyeOffIcon
             onClick={() => setShow(false)}
-            className="text-gray-400 cursor-pointer h-4"
+            className="text-muted-foreground cursor-pointer h-4"
           />
         )}
       </div>

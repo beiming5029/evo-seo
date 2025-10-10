@@ -57,7 +57,7 @@ function Testimonial({
   return (
     <figure
       className={cn(
-        "animate-fade-in rounded-3xl bg-transparent p-8 opacity-0 shadow-derek dark:bg-neutral-900",
+        "animate-fade-in rounded-3xl bg-card p-8 opacity-0 shadow-derek",
         className
       )}
       style={{
@@ -75,15 +75,15 @@ function Testimonial({
             alt={name}
           />
           <div>
-            <h3 className="text-sm  font-medium text-neutral-500 dark:text-neutral-300">
+            <h3 className="text-sm font-medium text-muted-foreground">
               {name}
             </h3>
-            <p className="text-sm font-normal text-neutral-500 dark:text-neutral-300">
+            <p className="text-sm font-normal text-muted-foreground">
               {designation}
             </p>
           </div>
         </div>
-        <p className="text-base text-muted mt-4 dark:text-muted-dark">
+        <p className="text-base text-muted-foreground mt-4">
           {quote}
         </p>
       </div>
@@ -181,8 +181,8 @@ function TestimonialGrid() {
         className="hidden lg:block"
         shift={10}
       />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white dark:from-black" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white dark:from-black" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-background" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background" />
     </InViewDiv>
   );
 }

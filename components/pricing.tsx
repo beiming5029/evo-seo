@@ -64,13 +64,13 @@ export function Pricing() {
 
   return (
     <div className="relative">
-      <div className="flex items-center justify-center bg-neutral-100 dark:bg-neutral-800  w-fit mx-auto mb-12 rounded-md overflow-hidden">
+      <div className="flex items-center justify-center bg-muted w-fit mx-auto mb-12 rounded-md overflow-hidden">
         {tabs.map((tab) => (
           <button
             key={tab.value}
             className={cn(
-              "text-sm font-medium text-gray-500 dark:text-muted-dark p-4  rounded-md relative",
-              active === tab.value ? " text-white dark:text-black" : ""
+              "text-sm font-medium text-muted-foreground p-4 rounded-md relative",
+              active === tab.value ? "text-primary-foreground" : ""
             )}
             onClick={() => setActive(tab.value)}
           >
@@ -78,7 +78,7 @@ export function Pricing() {
               <motion.span
                 layoutId="moving-div"
                 transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                className="absolute inset-0 bg-black dark:bg-white"
+                className="absolute inset-0 bg-primary"
               />
             )}
             <span className="relative z-10">{tab.name}</span>
@@ -102,9 +102,9 @@ export function Pricing() {
             key={tier.id}
             className={cn(
               tier.featured
-                ? "relative bg-[radial-gradient(164.75%_100%_at_50%_0%,#334155_0%,#0F172A_48.73%)]  shadow-2xl"
-                : " bg-white dark:bg-black",
-              "rounded-lg px-6 py-8 sm:mx-8 lg:mx-0  h-full flex flex-col justify-between"
+                ? "relative bg-primary shadow-2xl"
+                : "bg-card",
+              "rounded-lg px-6 py-8 sm:mx-8 lg:mx-0 h-full flex flex-col justify-between"
             )}
           >
             <div className="">
@@ -112,8 +112,8 @@ export function Pricing() {
                 id={tier.id}
                 className={cn(
                   tier.featured
-                    ? "text-white"
-                    : "text-muted dark:text-muted-dark",
+                    ? "text-primary-foreground"
+                    : "text-muted-foreground",
                   "text-base font-semibold leading-7"
                 )}
               >
@@ -126,10 +126,10 @@ export function Pricing() {
                   transition={{ duration: 0.2, ease: "easeOut" }}
                   key={active}
                   className={cn(
-                    "text-4xl font-bold tracking-tight  inline-block",
+                    "text-4xl font-bold tracking-tight inline-block",
                     tier.featured
-                      ? "text-white"
-                      : "text-neutral-900 dark:text-neutral-200"
+                      ? "text-primary-foreground"
+                      : "text-foreground"
                   )}
                 >
                   {active === "monthly" ? tier.priceMonthly : tier.priceYearly}
@@ -138,9 +138,9 @@ export function Pricing() {
               <p
                 className={cn(
                   tier.featured
-                    ? "text-neutral-300"
-                    : "text-neutral-600 dark:text-neutral-300",
-                  "mt-6 text-sm leading-7  h-12 md:h-12 xl:h-12"
+                    ? "text-primary-foreground/80"
+                    : "text-muted-foreground",
+                  "mt-6 text-sm leading-7 h-12 md:h-12 xl:h-12"
                 )}
               >
                 {tier.description}
@@ -149,8 +149,8 @@ export function Pricing() {
                 role="list"
                 className={cn(
                   tier.featured
-                    ? "text-neutral-300"
-                    : "text-neutral-600 dark:text-neutral-300",
+                    ? "text-primary-foreground/80"
+                    : "text-muted-foreground",
                   "mt-8 space-y-3 text-sm leading-6 sm:mt-10"
                 )}
               >
@@ -159,8 +159,8 @@ export function Pricing() {
                     <IconCircleCheckFilled
                       className={cn(
                         tier.featured
-                          ? "text-white"
-                          : "text-muted dark:text-muted-dark",
+                          ? "text-primary-foreground"
+                          : "text-muted-foreground",
                         "h-6 w-5 flex-none"
                       )}
                       aria-hidden="true"
@@ -176,7 +176,7 @@ export function Pricing() {
                 aria-describedby={tier.id}
                 className={cn(
                   tier.featured
-                    ? "bg-white text-black shadow-sm hover:bg-white/90 focus-visible:outline-white"
+                    ? "bg-background text-foreground shadow-sm hover:bg-background/90 focus-visible:outline-background"
                     : "",
                   "mt-8 rounded-full py-2.5 px-3.5 text-center text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:mt-10 block w-full"
                 )}
@@ -191,12 +191,12 @@ export function Pricing() {
         {/* One-time credits pack card */}
         <div
           className={cn(
-            " bg-white dark:bg-black",
-            "rounded-lg px-6 py-8 sm:mx-8 lg:mx-0  h-full flex flex-col justify-between"
+            "bg-card",
+            "rounded-lg px-6 py-8 sm:mx-8 lg:mx-0 h-full flex flex-col justify-between"
           )}
         >
           <div>
-            <h3 className={cn("text-base font-semibold leading-7", "text-muted dark:text-muted-dark")}>
+            <h3 className={cn("text-base font-semibold leading-7", "text-muted-foreground")}>
               {t('tiers.credits.name')}
             </h3>
             <p className="mt-4">
@@ -207,19 +207,19 @@ export function Pricing() {
                 key={active}
                 className={cn(
                   "text-4xl font-bold tracking-tight inline-block",
-                  "text-neutral-900 dark:text-neutral-200"
+                  "text-foreground"
                 )}
               >
                 {t('tiers.credits.price')}
               </motion.span>
             </p>
-            <p className={cn("mt-6 text-sm leading-7  h-12 md:h-12 xl:h-12", "text-neutral-600 dark:text-neutral-300")}>
+            <p className={cn("mt-6 text-sm leading-7 h-12 md:h-12 xl:h-12", "text-muted-foreground")}>
               {t('tiers.credits.description')}
             </p>
-            <ul role="list" className={cn("mt-8 space-y-3 text-sm leading-6 sm:mt-10", "text-neutral-600 dark:text-neutral-300")}>
+            <ul role="list" className={cn("mt-8 space-y-3 text-sm leading-6 sm:mt-10", "text-muted-foreground")}>
               {(t.raw('tiers.credits.features') as string[]).map((feature) => (
                 <li key={feature} className="flex gap-x-3">
-                  <IconCircleCheckFilled className={cn("text-muted dark:text-muted-dark", "h-6 w-5 flex-none")} aria-hidden="true" />
+                  <IconCircleCheckFilled className={cn("text-muted-foreground", "h-6 w-5 flex-none")} aria-hidden="true" />
                   {feature}
                 </li>
               ))}

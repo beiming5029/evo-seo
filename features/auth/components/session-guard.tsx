@@ -20,7 +20,7 @@ export function SessionGuard({ children }: { children: React.ReactNode }) {
   if (session.isPending) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="h-12 w-12 animate-pulse rounded-full bg-gray-300 dark:bg-gray-700" />
+        <div className="h-12 w-12 animate-pulse rounded-full bg-muted" />
       </div>
     );
   }

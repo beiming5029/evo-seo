@@ -68,10 +68,10 @@ export default function ProfilePage() {
         >
           {/* Header Section */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-6xl font-bold text-black dark:text-white mb-4">
+            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">
               {t('title')}
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-400">
+            <p className="text-xl text-muted-foreground">
               {t('subtitle')}
             </p>
           </div>
@@ -81,7 +81,7 @@ export default function ProfilePage() {
             initial={{ y: 40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ ease: "easeOut", duration: 0.5, delay: 0.1 }}
-            className="bg-white/50 dark:bg-neutral-900/50 backdrop-blur-md rounded-3xl p-8 border border-neutral-200 dark:border-neutral-800"
+            className="bg-card/50 backdrop-blur-md rounded-3xl p-8 border border-border"
           >
             {/* Avatar Section */}
             <div className="flex flex-col items-center mb-10">
@@ -89,7 +89,7 @@ export default function ProfilePage() {
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ ease: "easeOut", duration: 0.5, delay: 0.2 }}
-                className="w-32 h-32 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-4xl mb-6 ring-4 ring-white/50 dark:ring-neutral-800/50"
+                className="w-32 h-32 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-4xl mb-6 ring-4 ring-border/50"
               >
                 {displayUser?.image ? (
                   <Image
@@ -103,10 +103,10 @@ export default function ProfilePage() {
                   initial
                 )}
               </motion.div>
-              <h2 className="text-3xl font-bold text-black dark:text-white mb-2">
+              <h2 className="text-3xl font-bold text-card-foreground mb-2">
                 {displayUser?.name || t('sections.basicInfo.nameNotSet')}
               </h2>
-              <p className="text-lg text-gray-600 dark:text-gray-400">{displayUser?.email}</p>
+              <p className="text-lg text-muted-foreground">{displayUser?.email}</p>
             </div>
 
             {/* Information Grid */}
@@ -119,25 +119,25 @@ export default function ProfilePage() {
                 className="space-y-6"
               >
                 <div>
-                  <h3 className="text-lg font-semibold text-black dark:text-white mb-4">
+                  <h3 className="text-lg font-semibold text-card-foreground mb-4">
                     {t('sections.basicInfo.title')}
                   </h3>
                   <div className="space-y-4">
-                    <div className="bg-white/30 dark:bg-black/30 rounded-xl p-4">
-                      <span className="text-sm text-gray-500 dark:text-gray-500 block mb-1">{t('sections.basicInfo.fullName')}</span>
-                      <span className="text-lg font-medium text-black dark:text-white">
+                    <div className="bg-muted/50 rounded-xl p-4">
+                      <span className="text-sm text-muted-foreground block mb-1">{t('sections.basicInfo.fullName')}</span>
+                      <span className="text-lg font-medium text-card-foreground">
                         {displayUser?.name || t('sections.basicInfo.notSet')}
                       </span>
                     </div>
-                    <div className="bg-white/30 dark:bg-black/30 rounded-xl p-4">
-                      <span className="text-sm text-gray-500 dark:text-gray-500 block mb-1">{t('sections.basicInfo.email')}</span>
-                      <span className="text-lg font-medium text-black dark:text-white">
+                    <div className="bg-muted/50 rounded-xl p-4">
+                      <span className="text-sm text-muted-foreground block mb-1">{t('sections.basicInfo.email')}</span>
+                      <span className="text-lg font-medium text-card-foreground">
                         {displayUser?.email}
                       </span>
                     </div>
-                    <div className="bg-white/30 dark:bg-black/30 rounded-xl p-4">
-                      <span className="text-sm text-gray-500 dark:text-gray-500 block mb-1">{t('sections.basicInfo.verificationStatus')}</span>
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                    <div className="bg-muted/50 rounded-xl p-4">
+                      <span className="text-sm text-muted-foreground block mb-1">{t('sections.basicInfo.verificationStatus')}</span>
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-500/10 text-green-600">
                         {tCommon('status.verified')}
                       </span>
                     </div>
@@ -153,13 +153,13 @@ export default function ProfilePage() {
                 className="space-y-6"
               >
                 <div>
-                  <h3 className="text-lg font-semibold text-black dark:text-white mb-4">
+                  <h3 className="text-lg font-semibold text-card-foreground mb-4">
                     {t('sections.accountSettings.title')}
                   </h3>
                   <div className="space-y-4">
-                    <div className="bg-white/30 dark:bg-black/30 rounded-xl p-4">
-                      <span className="text-sm text-gray-500 dark:text-gray-500 block mb-1">{t('sections.accountSettings.accountType')}</span>
-                      <span className="text-lg font-medium text-black dark:text-white">
+                    <div className="bg-muted/50 rounded-xl p-4">
+                      <span className="text-sm text-muted-foreground block mb-1">{t('sections.accountSettings.accountType')}</span>
+                      <span className="text-lg font-medium text-card-foreground">
                         {subscriptionPlan === "starter_monthly" ? tDashboard('cards.statistics.plans.starterMonthly') :
                          subscriptionPlan === "starter_yearly" ? tDashboard('cards.statistics.plans.starterYearly') :
                          subscriptionPlan === "pro_monthly" ? tDashboard('cards.statistics.plans.proMonthly') :
@@ -167,15 +167,15 @@ export default function ProfilePage() {
                          tDashboard('cards.statistics.plans.free')}
                       </span>
                     </div>
-                    <div className="bg-white/30 dark:bg-black/30 rounded-xl p-4">
-                      <span className="text-sm text-gray-500 dark:text-gray-500 block mb-1">{t('sections.accountSettings.memberSince')}</span>
-                      <span className="text-lg font-medium text-black dark:text-white">
+                    <div className="bg-muted/50 rounded-xl p-4">
+                      <span className="text-sm text-muted-foreground block mb-1">{t('sections.accountSettings.memberSince')}</span>
+                      <span className="text-lg font-medium text-card-foreground">
                         {formatMemberSince()}
                       </span>
                     </div>
-                    <div className="bg-white/30 dark:bg-black/30 rounded-xl p-4">
-                      <span className="text-sm text-gray-500 dark:text-gray-500 block mb-1">{t('sections.basicInfo.accountId')}</span>
-                      <span className="text-lg font-medium text-black dark:text-white font-mono">
+                    <div className="bg-muted/50 rounded-xl p-4">
+                      <span className="text-sm text-muted-foreground block mb-1">{t('sections.basicInfo.accountId')}</span>
+                      <span className="text-lg font-medium text-card-foreground font-mono">
                         {displayUser?.id || "N/A"}
                       </span>
                     </div>

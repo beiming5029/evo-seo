@@ -106,7 +106,7 @@ export default function CreditsPage() {
         <Background />
         <Container className="relative z-10 py-20">
           <div className="flex justify-center items-center h-64">
-            <p className="text-gray-600 dark:text-gray-400">{tCommon('status.loading')}</p>
+            <p className="text-muted-foreground">{tCommon('status.loading')}</p>
           </div>
         </Container>
       </div>
@@ -122,10 +122,10 @@ export default function CreditsPage() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ ease: "easeOut", duration: 0.5 }}
         >
-          <h1 className="text-4xl md:text-6xl font-bold text-black dark:text-white mb-4">
+          <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">
             {t('title')}
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-400 mb-12">
+          <p className="text-xl text-muted-foreground mb-12">
             {t('subtitle')}
           </p>
         </motion.div>
@@ -138,21 +138,21 @@ export default function CreditsPage() {
           className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"
         >
           {/* Current Balance */}
-          <div className="bg-white/50 dark:bg-neutral-900/50 backdrop-blur-md rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800">
-            <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400 mb-2">
+          <div className="bg-card/50 backdrop-blur-md rounded-2xl p-6 border border-border">
+            <h3 className="text-lg font-medium text-muted-foreground mb-2">
               {t('balance.title')}
             </h3>
-            <div className="text-4xl font-bold text-black dark:text-white mb-4">
+            <div className="text-4xl font-bold text-card-foreground mb-4">
               {credits}
             </div>
-            <p className="text-sm text-gray-500 dark:text-gray-500">
+            <p className="text-sm text-muted-foreground">
               {t('balance.description')}
             </p>
           </div>
 
           {/* Quick Purchase Options */}
-          <div className="bg-white/50 dark:bg-neutral-900/50 backdrop-blur-md rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800">
-            <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400 mb-4">
+          <div className="bg-card/50 backdrop-blur-md rounded-2xl p-6 border border-border">
+            <h3 className="text-lg font-medium text-muted-foreground mb-4">
               {t('purchase.title')}
             </h3>
             <div className="space-y-2">
@@ -168,14 +168,14 @@ export default function CreditsPage() {
           </div>
 
           {/* Usage Statistics */}
-          <div className="bg-white/50 dark:bg-neutral-900/50 backdrop-blur-md rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800">
-            <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400 mb-4">
+          <div className="bg-card/50 backdrop-blur-md rounded-2xl p-6 border border-border">
+            <h3 className="text-lg font-medium text-muted-foreground mb-4">
               {t('statistics.title')}
             </h3>
             <div className="space-y-3">
               <div className="flex justify-between">
-                <span className="text-sm text-gray-500">{t('statistics.thisMonth')}</span>
-                <span className="font-medium text-black dark:text-white">
+                <span className="text-sm text-muted-foreground">{t('statistics.thisMonth')}</span>
+                <span className="font-medium text-card-foreground">
                   {creditHistory.filter(r => 
                     new Date(r.createdAt).getMonth() === new Date().getMonth() && 
                     r.amount < 0
@@ -183,15 +183,15 @@ export default function CreditsPage() {
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-gray-500">{t('statistics.totalPurchased')}</span>
-                <span className="font-medium text-black dark:text-white">
+                <span className="text-sm text-muted-foreground">{t('statistics.totalPurchased')}</span>
+                <span className="font-medium text-card-foreground">
                   {creditHistory.filter(r => r.type === 'purchase' && r.amount > 0)
                     .reduce((sum, r) => sum + r.amount, 0)}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-gray-500">{t('statistics.totalUsed')}</span>
-                <span className="font-medium text-black dark:text-white">
+                <span className="text-sm text-muted-foreground">{t('statistics.totalUsed')}</span>
+                <span className="font-medium text-card-foreground">
                   {creditHistory.filter(r => r.amount < 0)
                     .reduce((sum, r) => sum + Math.abs(r.amount), 0)}
                 </span>
@@ -206,17 +206,17 @@ export default function CreditsPage() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ ease: "easeOut", duration: 0.5, delay: 0.2 }}
         >
-          <div className="bg-white/50 dark:bg-neutral-900/50 backdrop-blur-md rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800">
-            <h3 className="text-xl font-semibold text-black dark:text-white mb-4">
+          <div className="bg-card/50 backdrop-blur-md rounded-2xl p-6 border border-border">
+            <h3 className="text-xl font-semibold text-card-foreground mb-4">
               {t('history.title')}
             </h3>
-            
+
             {loadingHistory && creditHistory.length === 0 ? (
               <div className="text-center py-4">
-                <span className="text-gray-500">{tCommon('status.loading')}</span>
+                <span className="text-muted-foreground">{tCommon('status.loading')}</span>
               </div>
             ) : creditHistory.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-muted-foreground">
                 {t('history.noRecords')}
               </div>
             ) : (
@@ -224,20 +224,20 @@ export default function CreditsPage() {
                 <div className="overflow-x-auto">
                   <table className="min-w-full">
                     <thead>
-                      <tr className="border-b border-neutral-200 dark:border-neutral-700">
-                        <th className="text-left py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-400">
+                      <tr className="border-b border-border">
+                        <th className="text-left py-3 px-2 text-sm font-medium text-muted-foreground">
                           {t('history.columns.time')}
                         </th>
-                        <th className="text-left py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-400">
+                        <th className="text-left py-3 px-2 text-sm font-medium text-muted-foreground">
                           {t('history.columns.type')}
                         </th>
-                        <th className="text-left py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-400">
+                        <th className="text-left py-3 px-2 text-sm font-medium text-muted-foreground">
                           {t('history.columns.description')}
                         </th>
-                        <th className="text-right py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-400">
+                        <th className="text-right py-3 px-2 text-sm font-medium text-muted-foreground">
                           {t('history.columns.amount')}
                         </th>
-                        <th className="text-right py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-400">
+                        <th className="text-right py-3 px-2 text-sm font-medium text-muted-foreground">
                           {t('history.columns.balance')}
                         </th>
                       </tr>
@@ -253,9 +253,9 @@ export default function CreditsPage() {
                         return (
                           <tr
                             key={record.id}
-                            className="border-b border-neutral-100 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors"
+                            className="border-b border-border hover:bg-muted/50 transition-colors"
                           >
-                            <td className="py-3 px-2 text-sm text-gray-700 dark:text-gray-300">
+                            <td className="py-3 px-2 text-sm text-card-foreground">
                               {new Date(record.createdAt).toLocaleString(locale, {
                                 year: 'numeric',
                                 month: 'short',
@@ -267,27 +267,27 @@ export default function CreditsPage() {
                             <td className="py-3 px-2">
                               <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
                                 record.type === 'purchase' || record.type === 'subscription'
-                                  ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                  ? 'bg-green-500/10 text-green-600'
                                   : record.type === 'usage'
-                                  ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                                  ? 'bg-red-500/10 text-red-600'
                                   : record.type === 'bonus'
-                                  ? 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
-                                  : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
+                                  ? 'bg-muted text-muted-foreground'
+                                  : 'bg-muted text-muted-foreground'
                               }`}>
                                 {t(`history.types.${record.type}`)}
                               </span>
                             </td>
-                            <td className="py-3 px-2 text-sm text-gray-700 dark:text-gray-300">
-                              {t(`history.reasons.${record.reason}`, { 
-                                defaultValue: record.reason 
+                            <td className="py-3 px-2 text-sm text-card-foreground">
+                              {t(`history.reasons.${record.reason}`, {
+                                defaultValue: record.reason
                               })}
                             </td>
                             <td className="py-3 px-2 text-sm text-right font-mono">
-                              <span className={record.amount > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}>
+                              <span className={record.amount > 0 ? 'text-green-600' : 'text-red-600'}>
                                 {record.amount > 0 ? '+' : ''}{record.amount}
                               </span>
                             </td>
-                            <td className="py-3 px-2 text-sm text-right font-mono text-gray-600 dark:text-gray-400">
+                            <td className="py-3 px-2 text-sm text-right font-mono text-muted-foreground">
                               {runningBalance}
                             </td>
                           </tr>

@@ -93,7 +93,7 @@ export default function DashboardPage() {
         <Background />
         <Container className="relative z-10 py-20">
           <div className="flex justify-center items-center h-64">
-            <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+            <p className="text-muted-foreground">Loading...</p>
           </div>
         </Container>
       </div>
@@ -109,16 +109,16 @@ export default function DashboardPage() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ ease: "easeOut", duration: 0.5 }}
         >
-          <h1 className="text-4xl md:text-6xl font-bold text-black dark:text-white mb-4">
+          <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">
             {t('title')}
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-400 mb-12">
+          <p className="text-xl text-muted-foreground mb-12">
             {t('welcome')}, {displayUser?.name || displayUser?.email}
           </p>
-          
+
           {paymentSuccess && (
-            <div className="mb-8 p-4 bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-700 rounded-lg">
-              <p className="text-green-800 dark:text-green-300 font-medium">
+            <div className="mb-8 p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+              <p className="text-green-600 font-medium">
                 {t('paymentSuccess')}
               </p>
             </div>
@@ -132,25 +132,25 @@ export default function DashboardPage() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           {/* Personal Info Card */}
-          <div className="bg-white/50 dark:bg-neutral-900/50 backdrop-blur-md rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800">
-            <h3 className="text-xl font-semibold text-black dark:text-white mb-4">
+          <div className="bg-card/50 backdrop-blur-md rounded-2xl p-6 border border-border">
+            <h3 className="text-xl font-semibold text-card-foreground mb-4">
               {t('cards.personalInfo.title')}
             </h3>
             <div className="space-y-3">
               <div className="flex flex-col">
-                <span className="text-sm text-gray-500 dark:text-gray-500">{t('cards.personalInfo.labels.name')}</span>
-                <span className="text-base font-medium text-black dark:text-white">
+                <span className="text-sm text-muted-foreground">{t('cards.personalInfo.labels.name')}</span>
+                <span className="text-base font-medium text-card-foreground">
                   {displayUser?.name || t('cards.personalInfo.labels.notSet')}
                 </span>
               </div>
               <div className="flex flex-col">
-                <span className="text-sm text-gray-500 dark:text-gray-500">{t('cards.personalInfo.labels.email')}</span>
-                <span className="text-base font-medium text-black dark:text-white">
+                <span className="text-sm text-muted-foreground">{t('cards.personalInfo.labels.email')}</span>
+                <span className="text-base font-medium text-card-foreground">
                   {displayUser?.email}
                 </span>
               </div>
               <div className="flex flex-col">
-                <span className="text-sm text-gray-500 dark:text-gray-500">{t('cards.personalInfo.labels.status')}</span>
+                <span className="text-sm text-muted-foreground">{t('cards.personalInfo.labels.status')}</span>
                 <span className="text-base font-medium text-green-500">
                   {tCommon('status.verified')}
                 </span>
@@ -159,8 +159,8 @@ export default function DashboardPage() {
           </div>
 
           {/* Quick Actions Card */}
-          <div className="bg-white/50 dark:bg-neutral-900/50 backdrop-blur-md rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800">
-            <h3 className="text-xl font-semibold text-black dark:text-white mb-4">
+          <div className="bg-card/50 backdrop-blur-md rounded-2xl p-6 border border-border">
+            <h3 className="text-xl font-semibold text-card-foreground mb-4">
               {t('cards.quickActions.title')}
             </h3>
             <div className="space-y-3">
@@ -187,22 +187,22 @@ export default function DashboardPage() {
           </div>
 
           {/* Statistics Card */}
-          <div className="bg-white/50 dark:bg-neutral-900/50 backdrop-blur-md rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800">
-            <h3 className="text-xl font-semibold text-black dark:text-white mb-4">
+          <div className="bg-card/50 backdrop-blur-md rounded-2xl p-6 border border-border">
+            <h3 className="text-xl font-semibold text-card-foreground mb-4">
               {t('cards.statistics.title')}
             </h3>
             <div className="space-y-3">
               <div className="flex flex-col">
-                <span className="text-sm text-gray-500 dark:text-gray-500">{t('cards.statistics.labels.loginCount')}</span>
-                <span className="text-2xl font-bold text-black dark:text-white">1</span>
+                <span className="text-sm text-muted-foreground">{t('cards.statistics.labels.loginCount')}</span>
+                <span className="text-2xl font-bold text-card-foreground">1</span>
               </div>
               <div className="flex flex-col">
-                <span className="text-sm text-gray-500 dark:text-gray-500">{t('cards.statistics.labels.memberSince')}</span>
-                <span className="text-base font-medium text-black dark:text-white">{t('cards.statistics.labels.today')}</span>
+                <span className="text-sm text-muted-foreground">{t('cards.statistics.labels.memberSince')}</span>
+                <span className="text-base font-medium text-card-foreground">{t('cards.statistics.labels.today')}</span>
               </div>
               <div className="flex flex-col">
-                <span className="text-sm text-gray-500 dark:text-gray-500">{t('cards.statistics.labels.plan')}</span>
-                <span className="text-base font-medium text-black dark:text-white">
+                <span className="text-sm text-muted-foreground">{t('cards.statistics.labels.plan')}</span>
+                <span className="text-base font-medium text-card-foreground">
                   {subscriptionPlan === "starter_monthly" ? t('cards.statistics.plans.starterMonthly') :
                    subscriptionPlan === "starter_yearly" ? t('cards.statistics.plans.starterYearly') :
                    subscriptionPlan === "pro_monthly" ? t('cards.statistics.plans.proMonthly') :
@@ -211,8 +211,8 @@ export default function DashboardPage() {
                 </span>
               </div>
               <div className="flex flex-col">
-                <span className="text-sm text-gray-500 dark:text-gray-500">{t('cards.statistics.labels.credits')}</span>
-                <span className="text-2xl font-bold text-black dark:text-white">{credits}</span>
+                <span className="text-sm text-muted-foreground">{t('cards.statistics.labels.credits')}</span>
+                <span className="text-2xl font-bold text-card-foreground">{credits}</span>
               </div>
               <div className="pt-2 space-y-2">
                 <Button

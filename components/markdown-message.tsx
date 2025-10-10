@@ -17,40 +17,40 @@ export function MarkdownMessage({ content, isStreaming }: MarkdownMessageProps) 
         components={{
           // 自定义渲染组件
           h1: ({ children }) => (
-            <h1 className="text-2xl font-bold mt-4 mb-2 text-black dark:text-white">{children}</h1>
+            <h1 className="text-2xl font-bold mt-4 mb-2 text-foreground">{children}</h1>
           ),
           h2: ({ children }) => (
-            <h2 className="text-xl font-semibold mt-3 mb-2 text-black dark:text-white">{children}</h2>
+            <h2 className="text-xl font-semibold mt-3 mb-2 text-foreground">{children}</h2>
           ),
           h3: ({ children }) => (
-            <h3 className="text-lg font-medium mt-2 mb-1 text-black dark:text-white">{children}</h3>
+            <h3 className="text-lg font-medium mt-2 mb-1 text-foreground">{children}</h3>
           ),
           p: ({ children }) => (
-            <p className="mb-2 text-gray-800 dark:text-gray-200 leading-relaxed">{children}</p>
+            <p className="mb-2 text-foreground leading-relaxed">{children}</p>
           ),
           ul: ({ children }) => (
-            <ul className="list-disc list-inside mb-2 space-y-1 text-gray-800 dark:text-gray-200">
+            <ul className="list-disc list-inside mb-2 space-y-1 text-foreground">
               {children}
             </ul>
           ),
           ol: ({ children }) => (
-            <ol className="list-decimal list-inside mb-2 space-y-1 text-gray-800 dark:text-gray-200">
+            <ol className="list-decimal list-inside mb-2 space-y-1 text-foreground">
               {children}
             </ol>
           ),
           li: ({ children }) => (
-            <li className="ml-2 text-gray-800 dark:text-gray-200">{children}</li>
+            <li className="ml-2 text-foreground">{children}</li>
           ),
           code: ({ inline, children }: { inline?: boolean; children?: ReactNode }) => {
             if (inline) {
               return (
-                <code className="px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-sm font-mono text-gray-700 dark:text-gray-300">
+                <code className="px-1.5 py-0.5 rounded bg-muted text-sm font-mono text-muted-foreground">
                   {children}
                 </code>
               );
             }
             return (
-              <code className="block p-3 rounded-lg bg-gray-100 dark:bg-gray-900 text-sm font-mono overflow-x-auto">
+              <code className="block p-3 rounded-lg bg-muted text-sm font-mono overflow-x-auto">
                 {children}
               </code>
             );
@@ -59,12 +59,12 @@ export function MarkdownMessage({ content, isStreaming }: MarkdownMessageProps) 
             <pre className="mb-2 overflow-x-auto">{children}</pre>
           ),
           blockquote: ({ children }) => (
-            <blockquote className="border-l-4 border-gray-400 pl-4 my-2 italic text-gray-600 dark:text-gray-400">
+            <blockquote className="border-l-4 border-border pl-4 my-2 italic text-muted-foreground">
               {children}
             </blockquote>
           ),
           strong: ({ children }) => (
-            <strong className="font-bold text-black dark:text-white">{children}</strong>
+            <strong className="font-bold text-foreground">{children}</strong>
           ),
           em: ({ children }) => (
             <em className="italic">{children}</em>
@@ -74,46 +74,46 @@ export function MarkdownMessage({ content, isStreaming }: MarkdownMessageProps) 
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-700 dark:text-gray-300 underline hover:text-black dark:hover:text-white"
+              className="text-muted-foreground underline hover:text-foreground"
             >
               {children}
             </a>
           ),
           table: ({ children }) => (
             <div className="overflow-x-auto mb-4">
-              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <table className="min-w-full divide-y divide-border">
                 {children}
               </table>
             </div>
           ),
           thead: ({ children }) => (
-            <thead className="bg-gray-50 dark:bg-gray-800">{children}</thead>
+            <thead className="bg-muted">{children}</thead>
           ),
           tbody: ({ children }) => (
-            <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody className="bg-card divide-y divide-border">
               {children}
             </tbody>
           ),
           tr: ({ children }) => <tr>{children}</tr>,
           th: ({ children }) => (
-            <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
               {children}
             </th>
           ),
           td: ({ children }) => (
-            <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+            <td className="px-3 py-2 whitespace-nowrap text-sm text-foreground">
               {children}
             </td>
           ),
           hr: () => (
-            <hr className="my-4 border-gray-200 dark:border-gray-700" />
+            <hr className="my-4 border-border" />
           ),
         }}
       >
         {content}
       </ReactMarkdown>
       {isStreaming && (
-        <span className="inline-block w-1 h-4 ml-1 bg-gray-500 animate-pulse" />
+        <span className="inline-block w-1 h-4 ml-1 bg-muted-foreground animate-pulse" />
       )}
     </div>
   );

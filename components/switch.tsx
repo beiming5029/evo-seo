@@ -15,7 +15,7 @@ export const Switch = ({
         htmlFor={id}
         className={cn(
           "h-4  px-1 w-[40px]  flex items-center border border-transparent shadow-[inset_0px_0px_12px_rgba(0,0,0,0.25)] rounded-full  relative cursor-pointer transition duration-200",
-          checked ? "bg-blue-500" : "bg-slate-700 border-slate-500"
+          checked ? "bg-primary" : "bg-muted border-border"
         )}
       >
         <motion.div
@@ -33,7 +33,7 @@ export const Switch = ({
             delay: 0.1,
           }}
           key={String(checked)}
-          className={cn("h-[20px] block rounded-full bg-white shadow-md z-10")}
+          className={cn("h-[20px] block rounded-full bg-background shadow-md z-10")}
         ></motion.div>
         <input
           type="checkbox"

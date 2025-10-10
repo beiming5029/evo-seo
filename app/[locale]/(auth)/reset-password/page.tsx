@@ -97,7 +97,7 @@ export default function ResetPasswordPage() {
         description="Please wait while we verify your reset link."
       >
         <div className="flex justify-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black dark:border-white"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-foreground"></div>
         </div>
       </AuthMessageCard>
     );
@@ -109,7 +109,7 @@ export default function ResetPasswordPage() {
         title="Invalid or Expired Link"
         description="This password reset link is invalid or has expired."
       >
-        <p className="text-sm text-gray-600 dark:text-gray-400">
+        <p className="text-sm text-muted-foreground">
           Please request a new password reset link.
         </p>
         <LocaleLink href="/forgot-password">
@@ -139,7 +139,7 @@ export default function ResetPasswordPage() {
         <div className="text-center">
           <LocaleLink
             href="/login"
-            className="text-sm text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white"
+            className="text-sm text-muted-foreground hover:text-foreground"
           >
             Back to Login
           </LocaleLink>

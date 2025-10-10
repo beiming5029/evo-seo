@@ -441,21 +441,21 @@ export default function DemoPage() {
           {/* Header with credits */}
           <div className="flex justify-between items-center mb-6">
             <div>
-              <h1 className="text-3xl font-bold text-black dark:text-white">
+              <h1 className="text-3xl font-bold text-foreground">
                 {t('title')}
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-2">
+              <p className="text-muted-foreground mt-2">
                 {t('subtitle')}
               </p>
             </div>
             <div className="flex items-center gap-3">
               {remainingCredits !== null && (
-                <div className="flex items-center gap-2 px-3 py-2 bg-white/90 dark:bg-neutral-800/90 backdrop-blur-sm rounded-lg border border-neutral-200 dark:border-neutral-700 shadow-sm">
-                  <CreditCard className="w-4 h-4 text-gray-500" />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                <div className="flex items-center gap-2 px-3 py-2 bg-card/90 backdrop-blur-sm rounded-lg border border-border shadow-sm">
+                  <CreditCard className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">
                     {t('credits')}:
                   </span>
-                  <span className="text-sm font-semibold text-black dark:text-white">
+                  <span className="text-sm font-semibold text-foreground">
                     {remainingCredits}
                   </span>
                 </div>
@@ -480,8 +480,8 @@ export default function DemoPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
                   activeTab === tab.id
-                    ? "bg-black dark:bg-white text-white dark:text-black"
-                    : "bg-gray-100 dark:bg-neutral-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-neutral-700"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground hover:bg-muted/80"
                 }`}
               >
                 <tab.icon className="w-4 h-4" />
@@ -515,10 +515,10 @@ export default function DemoPage() {
                   className="h-full flex flex-col"
                 >
                   <div className="mb-4">
-                    <h2 className="text-xl font-semibold text-black dark:text-white">
+                    <h2 className="text-xl font-semibold text-foreground">
                       {t('chat.title')}
                     </h2>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-sm text-muted-foreground">
                       {t('chat.description')}
                     </p>
                   </div>
@@ -527,11 +527,11 @@ export default function DemoPage() {
                   <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
                     {messages.length === 0 ? (
                       <div className="flex flex-col items-center justify-center h-full text-center">
-                        <Sparkles className="w-12 h-12 text-gray-500 mb-4" />
-                        <h3 className="text-2xl font-semibold text-black dark:text-white mb-2">
+                        <Sparkles className="w-12 h-12 text-muted-foreground mb-4" />
+                        <h3 className="text-2xl font-semibold text-foreground mb-2">
                           {t('startChat')}
                         </h3>
-                        <p className="text-gray-600 dark:text-gray-400 max-w-md">
+                        <p className="text-muted-foreground max-w-md">
                           {t('startChatDescription')}
                         </p>
                       </div>
@@ -548,21 +548,21 @@ export default function DemoPage() {
                           <div
                             className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
                               message.role === "user"
-                                ? "bg-gray-700 dark:bg-gray-600"
-                                : "bg-black dark:bg-white"
+                                ? "bg-muted"
+                                : "bg-primary"
                             }`}
                           >
                             {message.role === "user" ? (
-                              <User className="w-5 h-5 text-white dark:text-gray-900" />
+                              <User className="w-5 h-5 text-muted-foreground" />
                             ) : (
-                              <Bot className="w-5 h-5 text-white dark:text-black" />
+                              <Bot className="w-5 h-5 text-primary-foreground" />
                             )}
                           </div>
                           <div
                             className={`flex-1 px-4 py-3 rounded-2xl ${
                               message.role === "user"
-                                ? "bg-gray-100 dark:bg-gray-800 text-black dark:text-white"
-                                : "bg-white dark:bg-neutral-900 text-black dark:text-white border border-neutral-200 dark:border-neutral-700"
+                                ? "bg-muted text-foreground"
+                                : "bg-card text-foreground border border-border"
                             }`}
                           >
                             {message.role === "user" ? (
@@ -583,7 +583,7 @@ export default function DemoPage() {
                   </div>
 
                   {/* Chat Input */}
-                  <div className="border-t border-neutral-200 dark:border-neutral-700 pt-4">
+                  <div className="border-t border-border pt-4">
                     <div className="flex gap-3">
                       <textarea
                         ref={inputRef}
@@ -593,7 +593,7 @@ export default function DemoPage() {
                         placeholder={t('chat.placeholder')}
                         disabled={isLoading || remainingCredits === 0}
                         rows={1}
-                        className="flex-1 px-4 py-3 bg-white/50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600 dark:text-white placeholder-gray-500"
+                        className="flex-1 px-4 py-3 bg-background/50 border border-border rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-ring text-foreground placeholder-muted-foreground"
                         style={{
                           minHeight: "48px",
                           maxHeight: "120px",
@@ -616,7 +616,7 @@ export default function DemoPage() {
                         )}
                       </Button>
                     </div>
-                    <div className="mt-2 px-2 text-xs text-gray-500 dark:text-gray-400">
+                    <div className="mt-2 px-2 text-xs text-muted-foreground">
                       {t('sendHint')}
                     </div>
                   </div>
@@ -633,10 +633,10 @@ export default function DemoPage() {
                   className="h-full flex flex-col"
                 >
                   <div className="mb-4">
-                    <h2 className="text-xl font-semibold text-black dark:text-white">
+                    <h2 className="text-xl font-semibold text-foreground">
                       {t('image.title')}
                     </h2>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-sm text-muted-foreground">
                       {t('image.description')}
                     </p>
                   </div>
@@ -645,8 +645,8 @@ export default function DemoPage() {
                   <div className="flex-1 overflow-y-auto px-4 py-4">
                     {generatedImages.length === 0 ? (
                       <div className="flex flex-col items-center justify-center h-full text-center">
-                        <ImageIcon className="w-12 h-12 text-gray-500 mb-4" />
-                        <p className="text-gray-600 dark:text-gray-400">
+                        <ImageIcon className="w-12 h-12 text-muted-foreground mb-4" />
+                        <p className="text-muted-foreground">
                           {t('image.description')}
                         </p>
                       </div>
@@ -657,7 +657,7 @@ export default function DemoPage() {
                             key={image.id}
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="bg-white dark:bg-neutral-800 rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-700"
+                            className="bg-card rounded-lg overflow-hidden border border-border"
                           >
                             {image.resultUrl && (
                               <>
@@ -672,13 +672,13 @@ export default function DemoPage() {
                                   />
                                 </div>
                                 <div className="p-4">
-                                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                                  <p className="text-sm text-muted-foreground mb-2">
                                     {image.prompt}
                                   </p>
                                   <a
                                     href={image.resultUrl}
                                     download
-                                    className="inline-flex items-center gap-2 px-3 py-2 bg-gray-100 dark:bg-neutral-700 rounded-lg text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 transition-colors"
+                                    className="inline-flex items-center gap-2 px-3 py-2 bg-muted rounded-lg text-sm hover:bg-muted/80 transition-colors"
                                   >
                                     <Download className="w-4 h-4" />
                                     {t('image.downloadImage')}
@@ -693,15 +693,15 @@ export default function DemoPage() {
                   </div>
 
                   {/* Image Input */}
-                  <div className="border-t border-neutral-200 dark:border-neutral-700 pt-4">
+                  <div className="border-t border-border pt-4">
                     {/* Options Row */}
                     <div className="flex gap-4 mb-3">
                       <div className="flex items-center gap-2">
-                        <label className="text-sm text-gray-600 dark:text-gray-400">Size:</label>
+                        <label className="text-sm text-muted-foreground">Size:</label>
                         <select
                           value={imageSize}
                           onChange={(e) => setImageSize(e.target.value as '1K' | '2K' | '4K')}
-                          className="px-3 py-1 bg-white/50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600 dark:text-white"
+                          className="px-3 py-1 bg-background/50 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
                         >
                           <option value="1K">1K (1024px)</option>
                           <option value="2K">2K (2048px)</option>
@@ -709,7 +709,7 @@ export default function DemoPage() {
                         </select>
                       </div>
                       <div className="flex items-center gap-2">
-                        <label className="text-sm text-gray-600 dark:text-gray-400">
+                        <label className="text-sm text-muted-foreground">
                           <input
                             type="checkbox"
                             checked={imageWatermark}
@@ -728,7 +728,7 @@ export default function DemoPage() {
                         onChange={(e) => setImagePrompt(e.target.value)}
                         placeholder={t('image.placeholder')}
                         disabled={isGeneratingImage || remainingCredits === 0}
-                        className="flex-1 px-4 py-3 bg-white/50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600 dark:text-white placeholder-gray-500"
+                        className="flex-1 px-4 py-3 bg-background/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring text-foreground placeholder-muted-foreground"
                       />
                       <Button
                         onClick={handleGenerateImage}
@@ -756,10 +756,10 @@ export default function DemoPage() {
                   className="h-full flex flex-col"
                 >
                   <div className="mb-4">
-                    <h2 className="text-xl font-semibold text-black dark:text-white">
+                    <h2 className="text-xl font-semibold text-foreground">
                       {t('video.title')}
                     </h2>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-sm text-muted-foreground">
                       {t('video.description')}
                     </p>
                   </div>
@@ -768,8 +768,8 @@ export default function DemoPage() {
                   <div className="flex-1 overflow-y-auto px-4 py-4">
                     {generatedVideos.length === 0 ? (
                       <div className="flex flex-col items-center justify-center h-full text-center">
-                        <Video className="w-12 h-12 text-gray-500 mb-4" />
-                        <p className="text-gray-600 dark:text-gray-400">
+                        <Video className="w-12 h-12 text-muted-foreground mb-4" />
+                        <p className="text-muted-foreground">
                           {t('video.description')}
                         </p>
                       </div>
@@ -780,11 +780,11 @@ export default function DemoPage() {
                             key={video.id}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="bg-white dark:bg-neutral-800 rounded-lg p-4 border border-neutral-200 dark:border-neutral-700"
+                            className="bg-card rounded-lg p-4 border border-border"
                           >
                             <div className="flex items-center justify-between">
                               <div className="flex-1">
-                                <p className="text-sm font-medium text-black dark:text-white">
+                                <p className="text-sm font-medium text-foreground">
                                   {video.prompt}
                                 </p>
                                 <div className="flex items-center gap-2 mt-2">
@@ -815,7 +815,7 @@ export default function DemoPage() {
                                 <a
                                   href={video.resultUrl}
                                   download
-                                  className="inline-flex items-center gap-2 px-3 py-2 bg-gray-100 dark:bg-neutral-700 rounded-lg text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 transition-colors"
+                                  className="inline-flex items-center gap-2 px-3 py-2 bg-muted rounded-lg text-sm hover:bg-muted/80 transition-colors"
                                 >
                                   <Download className="w-4 h-4" />
                                   {t('video.downloadVideo')}
@@ -834,7 +834,7 @@ export default function DemoPage() {
                               </div>
                             )}
                             {video.status === "processing" && (
-                              <div className="mt-4 aspect-video rounded-lg bg-neutral-100 dark:bg-neutral-700 flex items-center justify-center">
+                              <div className="mt-4 aspect-video rounded-lg bg-muted flex items-center justify-center">
                                 <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
                               </div>
                             )}
@@ -845,7 +845,7 @@ export default function DemoPage() {
                   </div>
 
                   {/* Video Input */}
-                  <div className="border-t border-neutral-200 dark:border-neutral-700 pt-4">
+                  <div className="border-t border-border pt-4">
                     {uploadedImageUrl && (
                       <div className="mb-3 p-2 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center gap-2">
                         <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
@@ -863,11 +863,11 @@ export default function DemoPage() {
                     {/* Options Row */}
                     <div className="flex gap-4 mb-3">
                       <div className="flex items-center gap-2">
-                        <label className="text-sm text-gray-600 dark:text-gray-400">Resolution:</label>
+                        <label className="text-sm text-muted-foreground">Resolution:</label>
                         <select
                           value={videoResolution}
                           onChange={(e) => setVideoResolution(e.target.value as '480p' | '720p' | '1080p')}
-                          className="px-3 py-1 bg-white/50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600 dark:text-white"
+                          className="px-3 py-1 bg-background/50 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
                         >
                           <option value="480p">480p</option>
                           <option value="720p">720p (HD)</option>
@@ -875,19 +875,19 @@ export default function DemoPage() {
                         </select>
                       </div>
                       <div className="flex items-center gap-2">
-                        <label className="text-sm text-gray-600 dark:text-gray-400">Duration:</label>
+                        <label className="text-sm text-muted-foreground">Duration:</label>
                         <input
                           type="number"
                           min={3}
                           max={10}
                           value={videoDuration}
                           onChange={(e) => setVideoDuration(Number(e.target.value))}
-                          className="w-16 px-2 py-1 bg-white/50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600 dark:text-white"
+                          className="w-16 px-2 py-1 bg-background/50 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
                         />
-                        <span className="text-sm text-gray-600 dark:text-gray-400">seconds</span>
+                        <span className="text-sm text-muted-foreground">seconds</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <label className="text-sm text-gray-600 dark:text-gray-400">
+                        <label className="text-sm text-muted-foreground">
                           <input
                             type="checkbox"
                             checked={videoWatermark}
@@ -906,7 +906,7 @@ export default function DemoPage() {
                         onChange={(e) => setVideoPrompt(e.target.value)}
                         placeholder={t('video.placeholder')}
                         disabled={isGeneratingVideo || remainingCredits === 0}
-                        className="flex-1 px-4 py-3 bg-white/50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600 dark:text-white placeholder-gray-500"
+                        className="flex-1 px-4 py-3 bg-background/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring text-foreground placeholder-muted-foreground"
                       />
                       <input
                         ref={fileInputRef}

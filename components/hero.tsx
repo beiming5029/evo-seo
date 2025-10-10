@@ -67,7 +67,7 @@ export const Hero = () => {
           duration: 0.5,
           delay: 0.2,
         }}
-        className="text-center mt-6 text-base md:text-xl text-muted dark:text-muted-dark max-w-3xl mx-auto relative z-10"
+        className="text-center mt-6 text-base md:text-xl text-muted-foreground max-w-3xl mx-auto relative z-10"
       >
         <Balancer>
           {t('description')}
@@ -102,12 +102,12 @@ export const Hero = () => {
           className="flex space-x-2 items-center group"
         >
           <span>{t('cta.secondary')}</span>
-          <HiArrowRight className="text-muted group-hover:translate-x-1 stroke-[1px] h-3 w-3 transition-transform duration-200 dark:text-muted-dark" />
+          <HiArrowRight className="text-muted-foreground group-hover:translate-x-1 stroke-[1px] h-3 w-3 transition-transform duration-200" />
         </Button>
       </motion.div>
-      <div className="p-4 border border-neutral-200 bg-neutral-100 dark:bg-neutral-800 dark:border-neutral-700 rounded-[32px] mt-20 relative overflow-hidden">
-        <div className="absolute inset-x-0 bottom-0 h-40 w-full bg-gradient-to-b from-transparent via-white to-white dark:via-black/50 dark:to-black scale-[1.1] pointer-events-none" />
-        <div className="p-2 bg-white dark:bg-black dark:border-neutral-700 border border-neutral-200 rounded-[24px]">
+      <div className="p-4 border border-border bg-secondary rounded-[32px] mt-20 relative overflow-hidden">
+        <div className="absolute inset-x-0 bottom-0 h-40 w-full bg-gradient-to-b from-transparent via-background to-background scale-[1.1] pointer-events-none" />
+        <div className="p-2 bg-background border border-border rounded-[24px]">
           <Image
             src="https://a.offerget.pro/starter/sample.png"
             alt="Product interface preview"

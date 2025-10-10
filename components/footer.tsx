@@ -54,10 +54,10 @@ export const Footer = () => {
   ];
   return (
     <div className="relative">
-      <div className="border-t border-neutral-100  dark:border-neutral-800 px-8 pt-20 pb-32 relative bg-white dark:bg-black">
+      <div className="border-t border-border px-8 pt-20 pb-32 relative bg-background">
         <div className="max-w-7xl mx-auto">
           {/* Footer Links Section */}
-          <div className="text-sm text-neutral-500 dark:text-neutral-400 flex sm:flex-row flex-col justify-between items-start">
+          <div className="text-sm text-muted-foreground flex sm:flex-row flex-col justify-between items-start">
             <div>
               <div className="mr-4 md:flex mb-4">
                 <Logo />
@@ -74,7 +74,7 @@ export const Footer = () => {
                 {links.map((link) => (
                   <LocaleLink
                     key={link.name}
-                    className="transition-colors hover:text-black text-muted dark:text-muted-dark dark:hover:text-neutral-400 text-xs sm:text-sm"
+                    className="transition-colors hover:text-foreground text-muted-foreground text-xs sm:text-sm"
                     href={link.href}
                   >
                     {link.name}
@@ -85,7 +85,7 @@ export const Footer = () => {
                 {legal.map((link) => (
                   <LocaleLink
                     key={link.name}
-                    className="transition-colors hover:text-black text-muted dark:text-muted-dark dark:hover:text-neutral-400 text-xs sm:text-sm"
+                    className="transition-colors hover:text-foreground text-muted-foreground text-xs sm:text-sm"
                     href={link.href}
                   >
                     {link.name}
@@ -96,7 +96,7 @@ export const Footer = () => {
                 {socials.map((link) => (
                   <a
                     key={link.name}
-                    className="transition-colors hover:text-black text-muted dark:text-muted-dark dark:hover:text-neutral-400 text-xs sm:text-sm"
+                    className="transition-colors hover:text-foreground text-muted-foreground text-xs sm:text-sm"
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -109,7 +109,7 @@ export const Footer = () => {
           </div>
         </div>
       </div>
-      <p className="text-center text-5xl md:text-9xl lg:text-[18rem] font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 dark:from-neutral-950 to-neutral-200 dark:to-neutral-800 inset-x-0">
+      <p className="text-center text-5xl md:text-9xl lg:text-[18rem] font-bold bg-clip-text text-transparent bg-gradient-to-b from-muted to-border inset-x-0">
         SISTINE
       </p>
     </div>

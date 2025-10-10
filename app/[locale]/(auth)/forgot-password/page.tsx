@@ -60,7 +60,7 @@ export default function ForgotPasswordPage() {
         title="Check your email"
         description="We&apos;ve sent you a password reset link. Please check your email."
       >
-        <p className="text-sm text-gray-600 dark:text-gray-400">
+        <p className="text-sm text-muted-foreground">
           Didn&apos;t receive an email? Check your spam folder or try again.
         </p>
         <Button
@@ -92,7 +92,7 @@ export default function ForgotPasswordPage() {
         <div className="text-center">
           <LocaleLink
             href="/login"
-            className="text-sm text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white"
+            className="text-sm text-muted-foreground hover:text-foreground"
           >
             Remember your password? Sign in
           </LocaleLink>

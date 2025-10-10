@@ -36,7 +36,7 @@ export function UserMenu() {
 
   if (session.isPending) {
     return (
-      <div className="h-6 w-6 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse" />
+      <div className="h-6 w-6 rounded-full bg-muted animate-pulse" />
     );
   }
 
@@ -45,13 +45,13 @@ export function UserMenu() {
       <div className="flex items-center gap-2">
         <Link
           href={`/${locale}/login`}
-          className="text-sm text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           {t('common.actions.signIn')}
         </Link>
         <Link
           href={`/${locale}/signup`}
-          className="bg-black dark:bg-white text-white dark:text-black text-sm px-4 py-1.5 rounded-full hover:opacity-90 transition-opacity"
+          className="bg-primary text-primary-foreground text-sm px-4 py-1.5 rounded-full hover:opacity-90 transition-opacity"
         >
           {t('common.actions.signUp')}
         </Link>
@@ -91,13 +91,13 @@ export function UserMenu() {
             className="fixed inset-0 z-10"
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute right-0 mt-2 min-w-[12rem] max-w-[18rem] bg-white dark:bg-neutral-900 rounded-lg shadow-lg border border-gray-200 dark:border-gray-800 py-1 z-20">
-            <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-800">
-              <p className="text-sm font-medium text-gray-900 dark:text-white break-words">
+          <div className="absolute right-0 mt-2 min-w-[12rem] max-w-[18rem] bg-popover rounded-lg shadow-navbar border border-border py-1 z-20">
+            <div className="px-4 py-2 border-b border-border">
+              <p className="text-sm font-medium text-foreground break-words">
                 {user.name || user.email}
               </p>
               {user.name && (
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 break-words">
+                <p className="text-xs text-muted-foreground mt-0.5 break-words">
                   {user.email}
                 </p>
               )}
@@ -106,7 +106,7 @@ export function UserMenu() {
             <Link
               href={`/${locale}/dashboard`}
               onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors"
+              className="flex items-center gap-3 px-4 py-2 text-sm text-muted-foreground hover:bg-hover transition-colors"
             >
               <IconLayoutDashboard className="w-4 h-4" />
               {t('navigation.main.dashboard')}
@@ -116,7 +116,7 @@ export function UserMenu() {
               <Link
                 href={`/${locale}/admin`}
                 onClick={() => setIsOpen(false)}
-                className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors"
+                className="flex items-center gap-3 px-4 py-2 text-sm text-muted-foreground hover:bg-hover transition-colors"
               >
                 <IconShield className="w-4 h-4" />
                 {t('Admin.sidebar.title')}
@@ -126,7 +126,7 @@ export function UserMenu() {
             <Link
               href={`/${locale}/credits`}
               onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors"
+              className="flex items-center gap-3 px-4 py-2 text-sm text-muted-foreground hover:bg-hover transition-colors"
             >
               <IconCoins className="w-4 h-4" />
               {t('navigation.main.credits')}
@@ -135,16 +135,16 @@ export function UserMenu() {
             <Link
               href={`/${locale}/profile`}
               onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors"
+              className="flex items-center gap-3 px-4 py-2 text-sm text-muted-foreground hover:bg-hover transition-colors"
             >
               <IconUser className="w-4 h-4" />
               {t('navigation.main.profile')}
             </Link>
 
-            <div className="border-t border-gray-200 dark:border-gray-800 mt-1 pt-1">
+            <div className="border-t border-border mt-1 pt-1">
               <button
                 onClick={handleSignOut}
-                className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors text-left"
+                className="flex items-center gap-3 w-full px-4 py-2 text-sm text-muted-foreground hover:bg-hover transition-colors text-left"
               >
                 <IconLogout className="w-4 h-4" />
                 {t('common.actions.signOut')}

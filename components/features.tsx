@@ -19,19 +19,19 @@ export const Features = () => {
       description: t('items.aiOptimized.description'),
       skeleton: <SkeletonOne />,
       className:
-        "col-span-1 md:col-span-4 border-b border-r dark:border-neutral-800",
+        "col-span-1 md:col-span-4 border-b border-r border-border",
     },
     {
       title: t('items.zeroPipeline.title'),
       description: t('items.zeroPipeline.description'),
       skeleton: <SkeletonTwo />,
-      className: "border-b col-span-1 md:col-span-2 dark:border-neutral-800",
+      className: "border-b col-span-1 md:col-span-2 border-border",
     },
     {
       title: t('items.nonTechnical.title'),
       description: t('items.nonTechnical.description'),
       skeleton: <SkeletonThree />,
-      className: "col-span-1 md:col-span-3 border-r dark:border-neutral-800",
+      className: "col-span-1 md:col-span-3 border-r border-border",
     },
     {
       title: t('items.productionGrade.title'),

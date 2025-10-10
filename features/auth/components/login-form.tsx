@@ -76,9 +76,9 @@ export function LoginForm() {
       isLoading={isLoading}
       error={error}
       footer={
-        <p className="mt-4 text-center text-sm text-neutral-500 dark:text-muted-dark">
+        <p className="mt-4 text-center text-sm text-muted-foreground">
           {t('noAccount')}{" "}
-          <Link href={`/${locale}/signup`} className="text-black dark:text-white">
+          <Link href={`/${locale}/signup`} className="text-foreground hover:underline">
             {t('signUpLink')}
           </Link>
         </p>
@@ -102,7 +102,7 @@ export function LoginForm() {
         autoComplete="current-password"
       />
       <div className="flex items-center justify-between">
-        <Link href={`/${locale}/forgot-password`} className="text-sm font-normal text-neutral-500 hover:text-black dark:hover:text-white">
+        <Link href={`/${locale}/forgot-password`} className="text-sm font-normal text-muted-foreground hover:text-foreground">
           {t('forgotPassword')}
         </Link>
       </div>

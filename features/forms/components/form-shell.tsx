@@ -54,11 +54,11 @@ export function FormShell<TFieldValues extends FieldValues>({
         <div className="mx-auto w-full max-w-md">
           <div>
             <div className="flex">{headerContent}</div>
-            <h2 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-black dark:text-white">
+            <h2 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-foreground">
               {title}
             </h2>
             {description ? (
-              <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
+              <p className="mt-2 text-sm text-muted-foreground">
                 {description}
               </p>
             ) : null}
@@ -69,7 +69,7 @@ export function FormShell<TFieldValues extends FieldValues>({
               {children}
 
               {error ? (
-                <div className="rounded-md bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
+                <div className="rounded-md bg-destructive/10 p-3 text-sm text-red-600">
                   {error}
                 </div>
               ) : null}
@@ -86,10 +86,10 @@ export function FormShell<TFieldValues extends FieldValues>({
             <div className="mt-10">
               <div className="relative">
                 <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                  <div className="w-full border-t border-neutral-300 dark:border-neutral-700" />
+                  <div className="w-full border-t border-border" />
                 </div>
                 <div className="relative flex justify-center text-sm font-medium leading-6">
-                  <span className="bg-white px-6 text-neutral-400 dark:bg-black dark:text-neutral-500">
+                  <span className="bg-background px-6 text-muted-foreground">
                     {t('or')}
                   </span>
                 </div>

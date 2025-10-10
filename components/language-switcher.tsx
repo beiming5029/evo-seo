@@ -71,10 +71,10 @@ export function LanguageSwitcher() {
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
           "flex items-center gap-2 px-3 py-1.5 text-sm rounded-full transition-all duration-200",
-          "border border-neutral-200 dark:border-neutral-800",
-          "bg-white dark:bg-neutral-900",
-          "hover:bg-neutral-50 dark:hover:bg-neutral-800",
-          "focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-neutral-400 focus:ring-offset-2"
+          "border border-border",
+          "bg-popover text-popover-foreground",
+          "hover:bg-hover",
+          "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         )}
         aria-expanded={isOpen}
         aria-haspopup="true"
@@ -82,21 +82,21 @@ export function LanguageSwitcher() {
       >
         <Globe className="w-4 h-4" />
         <span className="font-medium">{localeNames[locale as Locale]}</span>
-        <ChevronDown 
+        <ChevronDown
           className={cn(
             "w-3 h-3 transition-transform duration-200",
             isOpen && "rotate-180"
-          )} 
+          )}
         />
       </button>
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div 
+        <div
           className={cn(
             "absolute right-0 mt-2 py-1 min-w-[150px]",
-            "bg-white dark:bg-neutral-900",
-            "border border-neutral-200 dark:border-neutral-800",
+            "bg-popover text-popover-foreground",
+            "border border-border",
             "rounded-lg shadow-lg",
             "animate-in fade-in-0 zoom-in-95",
             "z-50"
@@ -112,20 +112,20 @@ export function LanguageSwitcher() {
                 onClick={() => switchLocale(loc)}
                 className={cn(
                   "flex items-center justify-between w-full px-3 py-2 text-sm",
-                  "hover:bg-neutral-100 dark:hover:bg-neutral-800",
+                  "hover:bg-hover",
                   "transition-colors duration-150",
-                  isActive && "bg-neutral-50 dark:bg-neutral-800/50"
+                  isActive && "bg-accent text-accent-foreground"
                 )}
                 role="menuitem"
               >
                 <span className={cn(
                   "font-medium",
-                  isActive ? "text-neutral-900 dark:text-white" : "text-neutral-600 dark:text-neutral-400"
+                  isActive ? "text-accent-foreground" : "text-muted-foreground"
                 )}>
                   {localeNames[loc]}
                 </span>
                 {isActive && (
-                  <Check className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  <Check className="w-4 h-4 text-primary" />
                 )}
               </button>
             );

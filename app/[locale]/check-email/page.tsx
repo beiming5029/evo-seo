@@ -37,42 +37,42 @@ export default function CheckEmailPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen flex items-center justify-center bg-muted">
       <div className="max-w-md w-full mx-auto p-6">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8">
+        <div className="bg-card rounded-2xl shadow-lg border border-border p-8">
           <div className="text-center">
             {/* Email Icon with Animation */}
             <div className="relative inline-block">
-              <div className="absolute inset-0 bg-gray-400 dark:bg-gray-600 rounded-full opacity-20 animate-ping"></div>
-              <Mail className="w-20 h-20 mx-auto mb-6 text-gray-700 dark:text-gray-300 relative" />
+              <div className="absolute inset-0 bg-muted-foreground/20 rounded-full opacity-20 animate-ping"></div>
+              <Mail className="w-20 h-20 mx-auto mb-6 text-card-foreground relative" />
             </div>
 
             {/* Title */}
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">
+            <h1 className="text-3xl font-bold text-card-foreground mb-3">
               {t('title')}
             </h1>
 
             {/* Description */}
-            <p className="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+            <p className="text-muted-foreground mb-8 leading-relaxed">
               {t('description')}
             </p>
 
             {/* Email Illustration */}
-            <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-6">
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+            <div className="bg-muted rounded-lg p-4 mb-6">
+              <p className="text-sm text-muted-foreground mb-2">
                 {t('notReceived')}
               </p>
-              <ul className="text-left text-sm text-gray-600 dark:text-gray-300 space-y-2">
+              <ul className="text-left text-sm text-card-foreground space-y-2">
                 <li className="flex items-start">
-                  <ArrowRight className="w-4 h-4 mr-2 mt-0.5 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                  <ArrowRight className="w-4 h-4 mr-2 mt-0.5 text-muted-foreground flex-shrink-0" />
                   <span>{t('checkSpam')}</span>
                 </li>
                 <li className="flex items-start">
-                  <ArrowRight className="w-4 h-4 mr-2 mt-0.5 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                  <ArrowRight className="w-4 h-4 mr-2 mt-0.5 text-muted-foreground flex-shrink-0" />
                   <span>{t('checkEmailCorrect')}</span>
                 </li>
                 <li className="flex items-start">
-                  <ArrowRight className="w-4 h-4 mr-2 mt-0.5 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                  <ArrowRight className="w-4 h-4 mr-2 mt-0.5 text-muted-foreground flex-shrink-0" />
                   <span>{t('waitAndCheck')}</span>
                 </li>
               </ul>
@@ -82,7 +82,7 @@ export default function CheckEmailPage() {
             <button
               onClick={handleResendEmail}
               disabled={isResending}
-              className="w-full mb-4 px-6 py-3 bg-gray-900 hover:bg-gray-800 disabled:bg-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:disabled:bg-gray-800 text-white font-medium rounded-lg transition-colors flex items-center justify-center"
+              className="w-full mb-4 px-6 py-3 bg-foreground hover:bg-foreground/90 disabled:bg-muted-foreground text-background font-medium rounded-lg transition-colors flex items-center justify-center"
             >
               {isResending ? (
                 <>
@@ -100,9 +100,9 @@ export default function CheckEmailPage() {
             {/* Resend Message */}
             {resendMessage && (
               <p className={`text-sm mb-4 ${
-                resendMessage.includes('successfully') 
-                  ? 'text-green-600 dark:text-green-400' 
-                  : 'text-red-600 dark:text-red-400'
+                resendMessage.includes('successfully')
+                  ? 'text-green-600'
+                  : 'text-red-600'
               }`}>
                 {resendMessage}
               </p>
@@ -111,15 +111,15 @@ export default function CheckEmailPage() {
             {/* Back to Login */}
             <Link
               href={`/${locale}/login`}
-              className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 transition-colors"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               {t('backToLogin')}
             </Link>
           </div>
 
           {/* Security Note */}
-          <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-xs text-center text-gray-500 dark:text-gray-400">
+          <div className="mt-8 pt-6 border-t border-border">
+            <p className="text-xs text-center text-muted-foreground">
               {t('securityNote')}
             </p>
           </div>

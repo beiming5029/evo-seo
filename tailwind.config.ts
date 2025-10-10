@@ -19,9 +19,43 @@ const config: Config = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       colors: {
-        primary: "#020022",
-        muted: "var(--neutral-600)",
-        "muted-dark": "var(--neutral-300)",
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+        navbar: {
+          DEFAULT: "hsl(var(--navbar-bg))",
+          scrolled: "hsl(var(--navbar-bg-scrolled))",
+        },
+        hover: {
+          DEFAULT: "hsl(var(--hover-bg))",
+          foreground: "hsl(var(--hover-foreground))",
+        },
       },
       animation: {
         scroll:
@@ -30,13 +64,14 @@ const config: Config = {
         "fade-in": "fade-in 0.5s linear forwards",
       },
       boxShadow: {
-        derek: `0px 0px 0px 1px rgb(0 0 0 / 0.06),
-        0px 1px 1px -0.5px rgb(0 0 0 / 0.06),
-        0px 3px 3px -1.5px rgb(0 0 0 / 0.06), 
-        0px 6px 6px -3px rgb(0 0 0 / 0.06),
-        0px 12px 12px -6px rgb(0 0 0 / 0.06),
-        0px 24px 24px -12px rgb(0 0 0 / 0.06)`,
-        aceternity: `0px 2px 3px -1px rgba(0,0,0,0.1), 0px 1px 0px 0px rgba(25,28,33,0.02), 0px 0px 0px 1px rgba(25,28,33,0.08)`,
+        derek: `0px 0px 0px 1px hsl(var(--shadow-color) / 0.06),
+        0px 1px 1px -0.5px hsl(var(--shadow-color) / 0.06),
+        0px 3px 3px -1.5px hsl(var(--shadow-color) / 0.06),
+        0px 6px 6px -3px hsl(var(--shadow-color) / 0.06),
+        0px 12px 12px -6px hsl(var(--shadow-color) / 0.06),
+        0px 24px 24px -12px hsl(var(--shadow-color) / 0.06)`,
+        aceternity: `0px 2px 3px -1px hsl(var(--shadow-color) / 0.1), 0px 1px 0px 0px hsl(var(--shadow-color) / 0.02), 0px 0px 0px 1px hsl(var(--shadow-color) / 0.08)`,
+        navbar: `0px -2px 0px 0px hsl(var(--shadow-color)), 0px 2px 0px 0px hsl(var(--shadow-color))`,
       },
       keyframes: {
         scroll: {

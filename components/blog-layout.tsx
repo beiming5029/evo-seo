@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { BlogWithSlug } from "@/lib/blog";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { Container } from "./container";
@@ -19,8 +18,8 @@ export function BlogLayout({
     <Container className="mt-16 lg:mt-32">
       <div className="flex justify-between items-center px-2 py-8">
         <Link href="/blog" className="flex space-x-2 items-center">
-          <IconArrowLeft className="w-4 h-4 text-muted dark:text-muted-dark" />
-          <span className="text-sm text-muted dark:text-muted-dark">Back</span>
+          <IconArrowLeft className="w-4 h-4 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">Back</span>
         </Link>
         <div className="flex space-x-2 items-center">
           <div className="flex space-x-2 items-center ">
@@ -31,13 +30,13 @@ export function BlogLayout({
               height={20}
               className="rounded-full h-5 w-5"
             />
-            <p className="text-sm font-normal text-muted dark:text-muted-dark">
+            <p className="text-sm font-normal text-muted-foreground">
               {blog.author.name}
             </p>
           </div>
-          <div className="h-5 rounded-lg w-0.5 bg-neutral-200 dark:bg-neutral-700" />
+          <div className="h-5 rounded-lg w-0.5 bg-border" />
           <time dateTime={blog.date} className="flex items-center text-base ">
-            <span className="text-muted dark:text-muted-dark text-sm">
+            <span className="text-muted-foreground text-sm">
               {format(new Date(blog.date), "MMMM dd, yyyy")}
             </span>
           </time>
@@ -53,7 +52,7 @@ export function BlogLayout({
             alt={blog.title}
           />
         ) : (
-          <div className="h-40 md:h-96 w-full aspect-squace rounded-3xl shadow-derek dark:bg-neutral-900 flex items-center justify-center">
+          <div className="h-40 md:h-96 w-full aspect-squace rounded-3xl shadow-derek bg-card flex items-center justify-center">
             <Logo />
           </div>
         )}
@@ -62,7 +61,7 @@ export function BlogLayout({
         <div className="mx-auto max-w-2xl">
           <article className="pb-8">
             <header className="flex flex-col">
-              <h1 className="mt-8 text-4xl font-bold tracking-tight text-neutral-800 dark:text-neutral-200 sm:text-5xl ">
+              <h1 className="mt-8 text-4xl font-bold tracking-tight text-foreground sm:text-5xl ">
                 {blog.title}
               </h1>
             </header>

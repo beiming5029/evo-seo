@@ -91,9 +91,9 @@ export function SignupForm() {
       isLoading={isLoading}
       error={error}
       footer={
-        <p className="mt-4 text-center text-sm text-neutral-500 dark:text-muted-dark">
+        <p className="mt-4 text-center text-sm text-muted-foreground">
           {t('hasAccount')}{" "}
-          <Link href={`/${locale}/login`} className="text-black dark:text-white">
+          <Link href={`/${locale}/login`} className="text-foreground hover:underline">
             {t('signInLink')}
           </Link>
         </p>

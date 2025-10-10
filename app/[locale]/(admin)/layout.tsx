@@ -11,15 +11,15 @@ export default async function AdminLayout({
   await requireAdmin();
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">
+    <div className="min-h-screen bg-muted">
       <div className="flex">
         {/* 侧边栏 */}
         <AdminSidebar />
-        
+
         {/* 主内容区 */}
         <div className="flex-1 flex flex-col">
           <AdminHeader />
-          
+
           <main className="flex-1 p-6">
             <div className="mx-auto max-w-7xl">
               {children}

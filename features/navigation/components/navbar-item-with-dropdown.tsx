@@ -26,11 +26,11 @@ const iconMap = {
   Video: Video,
 };
 
-export function NavBarItemWithDropdown({ 
-  itemKey, 
-  href, 
-  subItems, 
-  children 
+export function NavBarItemWithDropdown({
+  itemKey,
+  href,
+  subItems,
+  children
 }: NavBarItemWithDropdownProps) {
   const t = useTranslations('navigation.main');
   const [isOpen, setIsOpen] = useState(false);
@@ -62,7 +62,7 @@ export function NavBarItemWithDropdown({
     return (
       <Link
         href={href}
-        className="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors"
+        className="px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-hover transition-colors"
       >
         {children}
       </Link>
@@ -70,7 +70,7 @@ export function NavBarItemWithDropdown({
   }
 
   return (
-    <div 
+    <div
       className="relative"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -78,20 +78,20 @@ export function NavBarItemWithDropdown({
       <button
         className={cn(
           "px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1 transition-colors",
-          isOpen 
-            ? "bg-gray-100 dark:bg-neutral-800 text-gray-900 dark:text-white" 
-            : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-neutral-800"
+          isOpen
+            ? "bg-accent text-foreground"
+            : "text-muted-foreground hover:bg-hover"
         )}
       >
         {children}
-        <ChevronDown 
+        <ChevronDown
           className={cn(
             "w-3 h-3 transition-transform duration-200",
             isOpen && "rotate-180"
           )}
         />
       </button>
-      
+
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -100,21 +100,21 @@ export function NavBarItemWithDropdown({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.15 }}
-            className="absolute left-0 mt-1 w-48 bg-white dark:bg-neutral-900 rounded-lg shadow-lg border border-neutral-200 dark:border-neutral-700 overflow-hidden z-50"
+            className="absolute left-0 mt-1 w-48 bg-popover rounded-lg shadow-navbar border border-border overflow-hidden z-50"
           >
             <div className="py-2">
               {subItems.map((subItem) => {
                 const IconComponent = subItem.icon ? iconMap[subItem.icon as keyof typeof iconMap] : null;
-                
+
                 return (
                   <Link
                     key={subItem.key}
                     href={subItem.href}
-                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors"
+                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:bg-hover transition-colors"
                     onClick={() => setIsOpen(false)}
                   >
                     {IconComponent && (
-                      <IconComponent className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                      <IconComponent className="w-4 h-4 text-muted-foreground" />
                     )}
                     <span>{t(subItem.key)}</span>
                   </Link>

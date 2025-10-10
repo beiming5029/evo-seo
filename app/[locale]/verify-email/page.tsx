@@ -50,16 +50,16 @@ export default function VerifyEmailPage() {
   }, [searchParams, router, locale]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-muted to-background">
       <div className="max-w-md w-full mx-auto p-6">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
+        <div className="bg-card rounded-2xl shadow-xl p-8 border border-border">
           {status === 'loading' && (
             <div className="text-center">
               <Loader2 className="w-16 h-16 mx-auto mb-4 text-blue-500 animate-spin" />
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              <h1 className="text-2xl font-bold text-card-foreground mb-2">
                 {t('verifying')}
               </h1>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="text-muted-foreground">
                 {t('verifyingDescription')}
               </p>
             </div>
@@ -68,15 +68,15 @@ export default function VerifyEmailPage() {
           {status === 'success' && (
             <div className="text-center">
               <CheckCircle2 className="w-16 h-16 mx-auto mb-4 text-green-500" />
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              <h1 className="text-2xl font-bold text-card-foreground mb-2">
                 {t('success')}
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
+              <p className="text-muted-foreground mb-6">
                 {message}
               </p>
               <Link
                 href={`/${locale}/login`}
-                className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+                className="inline-block px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-lg transition-colors"
               >
                 {t('goToLogin')}
               </Link>
@@ -88,15 +88,15 @@ export default function VerifyEmailPage() {
               {message.includes('already been used') || message.includes('already verified') ? (
                 <>
                   <CheckCircle2 className="w-16 h-16 mx-auto mb-4 text-blue-500" />
-                  <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                  <h1 className="text-2xl font-bold text-card-foreground mb-2">
                     {t('alreadyVerified')}
                   </h1>
-                  <p className="text-gray-600 dark:text-gray-400 mb-6">
+                  <p className="text-muted-foreground mb-6">
                     {message}
                   </p>
                   <Link
                     href={`/${locale}/login`}
-                    className="block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+                    className="block px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-lg transition-colors"
                   >
                     {t('goToLogin')}
                   </Link>
@@ -104,22 +104,22 @@ export default function VerifyEmailPage() {
               ) : (
                 <>
                   <XCircle className="w-16 h-16 mx-auto mb-4 text-red-500" />
-                  <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                  <h1 className="text-2xl font-bold text-card-foreground mb-2">
                     {t('failed')}
                   </h1>
-                  <p className="text-gray-600 dark:text-gray-400 mb-6">
+                  <p className="text-muted-foreground mb-6">
                     {message}
                   </p>
                   <div className="space-y-3">
                     <Link
                       href={`/${locale}/login`}
-                      className="block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+                      className="block px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-lg transition-colors"
                     >
                       {t('goToLogin')}
                     </Link>
                     <Link
                       href={`/${locale}/check-email`}
-                      className="block px-6 py-3 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-lg transition-colors"
+                      className="block px-6 py-3 border border-border hover:bg-muted text-card-foreground font-medium rounded-lg transition-colors"
                     >
                       {t('requestNew')}
                     </Link>
@@ -130,8 +130,8 @@ export default function VerifyEmailPage() {
           )}
 
           {/* Additional Info */}
-          <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-            <div className="flex items-center justify-center text-sm text-gray-500 dark:text-gray-400">
+          <div className="mt-8 pt-6 border-t border-border">
+            <div className="flex items-center justify-center text-sm text-muted-foreground">
               <Mail className="w-4 h-4 mr-2" />
               <span>{t('checkSpamNote')}</span>
             </div>

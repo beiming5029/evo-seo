@@ -123,61 +123,61 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
       {/* 搜索栏 */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             type="text"
             placeholder={t("searchPlaceholder")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-11 pr-4 py-2 border border-neutral-200 dark:border-neutral-800 rounded-lg bg-white dark:bg-black text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-neutral-400"
+            className="w-full pl-11 pr-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
       </div>
 
       {/* 用户表格 */}
-      <div className="bg-white dark:bg-black rounded-lg border border-neutral-200 dark:border-neutral-800 overflow-hidden">
+      <div className="bg-background rounded-lg border border-border overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-neutral-50 dark:bg-neutral-900">
+            <thead className="bg-secondary">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   {t("user")}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   {t("role")}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   {t("subscription")}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   {t("credits")}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   {t("status")}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   {t("joined")}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   {t("actions")}
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800">
+            <tbody className="divide-y divide-border">
               {paginatedUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-neutral-50 dark:hover:bg-neutral-900/50">
+                <tr key={user.id} className="hover:bg-hover">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-6">
                       <div className="h-10 w-10 flex-shrink-0">
-                        <div className="h-10 w-10 rounded-full bg-neutral-200 dark:bg-neutral-800 flex items-center justify-center">
-                          <User className="h-5 w-5 text-neutral-500 dark:text-neutral-400" />
+                        <div className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center">
+                          <User className="h-5 w-5 text-muted-foreground" />
                         </div>
                       </div>
                       <div className="space-y-1">
-                        <div className="text-sm font-medium text-black dark:text-white">
+                        <div className="text-sm font-medium text-foreground">
                           {user.name}
                         </div>
-                        <div className="text-sm text-neutral-500 dark:text-neutral-400 flex items-center gap-1">
+                        <div className="text-sm text-muted-foreground flex items-center gap-1">
                           <Mail className="h-3 w-3" />
                           {user.email}
                         </div>
@@ -188,7 +188,7 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
                     <select
                       value={user.role}
                       onChange={(e) => handleUpdateRole(user.id, e.target.value)}
-                      className="px-3 py-1 text-sm rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black text-black dark:text-white"
+                      className="px-3 py-1 text-sm rounded-lg border border-border bg-background text-foreground"
                     >
                       <option value="user">User</option>
                       <option value="admin">Admin</option>
@@ -196,8 +196,8 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <Package className="h-4 w-4 text-neutral-400" />
-                      <span className="text-sm text-black dark:text-white">
+                      <Package className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm text-foreground">
                         {user.planKey || "free"}
                       </span>
                       <button
@@ -205,7 +205,7 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
                           setSelectedUser(user);
                           setIsSubscriptionModalOpen(true);
                         }}
-                        className="text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white text-xs"
+                        className="text-muted-foreground hover:text-hover-foreground text-xs"
                       >
                         {t("manage")}
                       </button>
@@ -213,8 +213,8 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <CreditCard className="h-4 w-4 text-neutral-400" />
-                      <span className="text-sm text-black dark:text-white">
+                      <CreditCard className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm text-foreground">
                         {user.credits}
                       </span>
                       <button
@@ -222,7 +222,7 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
                           setSelectedUser(user);
                           setIsCreditsModalOpen(true);
                         }}
-                        className="text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white text-xs"
+                        className="text-muted-foreground hover:text-hover-foreground text-xs"
                       >
                         {t("adjust")}
                       </button>
@@ -244,7 +244,7 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
                     )}
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center gap-1 text-sm text-neutral-500 dark:text-neutral-400">
+                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
                       <Calendar className="h-3 w-3" />
                       {new Date(user.createdAt).toLocaleDateString()}
                     </div>
@@ -262,9 +262,9 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
                             }
                           }
                         }}
-                        className={`p-1.5 rounded hover:bg-neutral-100 dark:hover:bg-neutral-900 ${
-                          user.banned 
-                            ? "text-green-600 dark:text-green-400" 
+                        className={`p-1.5 rounded hover:bg-hover ${
+                          user.banned
+                            ? "text-green-600 dark:text-green-400"
                             : "text-red-600 dark:text-red-400"
                         }`}
                         title={user.banned ? t("unban") : t("ban")}
@@ -276,7 +276,7 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
                           setSelectedUser(user);
                           setIsEditModalOpen(true);
                         }}
-                        className="p-1.5 rounded hover:bg-neutral-100 dark:hover:bg-neutral-900 text-neutral-600 dark:text-neutral-400"
+                        className="p-1.5 rounded hover:bg-hover text-muted-foreground"
                         title={t("viewDetails")}
                       >
                         <MoreVertical className="h-4 w-4" />
@@ -291,14 +291,14 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
 
         {filteredUsers.length > 0 && (
           <nav
-            className="flex items-center justify-between px-6 py-4 border-t border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900"
+            className="flex items-center justify-between px-6 py-4 border-t border-border bg-secondary"
             aria-label={t("pagination.page", { current: userPage, total: totalPages })}
           >
             <button
               type="button"
               onClick={() => setUserPage((page) => Math.max(1, page - 1))}
               disabled={userPage === 1}
-              className="px-3 py-1.5 text-sm font-medium rounded-md border border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="px-3 py-1.5 text-sm font-medium rounded-md border border-border text-muted-foreground hover:bg-hover disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {t("pagination.previous")}
             </button>
@@ -308,20 +308,20 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
                 <button
                   type="button"
                   onClick={() => setUserPage(1)}
-                  className={`px-3 py-1.5 text-sm font-medium rounded-md border border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 ${userPage === 1 ? "bg-black text-white dark:bg-white dark:text-black" : ""}`}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-md border border-border hover:bg-hover ${userPage === 1 ? "bg-foreground text-background" : "text-muted-foreground"}`}
                 >
                   1
                 </button>
               )}
-              {pageNumbers[0] > 2 && <span className="text-sm text-neutral-400">...</span>}
+              {pageNumbers[0] > 2 && <span className="text-sm text-muted-foreground">...</span>}
 
               {pageNumbers.map((pageNumber) => (
                 <button
                   key={pageNumber}
                   type="button"
                   onClick={() => setUserPage(pageNumber)}
-                  className={`px-3 py-1.5 text-sm font-medium rounded-md border border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 ${
-                    userPage === pageNumber ? "bg-black text-white dark:bg-white dark:text-black" : ""
+                  className={`px-3 py-1.5 text-sm font-medium rounded-md border border-border hover:bg-hover ${
+                    userPage === pageNumber ? "bg-foreground text-background" : "text-muted-foreground"
                   }`}
                   aria-current={userPage === pageNumber ? "page" : undefined}
                 >
@@ -330,13 +330,13 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
               ))}
 
               {pageNumbers[pageNumbers.length - 1] < totalPages - 1 && (
-                <span className="text-sm text-neutral-400">...</span>
+                <span className="text-sm text-muted-foreground">...</span>
               )}
               {pageNumbers[pageNumbers.length - 1] < totalPages && (
                 <button
                   type="button"
                   onClick={() => setUserPage(totalPages)}
-                  className={`px-3 py-1.5 text-sm font-medium rounded-md border border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 ${userPage === totalPages ? "bg-black text-white dark:bg-white dark:text-black" : ""}`}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-md border border-border hover:bg-hover ${userPage === totalPages ? "bg-foreground text-background" : "text-muted-foreground"}`}
                 >
                   {totalPages}
                 </button>
@@ -347,7 +347,7 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
               type="button"
               onClick={() => setUserPage((page) => Math.min(totalPages, page + 1))}
               disabled={userPage === totalPages}
-              className="px-3 py-1.5 text-sm font-medium rounded-md border border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="px-3 py-1.5 text-sm font-medium rounded-md border border-border text-muted-foreground hover:bg-hover disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {t("pagination.next")}
             </button>
@@ -439,27 +439,27 @@ function CreditsManagementModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white dark:bg-black rounded-lg p-6 max-w-md w-full mx-4 border border-neutral-200 dark:border-neutral-800">
-        <h2 className="text-xl font-bold text-black dark:text-white mb-4">
+      <div className="bg-background rounded-lg p-6 max-w-md w-full mx-4 border border-border">
+        <h2 className="text-xl font-bold text-foreground mb-4">
           {t("adjustCredits")}
         </h2>
-        
+
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+            <label className="block text-sm font-medium text-muted-foreground mb-1">
               {t("currentCredits")}
             </label>
-            <p className="text-2xl font-bold text-black dark:text-white">{user.credits}</p>
+            <p className="text-2xl font-bold text-foreground">{user.credits}</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+            <label className="block text-sm font-medium text-muted-foreground mb-1">
               {t("adjustment")}
             </label>
             <div className="flex gap-2">
               <button
                 onClick={() => setAmount(amount - 10)}
-                className="p-2 rounded bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-neutral-800 text-black dark:text-white border border-neutral-200 dark:border-neutral-800"
+                className="p-2 rounded bg-secondary hover:bg-hover text-foreground border border-border"
               >
                 <Minus className="h-4 w-4" />
               </button>
@@ -467,30 +467,30 @@ function CreditsManagementModal({
                 type="number"
                 value={amount}
                 onChange={(e) => setAmount(parseInt(e.target.value) || 0)}
-                className="flex-1 px-3 py-2 rounded border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black text-black dark:text-white"
+                className="flex-1 px-3 py-2 rounded border border-border bg-background text-foreground"
               />
               <button
                 onClick={() => setAmount(amount + 10)}
-                className="p-2 rounded bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-neutral-800 text-black dark:text-white border border-neutral-200 dark:border-neutral-800"
+                className="p-2 rounded bg-secondary hover:bg-hover text-foreground border border-border"
               >
                 <Plus className="h-4 w-4" />
               </button>
             </div>
             {amount !== 0 && (
-              <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 {t("newBalance")}: {user.credits + amount}
               </p>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+            <label className="block text-sm font-medium text-muted-foreground mb-1">
               {t("reason")}
             </label>
             <select
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              className="w-full px-3 py-2 rounded border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black text-black dark:text-white"
+              className="w-full px-3 py-2 rounded border border-border bg-background text-foreground"
             >
               <option value="adjustment">{t("manualAdjustment")}</option>
               <option value="refund">{t("refund")}</option>
@@ -504,10 +504,10 @@ function CreditsManagementModal({
           <Button variant="outline" onClick={onClose}>
             {t("cancel")}
           </Button>
-          <Button 
-            onClick={handleAdjustCredits} 
+          <Button
+            onClick={handleAdjustCredits}
             disabled={amount === 0}
-            className="bg-black dark:bg-white text-white dark:text-black"
+            className="bg-foreground text-background"
           >
             {amount > 0 ? t("addCredits") : t("deductCredits")}
           </Button>
@@ -552,23 +552,23 @@ function SubscriptionManagementModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white dark:bg-black rounded-lg p-6 max-w-md w-full mx-4 border border-neutral-200 dark:border-neutral-800">
-        <h2 className="text-xl font-bold text-black dark:text-white mb-4">
+      <div className="bg-background rounded-lg p-6 max-w-md w-full mx-4 border border-border">
+        <h2 className="text-xl font-bold text-foreground mb-4">
           {t("manageSubscription")}
         </h2>
-        
+
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+            <label className="block text-sm font-medium text-muted-foreground mb-1">
               {t("currentPlan")}
             </label>
-            <p className="text-lg font-semibold text-black dark:text-white">
+            <p className="text-lg font-semibold text-foreground">
               {user.planKey || "free"}
             </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+            <label className="block text-sm font-medium text-muted-foreground mb-1">
               {t("selectPlan")}
             </label>
             <div className="space-y-2">
@@ -579,9 +579,9 @@ function SubscriptionManagementModal({
                     value={plan}
                     checked={selectedPlan === plan}
                     onChange={(e) => setSelectedPlan(e.target.value)}
-                    className="text-black dark:text-white"
+                    className="text-foreground"
                   />
-                  <span className="text-sm text-black dark:text-white">
+                  <span className="text-sm text-foreground">
                     {plan.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase())}
                   </span>
                 </label>
@@ -594,9 +594,9 @@ function SubscriptionManagementModal({
           <Button variant="outline" onClick={onClose}>
             {t("cancel")}
           </Button>
-          <Button 
+          <Button
             onClick={handleUpdateSubscription}
-            className="bg-black dark:bg-white text-white dark:text-black"
+            className="bg-foreground text-background"
           >
             {t("updateSubscription")}
           </Button>
@@ -619,50 +619,50 @@ function UserDetailModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white dark:bg-black rounded-lg p-6 max-w-2xl w-full mx-4 border border-neutral-200 dark:border-neutral-800">
-        <h2 className="text-xl font-bold text-black dark:text-white mb-4">
+      <div className="bg-background rounded-lg p-6 max-w-2xl w-full mx-4 border border-border">
+        <h2 className="text-xl font-bold text-foreground mb-4">
           {t("userDetails")}
         </h2>
-        
+
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+              <label className="block text-sm font-medium text-muted-foreground">
                 {t("name")}
               </label>
-              <p className="mt-1 text-black dark:text-white">{user.name}</p>
+              <p className="mt-1 text-foreground">{user.name}</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+              <label className="block text-sm font-medium text-muted-foreground">
                 {t("email")}
               </label>
-              <p className="mt-1 text-black dark:text-white">{user.email}</p>
+              <p className="mt-1 text-foreground">{user.email}</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+              <label className="block text-sm font-medium text-muted-foreground">
                 {t("role")}
               </label>
-              <p className="mt-1 text-black dark:text-white">{user.role}</p>
+              <p className="mt-1 text-foreground">{user.role}</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+              <label className="block text-sm font-medium text-muted-foreground">
                 {t("credits")}
               </label>
-              <p className="mt-1 text-black dark:text-white">{user.credits}</p>
+              <p className="mt-1 text-foreground">{user.credits}</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+              <label className="block text-sm font-medium text-muted-foreground">
                 {t("joined")}
               </label>
-              <p className="mt-1 text-black dark:text-white">
+              <p className="mt-1 text-foreground">
                 {new Date(user.createdAt).toLocaleString()}
               </p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+              <label className="block text-sm font-medium text-muted-foreground">
                 {t("lastActive")}
               </label>
-              <p className="mt-1 text-black dark:text-white">
+              <p className="mt-1 text-foreground">
                 {new Date(user.updatedAt).toLocaleString()}
               </p>
             </div>

@@ -40,7 +40,7 @@ export function NewsletterInline() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-wrap items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
+    <form onSubmit={handleSubmit} className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
       <span>{t('footer.newsletter.title')}</span>
       <div className="inline-flex items-center">
         <input
@@ -51,14 +51,14 @@ export function NewsletterInline() {
           className={cn(
             "px-3 py-1",
             "bg-transparent",
-            "border-b border-neutral-300 dark:border-neutral-700",
-            "text-sm text-neutral-900 dark:text-white",
-            "placeholder:text-neutral-400 dark:placeholder:text-neutral-500",
-            "focus:outline-none focus:border-neutral-900 dark:focus:border-white",
+            "border-b border-border",
+            "text-sm text-foreground",
+            "placeholder:text-muted-foreground",
+            "focus:outline-none focus:border-foreground",
             "transition-colors duration-200",
             "w-48",
-            status === "success" && "border-green-500 dark:border-green-400",
-            status === "error" && "border-red-500 dark:border-red-400"
+            status === "success" && "border-green-500",
+            status === "error" && "border-red-500"
           )}
           disabled={status === "loading" || status === "success"}
           required
@@ -68,8 +68,8 @@ export function NewsletterInline() {
           className={cn(
             "ml-2 px-3 py-1",
             "text-sm font-medium",
-            "text-neutral-900 dark:text-white",
-            "hover:text-black dark:hover:text-neutral-200",
+            "text-foreground",
+            "hover:text-primary",
             "transition-colors duration-200",
             "disabled:opacity-50 disabled:cursor-not-allowed"
           )}
@@ -79,7 +79,7 @@ export function NewsletterInline() {
         </button>
       </div>
       {status === "success" && (
-        <span className="text-xs text-green-600 dark:text-green-400">
+        <span className="text-xs text-green-600">
           {t('common.success')}
         </span>
       )}

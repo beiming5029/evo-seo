@@ -390,20 +390,20 @@ export default function ImagePage() {
   }));
 
   return (
-    <div className="relative min-h-screen bg-neutral-50 dark:bg-neutral-950 pt-16">
+    <div className="relative min-h-screen bg-secondary pt-16">
       <Background />
-      
+
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-8">
         {/* Header with Credits */}
         <div className="pb-4 mb-2">
           <div className="flex justify-between items-center mb-2">
-            <h1 className="text-3xl font-bold text-black dark:text-white flex items-center gap-3">
+            <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
               <ImageIcon className="w-8 h-8" />
               {t('image.title')}
             </h1>
             {remainingCredits !== null && (
               <div className="text-sm text-neutral-600 dark:text-neutral-400">
-                {t('credits')}: <span className="font-semibold text-black dark:text-white">{remainingCredits}</span>
+                {t('credits')}: <span className="font-semibold text-foreground">{remainingCredits}</span>
               </div>
             )}
           </div>
@@ -415,7 +415,7 @@ export default function ImagePage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left Panel - Control Card */}
           <div className="lg:col-span-4">
-            <div className="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800" style={{ overflow: 'visible' }}>
+            <div className="bg-background rounded-xl border border-neutral-200 dark:border-neutral-800" style={{ overflow: 'visible' }}>
               <div className="p-6 space-y-4">
                 {/* Prompt Input */}
                 <div>
@@ -428,7 +428,7 @@ export default function ImagePage() {
                     onKeyDown={handleKeyDown}
                     placeholder={t('image.promptPlaceholder')}
                     disabled={isGeneratingImage || isUploadingImage}
-                    className="w-full h-32 px-4 py-3 bg-neutral-50 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent transition-all placeholder-neutral-400 dark:placeholder-neutral-600"
+                    className="w-full h-32 px-4 py-3 bg-secondary border border-neutral-200 dark:border-neutral-800 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-foreground focus:border-transparent transition-all placeholder-neutral-400 dark:placeholder-neutral-600"
                   />
                   <div className="mt-2 flex items-center justify-between">
                     <span className="text-xs text-neutral-500">
@@ -452,7 +452,7 @@ export default function ImagePage() {
                   <label className="block text-sm font-medium mb-2 text-neutral-700 dark:text-neutral-300">
                     {t('image.reference.label')}
                   </label>
-                  <div className="relative group border border-dashed border-neutral-300 dark:border-neutral-700 rounded-xl bg-neutral-50 dark:bg-neutral-950 flex items-center justify-center h-[180px] overflow-hidden">
+                  <div className="relative group border border-dashed border-neutral-300 dark:border-neutral-700 rounded-xl bg-secondary flex items-center justify-center h-[180px] overflow-hidden">
                     {referenceImageUrl ? (
                       <div className="relative w-full h-full">
                         <Image
@@ -497,7 +497,7 @@ export default function ImagePage() {
                         {isUploadingImage ? (
                           <Loader2 className="w-8 h-8 animate-spin" />
                         ) : (
-                          <div className="p-3 bg-neutral-200 dark:bg-neutral-800 rounded-full">
+                          <div className="p-3 bg-secondary rounded-full">
                             <Upload className="w-6 h-6" />
                           </div>
                         )}
@@ -523,7 +523,7 @@ export default function ImagePage() {
                         key={index}
                         onClick={() => setImagePrompt(suggestion.text)}
                         disabled={isGeneratingImage}
-                        className="px-3 py-1.5 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded-lg text-sm transition-colors flex items-center gap-1.5"
+                        className="px-3 py-1.5 bg-secondary hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded-lg text-sm transition-colors flex items-center gap-1.5"
                         title={suggestion.text}
                       >
                         <span>{suggestion.icon}</span>
@@ -536,7 +536,7 @@ export default function ImagePage() {
                 <div className="overflow-visible">
                   <button
                     onClick={() => setShowSettings(!showSettings)}
-                    className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:text-black dark:hover:text-white transition-colors"
+                    className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:text-foreground transition-colors"
                   >
                     <span className="flex items-center gap-2">
                       <Settings2 className="w-4 h-4" />
@@ -574,8 +574,8 @@ export default function ImagePage() {
                                   onClick={() => setImageSize(size)}
                                   className={`px-3 py-2 text-sm rounded-lg border transition-all ${
                                     imageSize === size
-                                      ? 'bg-black dark:bg-white text-white dark:text-black border-black dark:border-white'
-                                      : 'bg-white dark:bg-neutral-950 text-neutral-700 dark:text-neutral-300 border-neutral-200 dark:border-neutral-800'
+                                      ? 'bg-foreground text-background border-foreground'
+                                      : 'bg-background text-neutral-700 dark:text-neutral-300 border-neutral-200 dark:border-neutral-800'
                                   }`}
                                 >
                                   <div className="font-semibold">{size}</div>
@@ -593,14 +593,14 @@ export default function ImagePage() {
                             <button
                               onClick={() => setImageWatermark(!imageWatermark)}
                               className={`relative w-11 h-6 rounded-full transition-colors ${
-                                imageWatermark ? 'bg-black dark:bg-white' : 'bg-neutral-200 dark:bg-neutral-800'
+                                imageWatermark ? 'bg-foreground' : 'bg-secondary'
                               }`}
                             >
                               <motion.div
                                 animate={{ x: imageWatermark ? 20 : 2 }}
                                 transition={{ duration: 0.2 }}
                                 className={`absolute top-1 w-4 h-4 rounded-full ${
-                                  imageWatermark ? 'bg-white dark:bg-black' : 'bg-neutral-600 dark:bg-neutral-400'
+                                  imageWatermark ? 'bg-background' : 'bg-muted'
                                 }`}
                               />
                             </button>
@@ -648,17 +648,17 @@ export default function ImagePage() {
 
           {/* Right Panel - Carousel Gallery */}
           <div className="lg:col-span-7">
-            <div className="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800">
+            <div className="bg-background rounded-xl border border-neutral-200 dark:border-neutral-800">
               <div className="p-6">
                 <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
+                  <h2 className="text-xl font-semibold text-foreground">
                     {t('image.gallery.title')}
                   </h2>
                   {generatedImages.length > 1 && (
                     <div className="flex items-center gap-2">
                       <button
                         onClick={toggleAutoPlay}
-                        className="p-2 rounded-lg bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
+                        className="p-2 rounded-lg bg-secondary hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
                         title={isAutoPlaying ? t('image.gallery.autoplayPause') : t('image.gallery.autoplayStart')}
                       >
                         {isAutoPlaying ? (
@@ -678,7 +678,7 @@ export default function ImagePage() {
                 {generatedImages.length > 0 ? (
                   <div className="relative">
                     {/* 提示词信息 - 移到图片上方 */}
-                    <div className="mb-4 p-4 bg-neutral-50 dark:bg-neutral-800/50 rounded-lg">
+                    <div className="mb-4 p-4 bg-secondary rounded-lg">
                       <p 
                         className="text-sm text-neutral-700 dark:text-neutral-300 mb-2 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                         onClick={() => setImagePrompt(generatedImages[currentImageIndex]?.prompt || "")}
@@ -701,9 +701,9 @@ export default function ImagePage() {
                         )}
                       </div>
                     </div>
-                    
+
                     {/* 主图片展示 - 缩小尺寸 */}
-                    <div className="relative aspect-square bg-neutral-100 dark:bg-neutral-800 rounded-lg overflow-hidden max-w-md mx-auto">
+                    <div className="relative aspect-square bg-secondary rounded-lg overflow-hidden max-w-md mx-auto">
                       <AnimatePresence mode="wait">
                         <motion.div
                           key={generatedImages[currentImageIndex]?.id}
@@ -715,7 +715,7 @@ export default function ImagePage() {
                         >
                           {isGeneratingImage && !generatedImages[currentImageIndex]?.resultUrl ? (
                             // Loading状态
-                            <div className="w-full h-full flex items-center justify-center bg-neutral-100 dark:bg-neutral-800">
+                            <div className="w-full h-full flex items-center justify-center bg-secondary">
                               <div className="text-center">
                                 <Loader2 className="w-12 h-12 animate-spin text-neutral-400 mx-auto mb-3" />
                                 <p className="text-neutral-600 dark:text-neutral-400">{t('image.gallery.generating')}</p>
@@ -734,7 +734,7 @@ export default function ImagePage() {
                             />
                           ) : (
                             // 空状态
-                            <div className="w-full h-full flex items-center justify-center bg-neutral-100 dark:bg-neutral-800">
+                            <div className="w-full h-full flex items-center justify-center bg-secondary">
                               <div className="text-center">
                                 <ImageIcon className="w-12 h-12 text-neutral-300 mx-auto mb-3" />
                                 <p className="text-neutral-500">{t('image.gallery.noImageAvailable')}</p>
@@ -743,21 +743,21 @@ export default function ImagePage() {
                         )}
                         </motion.div>
                       </AnimatePresence>
-                      
+
                       {/* 左右切换按钮 */}
                       {generatedImages.length > 1 && (
                         <>
                           <button
                             onClick={goToPrevious}
-                            className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/80 dark:bg-black/80 backdrop-blur-sm rounded-lg hover:bg-white dark:hover:bg-black transition-colors"
+                            className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-background/80 backdrop-blur-sm rounded-lg hover:bg-background transition-colors"
                           >
-                            <ChevronLeft className="w-5 h-5 text-neutral-900 dark:text-neutral-100" />
+                            <ChevronLeft className="w-5 h-5 text-foreground" />
                           </button>
                           <button
                             onClick={goToNext}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-white/80 dark:bg-black/80 backdrop-blur-sm rounded-lg hover:bg-white dark:hover:bg-black transition-colors"
+                            className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-background/80 backdrop-blur-sm rounded-lg hover:bg-background transition-colors"
                           >
-                            <ChevronRight className="w-5 h-5 text-neutral-900 dark:text-neutral-100" />
+                            <ChevronRight className="w-5 h-5 text-foreground" />
                           </button>
                         </>
                       )}

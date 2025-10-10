@@ -91,11 +91,11 @@ export function SubscriptionsTable({ subscriptions: initialSubscriptions, stats 
       case "canceled":
         return "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400";
       case "expired":
-        return "bg-neutral-100 dark:bg-neutral-900 text-neutral-700 dark:text-neutral-400";
+        return "bg-secondary text-muted-foreground";
       case "trial":
-        return "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300";
+        return "bg-secondary text-muted-foreground";
       default:
-        return "bg-neutral-100 dark:bg-neutral-900 text-neutral-700 dark:text-neutral-400";
+        return "bg-secondary text-muted-foreground";
     }
   };
 
@@ -109,72 +109,72 @@ export function SubscriptionsTable({ subscriptions: initialSubscriptions, stats 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-black dark:text-white">
+        <h1 className="text-2xl font-bold text-foreground">
           {t("title")}
         </h1>
       </div>
 
       {/* 统计卡片 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-neutral-900 rounded-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow">
+        <div className="bg-card rounded-lg p-6 border border-border hover:shadow-lg transition-shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 {t("totalSubscriptions")}
               </p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              <p className="text-2xl font-bold text-foreground mt-1">
                 {stats.totalSubscriptions}
               </p>
             </div>
-            <div className="bg-gray-700 dark:bg-gray-600 p-3 rounded-lg">
+            <div className="bg-muted p-3 rounded-lg">
               <ShoppingCart className="h-6 w-6 text-white" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-neutral-900 rounded-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow">
+        <div className="bg-card rounded-lg p-6 border border-border hover:shadow-lg transition-shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 {t("activeSubscriptions")}
               </p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              <p className="text-2xl font-bold text-foreground mt-1">
                 {stats.activeSubscriptions}
               </p>
             </div>
-            <div className="bg-gray-600 dark:bg-gray-700 p-3 rounded-lg">
+            <div className="bg-muted p-3 rounded-lg">
               <CheckCircle className="h-6 w-6 text-white" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-neutral-900 rounded-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow">
+        <div className="bg-card rounded-lg p-6 border border-border hover:shadow-lg transition-shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 {t("canceledSubscriptions")}
               </p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              <p className="text-2xl font-bold text-foreground mt-1">
                 {stats.canceledSubscriptions}
               </p>
             </div>
-            <div className="bg-gray-600 dark:bg-gray-700 p-3 rounded-lg">
+            <div className="bg-muted p-3 rounded-lg">
               <XCircle className="h-6 w-6 text-white" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-neutral-900 rounded-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow">
+        <div className="bg-card rounded-lg p-6 border border-border hover:shadow-lg transition-shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 {t("expiredSubscriptions")}
               </p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              <p className="text-2xl font-bold text-foreground mt-1">
                 {stats.expiredSubscriptions}
               </p>
             </div>
-            <div className="bg-gray-700 dark:bg-gray-600 p-3 rounded-lg">
+            <div className="bg-muted p-3 rounded-lg">
               <AlertCircle className="h-6 w-6 text-white" />
             </div>
           </div>
@@ -184,20 +184,20 @@ export function SubscriptionsTable({ subscriptions: initialSubscriptions, stats 
       {/* 筛选栏 */}
       <div className="flex flex-col md:flex-row gap-4">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             type="text"
             placeholder={t("searchPlaceholder")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-11 pr-4 py-2 border border-neutral-200 dark:border-neutral-800 rounded-lg bg-white dark:bg-black text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-neutral-400"
+            className="w-full pl-11 pr-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
 
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-4 py-2 border border-neutral-200 dark:border-neutral-800 rounded-lg bg-white dark:bg-black text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-neutral-400"
+          className="px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
         >
           <option value="all">{t("allStatus")}</option>
           <option value="active">{t("active")}</option>
@@ -208,46 +208,46 @@ export function SubscriptionsTable({ subscriptions: initialSubscriptions, stats 
       </div>
 
       {/* 订阅表格 */}
-      <div className="bg-white dark:bg-black rounded-lg border border-neutral-200 dark:border-neutral-800 overflow-hidden">
+      <div className="bg-background rounded-lg border border-border overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-neutral-50 dark:bg-neutral-900">
+            <thead className="bg-secondary">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   {t("user")}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   {t("plan")}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   {t("status")}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   {t("expiryDate")}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   {t("createdAt")}
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800">
+            <tbody className="divide-y divide-border">
               {paginatedSubscriptions.map((sub) => {
                 const daysUntilExpiry = getDaysUntilExpiry(sub.currentPeriodEnd);
-                
+
                 return (
-                  <tr key={sub.id} className="hover:bg-neutral-50 dark:hover:bg-neutral-900/50">
+                  <tr key={sub.id} className="hover:bg-hover">
                     <td className="px-6 py-4">
                       <div>
-                        <div className="text-sm font-medium text-black dark:text-white">
+                        <div className="text-sm font-medium text-foreground">
                           {sub.userName || t("unknownUser")}
                         </div>
-                        <div className="text-sm text-neutral-500 dark:text-neutral-400">
+                        <div className="text-sm text-muted-foreground">
                           {sub.userEmail}
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm font-medium text-black dark:text-white">
+                      <span className="text-sm font-medium text-foreground">
                         {sub.planKey}
                       </span>
                     </td>
@@ -259,21 +259,21 @@ export function SubscriptionsTable({ subscriptions: initialSubscriptions, stats 
                     <td className="px-6 py-4">
                       {sub.currentPeriodEnd ? (
                         <div>
-                          <div className="text-sm text-black dark:text-white">
+                          <div className="text-sm text-foreground">
                             {new Date(sub.currentPeriodEnd).toLocaleDateString()}
                           </div>
                           {daysUntilExpiry !== null && daysUntilExpiry > 0 && (
-                            <div className="text-xs text-neutral-500 dark:text-neutral-400">
+                            <div className="text-xs text-muted-foreground">
                               {t("daysRemaining", { days: daysUntilExpiry })}
                             </div>
                           )}
                         </div>
                       ) : (
-                        <span className="text-sm text-neutral-500 dark:text-neutral-400">-</span>
+                        <span className="text-sm text-muted-foreground">-</span>
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-neutral-600 dark:text-neutral-400">
+                      <div className="text-sm text-muted-foreground">
                         {new Date(sub.createdAt).toLocaleDateString()}
                       </div>
                     </td>
@@ -285,7 +285,7 @@ export function SubscriptionsTable({ subscriptions: initialSubscriptions, stats 
           
           {filteredSubscriptions.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-neutral-500 dark:text-neutral-400">
+              <p className="text-muted-foreground">
                 {t("noSubscriptions")}
               </p>
             </div>
@@ -294,14 +294,14 @@ export function SubscriptionsTable({ subscriptions: initialSubscriptions, stats 
 
         {filteredSubscriptions.length > 0 && (
           <nav
-            className="flex items-center justify-between px-6 py-4 border-t border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900"
+            className="flex items-center justify-between px-6 py-4 border-t border-border bg-secondary"
             aria-label={t("pagination.page", { current: subscriptionPage, total: totalPages })}
           >
             <button
               type="button"
               onClick={() => setSubscriptionPage((page) => Math.max(1, page - 1))}
               disabled={subscriptionPage === 1}
-              className="px-3 py-1.5 text-sm font-medium rounded-md border border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="px-3 py-1.5 text-sm font-medium rounded-md border border-border text-muted-foreground hover:bg-hover disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {t("pagination.previous")}
             </button>
@@ -311,20 +311,20 @@ export function SubscriptionsTable({ subscriptions: initialSubscriptions, stats 
                 <button
                   type="button"
                   onClick={() => setSubscriptionPage(1)}
-                  className={`px-3 py-1.5 text-sm font-medium rounded-md border border-neutral-300 dark:border-neutral-700 ${subscriptionPage === 1 ? "bg-black text-white dark:bg-white dark:text-black border-transparent" : "text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"}`}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-md border hover:bg-hover ${subscriptionPage === 1 ? "bg-foreground text-background border-transparent" : "text-muted-foreground border-border"}`}
                 >
                   1
                 </button>
               )}
-              {pageNumbers[0] > 2 && <span className="text-sm text-neutral-400">...</span>}
+              {pageNumbers[0] > 2 && <span className="text-sm text-muted-foreground">...</span>}
 
               {pageNumbers.map((pageNumber) => (
                 <button
                   key={pageNumber}
                   type="button"
                   onClick={() => setSubscriptionPage(pageNumber)}
-                  className={`px-3 py-1.5 text-sm font-medium rounded-md border border-neutral-300 dark:border-neutral-700 ${
-                    subscriptionPage === pageNumber ? "bg-black text-white dark:bg-white dark:text-black border-transparent" : "text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                  className={`px-3 py-1.5 text-sm font-medium rounded-md border hover:bg-hover ${
+                    subscriptionPage === pageNumber ? "bg-foreground text-background border-transparent" : "text-muted-foreground border-border"
                   }`}
                   aria-current={subscriptionPage === pageNumber ? "page" : undefined}
                 >
@@ -333,13 +333,13 @@ export function SubscriptionsTable({ subscriptions: initialSubscriptions, stats 
               ))}
 
               {pageNumbers[pageNumbers.length - 1] < totalPages - 1 && (
-                <span className="text-sm text-neutral-400">...</span>
+                <span className="text-sm text-muted-foreground">...</span>
               )}
               {pageNumbers[pageNumbers.length - 1] < totalPages && (
                 <button
                   type="button"
                   onClick={() => setSubscriptionPage(totalPages)}
-                  className={`px-3 py-1.5 text-sm font-medium rounded-md border border-neutral-300 dark:border-neutral-700 ${subscriptionPage === totalPages ? "bg-black text-white dark:bg-white dark:text-black border-transparent" : "text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"}`}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-md border hover:bg-hover ${subscriptionPage === totalPages ? "bg-foreground text-background border-transparent" : "text-muted-foreground border-border"}`}
                 >
                   {totalPages}
                 </button>
@@ -350,7 +350,7 @@ export function SubscriptionsTable({ subscriptions: initialSubscriptions, stats 
               type="button"
               onClick={() => setSubscriptionPage((page) => Math.min(totalPages, page + 1))}
               disabled={subscriptionPage === totalPages}
-              className="px-3 py-1.5 text-sm font-medium rounded-md border border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="px-3 py-1.5 text-sm font-medium rounded-md border border-border text-muted-foreground hover:bg-hover disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {t("pagination.next")}
             </button>

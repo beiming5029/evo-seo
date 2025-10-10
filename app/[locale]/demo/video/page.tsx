@@ -400,7 +400,7 @@ export default function VideoPage() {
   ];
 
   return (
-    <div className="relative min-h-screen bg-neutral-50 dark:bg-neutral-950 pt-16">
+    <div className="relative min-h-screen bg-secondary pt-16">
       <Background />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-8">
@@ -408,7 +408,7 @@ export default function VideoPage() {
         <div className="pb-4 mb-4">
           <div className="flex justify-between items-center mb-2">
             <div>
-              <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100 flex items-center gap-3">
+              <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
                 <Video className="w-8 h-8" />
                 {t('video.title')}
               </h1>
@@ -418,12 +418,12 @@ export default function VideoPage() {
             </div>
             <div className="flex items-center gap-3">
               {remainingCredits !== null && (
-                <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700">
+                <div className="flex items-center gap-2 px-3 py-2 bg-background rounded-lg border border-neutral-200 dark:border-neutral-700">
                   <CreditCard className="w-4 h-4 text-neutral-500" />
                   <span className="text-sm text-neutral-600 dark:text-neutral-400">
                     {t('credits')}:
                   </span>
-                  <span className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
+                  <span className="text-sm font-semibold text-foreground">
                     {remainingCredits}
                   </span>
                 </div>
@@ -457,8 +457,8 @@ export default function VideoPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Control Panel */}
           <div className="lg:col-span-4">
-              <div className="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 p-6 overflow-visible">
-              <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-6 flex items-center gap-2">
+              <div className="bg-background rounded-xl border border-neutral-200 dark:border-neutral-800 p-6 overflow-visible">
+              <h2 className="text-xl font-semibold text-foreground mb-6 flex items-center gap-2">
                 <Settings className="w-5 h-5" />
                 {t('video.configuration')}
               </h2>
@@ -473,8 +473,8 @@ export default function VideoPage() {
                     onClick={() => setMode('text')}
                     className={`px-4 py-3 rounded-lg border transition-all flex items-center justify-center gap-2 ${
                       mode === 'text'
-                        ? 'bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 border-neutral-900 dark:border-neutral-100'
-                        : 'bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-750'
+                        ? 'bg-foreground text-background border-foreground'
+                        : 'bg-background text-neutral-700 dark:text-neutral-300 border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-750'
                     }`}
                   >
                     <FileVideo className="w-4 h-4" />
@@ -484,8 +484,8 @@ export default function VideoPage() {
                     onClick={() => setMode('image')}
                     className={`px-4 py-3 rounded-lg border transition-all flex items-center justify-center gap-2 ${
                       mode === 'image'
-                        ? 'bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 border-neutral-900 dark:border-neutral-100'
-                        : 'bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-750'
+                        ? 'bg-foreground text-background border-foreground'
+                        : 'bg-background text-neutral-700 dark:text-neutral-300 border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-750'
                     }`}
                   >
                     <ImageIcon className="w-4 h-4" />
@@ -504,10 +504,10 @@ export default function VideoPage() {
                     value={videoPrompt}
                     onChange={(e) => setVideoPrompt(e.target.value)}
                     placeholder={t('video.placeholder')}
-                    className="w-full px-4 py-3 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:focus:ring-neutral-600 text-neutral-900 dark:text-neutral-100 placeholder-neutral-500 resize-none"
+                    className="w-full px-4 py-3 bg-secondary border border-neutral-200 dark:border-neutral-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:focus:ring-neutral-600 text-foreground placeholder-neutral-500 resize-none"
                     rows={4}
                   />
-                  
+
                   {/* Quick Prompts */}
                   <div className="mt-3">
                     <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-2">{t('video.text.quickPromptsLabel')}</p>
@@ -516,7 +516,7 @@ export default function VideoPage() {
                         <button
                           key={suggestion}
                           onClick={() => setVideoPrompt(suggestion)}
-                          className="px-3 py-1 text-xs bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 rounded-md hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
+                          className="px-3 py-1 text-xs bg-secondary text-neutral-700 dark:text-neutral-300 rounded-md hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
                         >
                           {suggestion}
                         </button>
@@ -554,7 +554,7 @@ export default function VideoPage() {
                       />
                       <button
                         onClick={removeUploadedImage}
-                        className="absolute top-2 right-2 p-1 bg-white dark:bg-neutral-800 rounded-md shadow-lg hover:bg-neutral-100 dark:hover:bg-neutral-700"
+                        className="absolute top-2 right-2 p-1 bg-background rounded-md shadow-lg hover:bg-neutral-100 dark:hover:bg-neutral-700"
                       >
                         <X className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
                       </button>
@@ -579,7 +579,7 @@ export default function VideoPage() {
                         value={videoPrompt}
                         onChange={(e) => setVideoPrompt(e.target.value)}
                         placeholder={t('video.imageUpload.motionPlaceholder')}
-                        className="w-full px-4 py-2 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:focus:ring-neutral-600 text-neutral-900 dark:text-neutral-100 placeholder-neutral-500"
+                        className="w-full px-4 py-2 bg-secondary border border-neutral-200 dark:border-neutral-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:focus:ring-neutral-600 text-foreground placeholder-neutral-500"
                       />
                     </div>
                   )}
@@ -614,7 +614,7 @@ export default function VideoPage() {
                           ref={resolutionButtonRef}
                           type="button"
                           onClick={() => setShowResolutionDropdown(!showResolutionDropdown)}
-                          className="w-full px-3 py-2 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:focus:ring-neutral-600 text-neutral-900 dark:text-neutral-100 flex items-center justify-between"
+                          className="w-full px-3 py-2 bg-secondary border border-neutral-200 dark:border-neutral-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:focus:ring-neutral-600 text-foreground flex items-center justify-between"
                         >
                           <span>{t(`video.advanced.resolutionOptions.${videoResolution}`)}</span>
                           <ChevronDown className={`w-4 h-4 transition-transform ${showResolutionDropdown ? 'rotate-180' : ''}`} />
@@ -627,7 +627,7 @@ export default function VideoPage() {
                               onClick={() => setShowResolutionDropdown(false)}
                             />
                             <div
-                              className="fixed bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg z-[10000] overflow-hidden"
+                              className="fixed bg-background border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg z-[10000] overflow-hidden"
                               style={{
                                 top: `${resolutionButtonRef.current.getBoundingClientRect().bottom + 4}px`,
                                 left: `${resolutionButtonRef.current.getBoundingClientRect().left}px`,
@@ -644,7 +644,7 @@ export default function VideoPage() {
                                   }}
                                   className={`w-full px-3 py-2 text-left hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors ${
                                     videoResolution === resolution
-                                      ? 'bg-neutral-100 dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100'
+                                      ? 'bg-secondary text-foreground'
                                       : 'text-neutral-700 dark:text-neutral-300'
                                   }`}
                                 >
@@ -694,7 +694,7 @@ export default function VideoPage() {
               <Button
                 onClick={handleGenerateVideo}
                 disabled={(!videoPrompt.trim() && !uploadedImageUrl) || isGeneratingVideo || remainingCredits === 0}
-                className="w-full bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200"
+                className="w-full bg-foreground text-background hover:bg-neutral-800 dark:hover:bg-neutral-200"
               >
                 {isGeneratingVideo ? (
                   <>
@@ -713,9 +713,9 @@ export default function VideoPage() {
 
           {/* Video Carousel Gallery */}
           <div className="lg:col-span-7">
-            <div className="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 p-6">
+            <div className="bg-background rounded-xl border border-neutral-200 dark:border-neutral-800 p-6">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 flex items-center gap-2">
+                <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
                   <Film className="w-5 h-5" />
                   {t('video.gallery.title')}
                 </h2>
@@ -723,7 +723,7 @@ export default function VideoPage() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={toggleAutoPlay}
-                      className="p-2 rounded-lg bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
+                      className="p-2 rounded-lg bg-secondary hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
                       title={isAutoPlaying ? t('video.gallery.autoplayPause') : t('video.gallery.autoplayStart')}
                     >
                       {isAutoPlaying ? (
@@ -743,7 +743,7 @@ export default function VideoPage() {
               {generatedVideos.length > 0 ? (
                 <div className="relative">
                   {/* 视频信息 - 移到视频上方 */}
-                  <div className="mb-4 p-4 bg-neutral-50 dark:bg-neutral-800/50 rounded-lg">
+                  <div className="mb-4 p-4 bg-secondary rounded-lg">
                     <p 
                       className="text-sm text-neutral-700 dark:text-neutral-300 mb-2 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                       onClick={() => {
@@ -860,15 +860,15 @@ export default function VideoPage() {
                       <>
                         <button
                           onClick={goToPrevious}
-                          className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/80 dark:bg-black/80 backdrop-blur-sm rounded-lg hover:bg-white dark:hover:bg-black transition-colors z-10"
+                          className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-background/80 backdrop-blur-sm rounded-lg hover:bg-background transition-colors z-10"
                         >
-                          <ChevronLeft className="w-5 h-5 text-neutral-900 dark:text-neutral-100" />
+                          <ChevronLeft className="w-5 h-5 text-foreground" />
                         </button>
                         <button
                           onClick={goToNext}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-white/80 dark:bg-black/80 backdrop-blur-sm rounded-lg hover:bg-white dark:hover:bg-black transition-colors z-10"
+                          className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-background/80 backdrop-blur-sm rounded-lg hover:bg-background transition-colors z-10"
                         >
-                          <ChevronRight className="w-5 h-5 text-neutral-900 dark:text-neutral-100" />
+                          <ChevronRight className="w-5 h-5 text-foreground" />
                         </button>
                       </>
                     )}

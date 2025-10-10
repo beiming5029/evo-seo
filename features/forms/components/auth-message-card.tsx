@@ -30,11 +30,11 @@ export function AuthMessageCard({
           <div className="flex">
             <Logo />
           </div>
-          <h2 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-black dark:text-white">
+          <h2 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-foreground">
             {title}
           </h2>
           {description ? (
-            <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
+            <p className="mt-2 text-sm text-muted-foreground">
               {description}
             </p>
           ) : null}

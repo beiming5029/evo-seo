@@ -43,13 +43,13 @@ export function NewsletterForm() {
 
   return (
     <div className="w-full">
-      <h3 className="text-sm font-medium text-black dark:text-white mb-4">
+      <h3 className="text-sm font-medium text-foreground mb-4">
         {t('footer.newsletter.title')}
       </h3>
-      <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-4">
+      <p className="text-xs text-muted-foreground mb-4">
         {t('footer.newsletter.description')}
       </p>
-      
+
       <form onSubmit={handleSubmit} className="space-y-3">
         <div className="flex gap-2">
           <input
@@ -57,7 +57,7 @@ export function NewsletterForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t('footer.newsletter.placeholder')}
-            className="flex-1 px-3 py-2 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-md text-sm placeholder:text-neutral-500 dark:placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:ring-offset-2"
+            className="flex-1 px-3 py-2 bg-background border border-border rounded-md text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             disabled={status === "loading" || status === "success"}
             required
           />
@@ -70,10 +70,10 @@ export function NewsletterForm() {
             {status === "loading" ? t('common.loading') : t('footer.newsletter.subscribe')}
           </Button>
         </div>
-        
+
         {message && (
           <p className={`text-xs ${
-            status === "success" ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
+            status === "success" ? "text-green-600" : "text-red-600"
           }`}>
             {message}
           </p>

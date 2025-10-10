@@ -32,7 +32,7 @@ export default async function LocaleLayout({
         <body
           className={cn(
             GeistSans.className,
-            "bg-white dark:bg-black antialiased min-h-screen w-full"
+            "bg-background text-foreground antialiased min-h-screen w-full"
           )}
           suppressHydrationWarning
         >
