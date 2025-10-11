@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { user as userTable, creditLedger } from "@/lib/db/schema";
 import { eq, sql } from "drizzle-orm";
+import { randomUUID } from "crypto";
 
 const CHAT_CREDIT_COST = 10; // 每次对话消耗10积分
 
@@ -52,7 +53,7 @@ export async function deductCredits(
         .where(eq(userTable.id, userId));
 
       // Record in ledger
-      const ledgerId = `ledger_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+      const ledgerId = randomUUID();
       await tx.insert(creditLedger).values({
         id: ledgerId,
         userId,
@@ -96,7 +97,7 @@ export async function refundCredits(
         .where(eq(userTable.id, userId));
 
       // Record in ledger
-      const ledgerId = `ledger_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+      const ledgerId = randomUUID();
       await tx.insert(creditLedger).values({
         id: ledgerId,
         userId,

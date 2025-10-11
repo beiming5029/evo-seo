@@ -16,7 +16,6 @@ for (const key of [
 const child = spawn("next", ["dev"], {
   stdio: "inherit",
   env: cleanEnv,
-  shell: true,
 });
 
 child.on("exit", (code, signal) => {

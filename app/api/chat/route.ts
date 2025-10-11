@@ -6,6 +6,7 @@ import { canUserChat, deductCredits } from "@/lib/credits";
 import { eq } from "drizzle-orm";
 import { volcanoEngine } from "@/lib/volcano-engine";
 import { ChatMessage } from "@/lib/volcano-engine/types";
+import { randomUUID } from "crypto";
 
 export async function POST(req: NextRequest) {
   try {
@@ -40,7 +41,7 @@ export async function POST(req: NextRequest) {
     let chatSessionId = sessionId;
     if (!chatSessionId) {
       // Create new session
-      chatSessionId = `chat_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+      chatSessionId = randomUUID();
       await db.insert(chatSession).values({
         id: chatSessionId,
         userId,
@@ -59,7 +60,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Save user message
-    const userMessageId = `msg_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+    const userMessageId = randomUUID();
     await db.insert(chatMessage).values({
       id: userMessageId,
       sessionId: chatSessionId,
@@ -101,7 +102,7 @@ export async function POST(req: NextRequest) {
     const text = response.choices[0]?.message?.content || 'Sorry, I could not generate a response.';
 
     // Save assistant message
-    const assistantMessageId = `msg_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+    const assistantMessageId = randomUUID();
     await db.insert(chatMessage).values({
       id: assistantMessageId,
       sessionId: chatSessionId,

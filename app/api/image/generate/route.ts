@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { generationHistory } from "@/lib/db/schema";
 import { canUserAfford, deductCredits } from "@/lib/credits";
 import { volcanoEngine } from "@/lib/volcano-engine";
+import { randomUUID } from "crypto";
 import { uploadImageFromUrl } from "@/lib/r2-storage";
 import { eq } from "drizzle-orm";
 
@@ -43,7 +44,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Create generation history entry
-    const historyId = `img_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+    const historyId = randomUUID();
     await db.insert(generationHistory).values({
       id: historyId,
       userId,
