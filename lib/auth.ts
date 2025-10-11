@@ -35,20 +35,20 @@ export const auth = betterAuth({
 
   hooks: {
     after: createAuthMiddleware(async (ctx) => {
-      // 监听用户注册事件（包括邮箱注册和 OAuth 注册）
+      // Listen for user registration events (email and OAuth)
       if (ctx.path.startsWith("/sign-up")) {
         const newSession = ctx.context.newSession;
         if (newSession) {
           try {
-            // 赠送 300 积分新人礼包
+            // Grant 300 credits as registration bonus
             await refundCredits(
               newSession.user.id,
               300,
               "registration_bonus"
             );
-            console.log(`新用户注册成功，已赠送 300 积分: ${newSession.user.email}`);
+            console.log(`[Auth] New user registered, granted 300 credits: ${newSession.user.email}`);
           } catch (error) {
-            console.error("赠送新人积分失败:", error);
+            console.error("[Auth] Failed to grant registration bonus:", error);
           }
         }
       }
