@@ -66,8 +66,8 @@
     "title": "Vibe Code Your AI SaaS to Production",
     "description": "No coding skills? Perfect. Sistine + AI coding assistants = Your SaaS idea live in hours. Just describe what you want. Ship what users love.",
     "cta": {
-      "primary": "Start Vibe Coding",
-      "secondary": "See Vibe Coding in Action"
+      "primary": "Demo",
+      "secondary": "Get Code"
     }
   },
   "features": {
@@ -335,7 +335,7 @@
   "cta": {
     "title": "Ready to Ship Your AI SaaS?",
     "description": "Join hundreds of developers who launched their SaaS products with Sistine and Vibe Coding.",
-    "button": "Start Vibe Coding Today"
+    "button": "Get Code"
   },
   "auth": {
     "login": {

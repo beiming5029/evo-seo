@@ -91,14 +91,16 @@ export const Hero = () => {
       >
         <Button
           as={LocaleLink}
-          href="/demo"
+          href="/demo/video"
         >
           {t('cta.primary')}
         </Button>
         <Button
           variant="simple"
-          as={LocaleLink}
-          href="/contact"
+          as="a"
+          href="https://applysistine.vercel.app"
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex space-x-2 items-center group"
         >
           <span>{t('cta.secondary')}</span>

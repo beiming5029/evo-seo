@@ -66,8 +66,8 @@
     "title": "通过 Vibe Coding 将您的 AI SaaS 产品投入生产",
     "description": "不懂编程？没问题。Sistine 加上 AI 编程助手，让您的 SaaS 创意在数小时内上线。您只需描述您的想法，即可交付用户真正喜爱的产品。",
     "cta": {
-      "primary": "开始 Vibe Coding",
-      "secondary": "观看 Vibe Coding 演示"
+      "primary": "Demo演示",
+      "secondary": "获取代码"
     }
   },
   "features": {
@@ -335,7 +335,7 @@
   "cta": {
     "title": "准备好交付您的 AI SaaS 产品了吗？",
     "description": "加入数百名开发者的行列，他们已经通过 Sistine 和 Vibe Coding 成功发布了自己的 SaaS 产品。",
-    "button": "立即开始 Vibe Coding"
+    "button": "获取代码"
   },
   "auth": {
     "login": {

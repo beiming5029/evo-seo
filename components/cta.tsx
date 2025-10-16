@@ -36,7 +36,7 @@ export const CTA = () => {
               </p>
 
               <div className="relative z-10 mx-auto flex justify-center mt-6">
-                <Button>{t('button')}</Button>
+                <Button as="a" href="https://applysistine.vercel.app" target="_blank" rel="noopener noreferrer">{t('button')}</Button>
               </div>
             </div>
           </div>
