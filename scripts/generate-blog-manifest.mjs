@@ -48,7 +48,16 @@ async function main() {
     const sortedLocales = Array.from(locales).sort((a, b) => a.localeCompare(b));
 
     for (const locale of sortedLocales) {
-      const importPath = `../app/[locale]/(marketing)/blog/${slug}/${locale}.mdx`;
+      // 使用 path.posix 确保导入路径始终使用 / (跨平台兼容)
+      const importPath = path.posix.join(
+        "..",
+        "app",
+        "[locale]",
+        "(marketing)",
+        "blog",
+        slug,
+        `${locale}.mdx`
+      );
       lines.push(`    "${locale}": () => import("${importPath}"),`);
     }
 

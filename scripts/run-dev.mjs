@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import { platform } from "node:os";
 
 const cleanEnv = { ...process.env };
 
@@ -13,9 +14,14 @@ for (const key of [
   }
 }
 
-const child = spawn("next", ["dev"], {
+// Windows 兼容性修复: Windows 需要 .cmd 扩展名和 shell
+const isWindows = platform() === "win32";
+const command = isWindows ? "next.cmd" : "next";
+
+const child = spawn(command, ["dev"], {
   stdio: "inherit",
   env: cleanEnv,
+  shell: isWindows,
 });
 
 child.on("exit", (code, signal) => {
