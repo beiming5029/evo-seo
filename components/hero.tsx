@@ -91,7 +91,9 @@ export const Hero = () => {
       >
         <Button
           as={LocaleLink}
-          href="/demo/video"
+          href="https://docs.sistine.dev"
+          target="_blank"
+          rel="noopener noreferrer"
         >
           {t('cta.primary')}
         </Button>
