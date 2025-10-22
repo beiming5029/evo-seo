@@ -8,21 +8,21 @@ import { Companies } from "@/components/companies";
 import { Metadata } from "next";
 import { getTranslations } from 'next-intl/server';
 import type { Locale } from "@/i18n.config";
+import { generatePageMetadata } from "@/lib/metadata";
 
 export async function generateMetadata({
   params
 }: {
   params: { locale: Locale }
 }): Promise<Metadata> {
-  const t = await getTranslations({ locale: params.locale, namespace: 'seo' });
+  const t = await getTranslations({ locale: params.locale, namespace: 'pricing' });
 
-  return {
-    title: t('pricing.title'),
-    description: t('pricing.description'),
-    openGraph: {
-      images: [t('pricing.ogImage')],
-    },
-  };
+  return generatePageMetadata({
+    locale: params.locale,
+    path: '/pricing',
+    title: t('title'),
+    description: t('subtitle'),
+  });
 }
 
 export default async function PricingPage({

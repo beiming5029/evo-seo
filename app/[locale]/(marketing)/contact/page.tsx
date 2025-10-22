@@ -6,21 +6,21 @@ import { HorizontalGradient } from "@/components/horizontal-gradient";
 import { ContactForm } from "@/features/marketing/components/contact-form";
 import { getTranslations } from 'next-intl/server';
 import type { Locale } from "@/i18n.config";
+import { generatePageMetadata } from "@/lib/metadata";
 
 export async function generateMetadata({
   params
 }: {
   params: { locale: Locale }
 }): Promise<Metadata> {
-  const t = await getTranslations({ locale: params.locale, namespace: 'seo' });
+  const t = await getTranslations({ locale: params.locale, namespace: 'contact' });
 
-  return {
-    title: t('contact.title'),
-    description: t('contact.description'),
-    openGraph: {
-      images: [t('contact.ogImage')],
-    },
-  };
+  return generatePageMetadata({
+    locale: params.locale,
+    path: '/contact',
+    title: t('title'),
+    description: t('subtitle'),
+  });
 }
 
 export default async function ContactPage({

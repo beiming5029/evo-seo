@@ -6,6 +6,25 @@ import { Companies } from "@/components/companies";
 import { GridFeatures } from "@/components/grid-features";
 import { Testimonials } from "@/components/testimonials";
 import { CTA } from "@/components/cta";
+import { Metadata } from "next";
+import { getTranslations } from 'next-intl/server';
+import type { Locale } from "@/i18n.config";
+import { generatePageMetadata } from "@/lib/metadata";
+
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: Locale };
+}): Promise<Metadata> {
+  const t = await getTranslations({ locale, namespace: 'hero' });
+
+  return generatePageMetadata({
+    locale,
+    path: '',
+    title: t('title'),
+    description: t('description'),
+  });
+}
 
 export default function Home() {
   console.log('[locale]/(marketing)/page rendered');

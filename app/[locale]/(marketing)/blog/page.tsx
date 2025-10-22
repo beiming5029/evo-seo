@@ -7,21 +7,21 @@ import { Subheading } from "@/components/subheading";
 import { BlogCard } from "@/components/blog-card";
 import { getTranslations } from 'next-intl/server';
 import { type Locale } from '@/i18n.config';
+import { generatePageMetadata } from "@/lib/metadata";
 
 export async function generateMetadata({
   params
 }: {
   params: { locale: Locale }
 }): Promise<Metadata> {
-  const t = await getTranslations({ locale: params.locale, namespace: 'seo' });
+  const t = await getTranslations({ locale: params.locale, namespace: 'blog' });
 
-  return {
-    title: t('blog.title'),
-    description: t('blog.description'),
-    openGraph: {
-      images: [t('blog.ogImage')],
-    },
-  };
+  return generatePageMetadata({
+    locale: params.locale,
+    path: '/blog',
+    title: t('title'),
+    description: t('subtitle'),
+  });
 }
 
 interface PageProps {
