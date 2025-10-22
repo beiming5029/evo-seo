@@ -92,12 +92,12 @@ const Feature = ({
         <div className="opacity-0 group-hover:opacity-100 transition duration-200 group absolute inset-0 h-full w-full bg-gradient-to-b from-muted to-transparent pointer-events-none" />
       )}
       <div className="mb-4 relative z-10 px-10">{icon}</div>
-      <div className="text-lg font-bold mb-2 relative z-10 px-10">
+      <h3 className="text-lg font-bold mb-2 relative z-10 px-10">
         <div className="absolute left-0 inset-y-0 h-6 w-1 rounded-tr-full rounded-br-full bg-border group-hover:bg-primary transition duration-200" />
         <span className="group-hover:translate-x-2 transition duration-200 inline-block">
           {title}
         </span>
-      </div>
+      </h3>
       <p className="text-sm text-muted-foreground max-w-xs mx-auto relative z-10 px-10">
         {description}
       </p>

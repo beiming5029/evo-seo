@@ -1,11 +1,10 @@
 import { cn } from "@/lib/utils";
 import { AnimationProps, MotionProps } from "framer-motion";
 import React from "react";
-import Balancer from "react-wrap-balancer";
 
 export const Subheading = ({
   className,
-  as: Tag = "h2",
+  as: Tag = "p",
   children,
   ...props
 }: {
@@ -23,7 +22,7 @@ export const Subheading = ({
         className
       )}
     >
-      <Balancer>{children}</Balancer>
+      {children}
     </Tag>
   );
 };

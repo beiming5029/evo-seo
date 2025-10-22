@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import Balancer from "react-wrap-balancer";
 import { Button } from "./button";
 import { useTranslations } from 'next-intl';
 
@@ -30,9 +29,7 @@ export const CTA = () => {
                 {t('title')}
               </h2>
               <p className="mt-4 max-w-[26rem] text-center mx-auto text-base/6 text-white/80">
-                <Balancer>
-                  {t('description')}
-                </Balancer>
+                {t('description')}
               </p>
 
               <div className="relative z-10 mx-auto flex justify-center mt-6">

@@ -1,6 +1,5 @@
 "use client";
 
-import Balancer from "react-wrap-balancer";
 import { Button } from "./button";
 import { HiArrowRight } from "react-icons/hi2";
 import { Badge } from "./badge";
@@ -51,9 +50,9 @@ export const Hero = () => {
         }}
         className="text-2xl md:text-4xl lg:text-8xl font-semibold max-w-6xl mx-auto text-center mt-6 relative z-10"
       >
-        <Balancer>{t('title')}</Balancer>
+        {t('title')}
       </motion.h1>
-      <motion.p
+      <motion.h2
         initial={{
           y: 40,
           opacity: 0,
@@ -67,12 +66,10 @@ export const Hero = () => {
           duration: 0.5,
           delay: 0.2,
         }}
-        className="text-center mt-6 text-base md:text-xl text-muted-foreground max-w-3xl mx-auto relative z-10"
+        className="text-center mt-6 text-base md:text-xl text-muted-foreground max-w-3xl mx-auto relative z-10 font-normal"
       >
-        <Balancer>
-          {t('description')}
-        </Balancer>
-      </motion.p>
+        {t('description')}
+      </motion.h2>
       <motion.div
         initial={{
           y: 80,
