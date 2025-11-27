@@ -9,7 +9,7 @@ import { FeaturedTestimonials } from "@/components/featured-testimonials";
 import { useTranslations } from 'next-intl';
 
 export function AuthLayout({ children }: { children: React.ReactNode }) {
-  const t = useTranslations('contact.testimonial');
+  const t = useTranslations('contact');
   return (
     <>
       <div className="w-full min-h-screen grid grid-cols-1 md:grid-cols-2">
@@ -22,14 +22,14 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
                 "font-semibold text-xl text-center text-muted-foreground"
               )}
             >
-              {t('title')}
+              {t('testimonial.title')}
             </p>
             <p
               className={cn(
                 "font-normal text-base text-center text-muted-foreground mt-8"
               )}
             >
-              {t('description')}
+              {t('testimonial.description')}
             </p>
           </div>
           <HorizontalGradient className="top-20" />

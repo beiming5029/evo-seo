@@ -9,10 +9,10 @@ export const Footer = () => {
   const t = useTranslations();
   
   const links = [
-    {
-      name: t('navigation.main.pricing'),
-      href: "/pricing",
-    },
+    // {
+    //   name: t('navigation.main.pricing'),
+    //   href: "/pricing",
+    // },
     {
       name: t('navigation.main.blog'),
       href: "/blog",
@@ -35,10 +35,10 @@ export const Footer = () => {
       name: t('navigation.footer.legal.cookies'),
       href: "/cookies",
     },
-    {
-      name: t('navigation.footer.legal.refund'),
-      href: "/refund",
-    },
+    // {
+    //   name: t('navigation.footer.legal.refund'),
+    //   href: "/refund",
+    // },
   ];
   const socials = [
     {
@@ -110,7 +110,7 @@ export const Footer = () => {
         </div>
       </div>
       <p className="text-center text-5xl md:text-9xl lg:text-[18rem] font-bold bg-clip-text text-transparent bg-gradient-to-b from-muted to-border inset-x-0">
-        SISTINE
+        evoSEO
       </p>
     </div>
   );

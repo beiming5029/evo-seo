@@ -1,65 +1,32 @@
 "use client";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "./button";
-import { useSession } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from 'next-intl';
 
 export function Pricing() {
   const [active, setActive] = useState("monthly");
-  const session = useSession();
   const router = useRouter();
   const t = useTranslations('pricing');
   const locale = useLocale();
-  const userId = session.data?.user?.id;
   
   const tabs = [
     { name: t('billing.monthly'), value: "monthly" },
     { name: t('billing.yearly'), value: "yearly" },
   ];
 
-  const startCheckout = useCallback(
-    async (key: string, kind: "subscription" | "one_time") => {
-      if (!userId) {
-        router.push(`/${locale}/signup`);
-        return;
-      }
-      const res = await fetch("/api/payments/creem/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ key, kind }),
-      });
-      if (!res.ok) return;
-      const { url } = (await res.json()) as { url: string };
-      window.location.href = url;
-    },
-    [locale, router, userId]
-  );
-
   const handleTierClick = (tierId: string) => {
-    // Map the current UI tiers to billing keys
     if (tierId === "tier-free") {
       return () => router.push(`/${locale}/signup`);
     }
     if (tierId === "tier-enterprise") {
       return () => router.push(`/${locale}/contact`);
     }
-
-    if (tierId === "tier-starter") {
-      const key = active === "monthly" ? "starter_monthly" : "starter_yearly";
-      return () => startCheckout(key, "subscription");
-    }
-
-    if (tierId === "tier-professional") {
-      const key = active === "monthly" ? "pro_monthly" : "pro_yearly";
-      return () => startCheckout(key, "subscription");
-    }
-
-    // default fallback
-    return () => {};
+    // 付费方案暂时引导至联系我们
+    return () => router.push(`/${locale}/contact`);
   };
 
   return (
@@ -227,7 +194,7 @@ export function Pricing() {
           </div>
           <div>
             <Button
-              onClick={() => startCheckout("pack_200", "one_time")}
+              onClick={() => router.push(`/${locale}/contact`)}
               className={cn(
                 "mt-8 rounded-full py-2.5 px-3.5 text-center text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:mt-10 block w-full"
               )}

@@ -1,258 +1,154 @@
 "use client";
 
-import { useSession, signOut } from "@/lib/auth-client";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useLocale, useTranslations } from 'next-intl';
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { useLocale } from "next-intl";
 import { Button } from "@/components/button";
-import { Container } from "@/components/container";
-import { Background } from "@/components/background";
-import { motion } from "framer-motion";
-import { useCallback, useEffect, useState } from "react";
+import { TrendingUp, CalendarRange, FileText, MessageCircle } from "lucide-react";
 
+type InquiryStat = { period: string; count: number };
+type KpiSnapshot = { type: string; valueNumeric: string; deltaNumeric: string };
+type OverviewResponse = {
+  inquiries: InquiryStat[];
+  kpis: KpiSnapshot[];
+};
+type Post = { id: string; status: string; publishDate: string };
+type Report = { id: string; title: string; fileUrl: string; createdAt?: string; periodEnd?: string };
 
 export default function DashboardPage() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const session = useSession();
   const locale = useLocale();
-  const t = useTranslations('dashboard');
-  const tCommon = useTranslations('common');
-  const [paymentSuccess, setPaymentSuccess] = useState(false);
-  const [userProfile, setUserProfile] = useState<any>(null);
+  const [overview, setOverview] = useState<OverviewResponse | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Fetch user profile with credits and subscription
-  const fetchUserProfile = useCallback(async () => {
-    try {
-      const response = await fetch("/api/user/profile");
-      if (response.ok) {
-        const data = await response.json();
-        setUserProfile(data.user);
+  useEffect(() => {
+    const load = async () => {
+      try {
+        setLoading(true);
+        const [kpiRes, postRes, reportRes] = await Promise.all([
+          fetch("/api/evo/kpi/overview"),
+          fetch("/api/evo/posts"),
+          fetch("/api/evo/reports"),
+        ]);
+        if (kpiRes.ok) setOverview(await kpiRes.json());
+        if (postRes.ok) setPosts((await postRes.json()).posts || []);
+        if (reportRes.ok) setReports((await reportRes.json()).reports || []);
+        setError(null);
+      } catch (err) {
+        console.error("Failed to load dashboard", err);
+        setError("加载数据失败，请稍后重试");
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error fetching user profile:", error);
-    } finally {
-      setLoading(false);
-    }
+    };
+    load();
   }, []);
 
+  const inquiryTotal = overview?.inquiries?.[0]?.count ?? 0;
+  const inquiryDelta = useMemo(() => {
+    const delta = overview?.kpis?.find((k) => k.type === "inquiries")?.deltaNumeric;
+    if (!delta) return "—";
+    const num = Number(delta);
+    if (Number.isNaN(num)) return "—";
+    return num >= 0 ? `比上月增长 ${num}%` : `比上月下降 ${Math.abs(num)}%`;
+  }, [overview]);
 
-  useEffect(() => {
-    if (session.data?.user?.id) {
-      fetchUserProfile();
-    }
-  }, [session.data?.user?.id, fetchUserProfile]);
-  
-  useEffect(() => {
-    // Check if returning from successful payment
-    const success = searchParams.get("success");
-    const checkoutId = searchParams.get("checkout_id");
-    const orderId = searchParams.get("order_id");
-    const subscriptionId = searchParams.get("subscription_id");
-    
-    if (success === "1" || checkoutId || orderId || subscriptionId) {
-      setPaymentSuccess(true);
-      
-      // Refresh user profile to get updated credits
-      setTimeout(() => {
-        fetchUserProfile();
-      }, 1000);
-      
-      // Clean up URL after showing success
-      setTimeout(() => {
-        router.replace("/dashboard");
-      }, 5000);
-    }
-  }, [searchParams, router, fetchUserProfile]);
-  
-  const startCheckout = useCallback(
-    async () => {
-      const userId = session.data?.user?.id;
-      if (!userId) return;
-      const res = await fetch("/api/payments/creem/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ key: "pack_200", kind: "one_time" }),
-      });
-      if (!res.ok) return;
-      const { url } = (await res.json()) as { url: string };
-      window.location.href = url;
-    },
-    [session.data?.user?.id]
-  );
+  const publishedCount = posts.filter((p) => p.status === "published").length;
+  const scheduledCount = posts.filter((p) => p.status === "scheduled").length;
+  const latestReport = reports[0];
+  const latestReportDate = latestReport?.periodEnd || latestReport?.createdAt;
 
-  // Authentication is already handled in the layout
-  const user = session.data?.user;
-  const displayUser = userProfile || user;
-  const credits = userProfile?.credits ?? 0;
-  const subscriptionPlan = userProfile?.subscription?.planKey || "Free";
-
-  if (loading && !user) {
-    return (
-      <div className="relative min-h-screen">
-        <Background />
-        <Container className="relative z-10 py-20">
-          <div className="flex justify-center items-center h-64">
-            <p className="text-muted-foreground">Loading...</p>
-          </div>
-        </Container>
-      </div>
-    );
-  }
+  const cardClass = "rounded-xl border border-border bg-white p-6 shadow-sm h-56 flex flex-col justify-between";
 
   return (
-    <div className="relative min-h-screen">
-      <Background />
-      <Container className="relative z-10 py-20">
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ ease: "easeOut", duration: 0.5 }}
-        >
-          <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">
-            {t('title')}
-          </h1>
-          <p className="text-xl text-muted-foreground mb-12">
-            {t('welcome')}, {displayUser?.name || displayUser?.email}
-          </p>
+    <div className="p-6 md:p-8 bg-white min-h-screen text-foreground">
+      <div className="mb-4">
+        <h1 className="text-3xl md:text-4xl font-bold">Dashboard</h1>
+        <p className="text-muted-foreground mt-2">欢迎回来，查看您的 SEO 服务概况</p>
+      </div>
 
-          {paymentSuccess && (
-            <div className="mb-8 p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
-              <p className="text-green-600 font-medium">
-                {t('paymentSuccess')}
-              </p>
+      {error && (
+        <div className="mb-4 rounded-md border border-destructive/50 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          {error}
+        </div>
+      )}
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        <div className={cardClass}>
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-lg font-semibold">本月新增询盘</p>
+              <p className="text-sm text-muted-foreground mt-1">{inquiryDelta}</p>
             </div>
+            <TrendingUp className="h-5 w-5 text-muted-foreground" />
+          </div>
+          <div className="text-5xl font-bold">{loading ? "—" : inquiryTotal}</div>
+        </div>
+
+        <div className={cardClass}>
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-lg font-semibold">文章日历（本月）</p>
+              <p className="text-sm text-muted-foreground mt-1">发布进度</p>
+            </div>
+            <CalendarRange className="h-5 w-5 text-muted-foreground" />
+          </div>
+          <div className="flex items-center gap-10 text-3xl font-bold">
+            <div className="flex flex-col">
+              <span>{loading ? "—" : publishedCount}</span>
+              <span className="text-xs text-muted-foreground mt-1">已发布文章</span>
+            </div>
+            <div className="flex flex-col">
+              <span>{loading ? "—" : scheduledCount}</span>
+              <span className="text-xs text-muted-foreground mt-1">待发布文章</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-2 mt-4">
+        <div className={cardClass}>
+          <div className="flex items-start justify-between">
+            <p className="text-lg font-semibold">最新服务报告</p>
+            <FileText className="h-5 w-5 text-muted-foreground" />
+          </div>
+          {latestReport ? (
+            <div className="rounded-md border border-border/60 bg-muted/30 p-4 text-sm">
+              <p className="font-semibold">{latestReport.title}</p>
+              {latestReportDate && (
+                <p className="text-muted-foreground mt-1">
+                  {new Date(latestReportDate).toISOString().slice(0, 10)}
+                </p>
+              )}
+              <Link
+                href={latestReport.fileUrl}
+                target="_blank"
+                className="mt-2 inline-flex text-primary hover:underline"
+              >
+                下载报告
+              </Link>
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">暂无报告</p>
           )}
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ y: 40, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ ease: "easeOut", duration: 0.5, delay: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          {/* Personal Info Card */}
-          <div className="bg-card/50 backdrop-blur-md rounded-2xl p-6 border border-border">
-            <h3 className="text-xl font-semibold text-card-foreground mb-4">
-              {t('cards.personalInfo.title')}
-            </h3>
-            <div className="space-y-3">
-              <div className="flex flex-col">
-                <span className="text-sm text-muted-foreground">{t('cards.personalInfo.labels.name')}</span>
-                <span className="text-base font-medium text-card-foreground">
-                  {displayUser?.name || t('cards.personalInfo.labels.notSet')}
-                </span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm text-muted-foreground">{t('cards.personalInfo.labels.email')}</span>
-                <span className="text-base font-medium text-card-foreground">
-                  {displayUser?.email}
-                </span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm text-muted-foreground">{t('cards.personalInfo.labels.status')}</span>
-                <span className="text-base font-medium text-green-500">
-                  {tCommon('status.verified')}
-                </span>
-              </div>
-            </div>
+        <div className={cardClass}>
+          <div className="flex items-start justify-between">
+            <p className="text-lg font-semibold">24/7 专家客服</p>
+            <MessageCircle className="h-5 w-5 text-muted-foreground" />
           </div>
-
-          {/* Quick Actions Card */}
-          <div className="bg-card/50 backdrop-blur-md rounded-2xl p-6 border border-border">
-            <h3 className="text-xl font-semibold text-card-foreground mb-4">
-              {t('cards.quickActions.title')}
-            </h3>
-            <div className="space-y-3">
-              <Button
-                variant="outline"
-                className="w-full justify-start transition-colors"
-                onClick={() => router.push(`/${locale}/profile`)}
-              >
-                {t('cards.quickActions.editProfile')}
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full justify-start transition-colors"
-              >
-                {t('cards.quickActions.accountSettings')}
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full justify-start transition-colors"
-              >
-                {t('cards.quickActions.securitySettings')}
-              </Button>
-            </div>
-          </div>
-
-          {/* Statistics Card */}
-          <div className="bg-card/50 backdrop-blur-md rounded-2xl p-6 border border-border">
-            <h3 className="text-xl font-semibold text-card-foreground mb-4">
-              {t('cards.statistics.title')}
-            </h3>
-            <div className="space-y-3">
-              <div className="flex flex-col">
-                <span className="text-sm text-muted-foreground">{t('cards.statistics.labels.loginCount')}</span>
-                <span className="text-2xl font-bold text-card-foreground">1</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm text-muted-foreground">{t('cards.statistics.labels.memberSince')}</span>
-                <span className="text-base font-medium text-card-foreground">{t('cards.statistics.labels.today')}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm text-muted-foreground">{t('cards.statistics.labels.plan')}</span>
-                <span className="text-base font-medium text-card-foreground">
-                  {subscriptionPlan === "starter_monthly" ? t('cards.statistics.plans.starterMonthly') :
-                   subscriptionPlan === "starter_yearly" ? t('cards.statistics.plans.starterYearly') :
-                   subscriptionPlan === "pro_monthly" ? t('cards.statistics.plans.proMonthly') :
-                   subscriptionPlan === "pro_yearly" ? t('cards.statistics.plans.proYearly') :
-                   t('cards.statistics.plans.free')}
-                </span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm text-muted-foreground">{t('cards.statistics.labels.credits')}</span>
-                <span className="text-2xl font-bold text-card-foreground">{credits}</span>
-              </div>
-              <div className="pt-2 space-y-2">
-                <Button
-                  variant="outline"
-                  className="w-full justify-start transition-colors"
-                  onClick={() => router.push(`/${locale}/credits`)}
-                >
-                  {t('cards.statistics.viewCredits')}
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start transition-colors"
-                  onClick={startCheckout}
-                >
-                  {t('cards.statistics.buyCredits')}
-                </Button>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ y: 40, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ ease: "easeOut", duration: 0.5, delay: 0.3 }}
-          className="mt-12 flex justify-center"
-        >
-          <Button
-            onClick={async () => {
-              await signOut();
-              router.push("/");
-              router.refresh();
-            }}
-            variant="simple"
-            className="px-8"
-          >
-            Sign Out
+          <p className="text-sm text-muted-foreground mt-1">
+            遇到问题？我们的 SEO 专家团队随时为您提供帮助
+          </p>
+          <Button className="mt-6 w-full justify-center rounded-full bg-foreground text-background hover:bg-foreground/90">
+            开始在线咨询
           </Button>
-        </motion.div>
-      </Container>
+        </div>
+      </div>
+
     </div>
   );
 }

@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { signOut, useSession } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
-import { useLocale, useTranslations } from 'next-intl';
-import { IconUser, IconLogout, IconLayoutDashboard, IconShield, IconCoins } from "@tabler/icons-react";
+import { useLocale, useTranslations } from "next-intl";
+import { IconLayoutDashboard, IconLogout } from "@tabler/icons-react";
 
 export function UserMenu() {
   const session = useSession();
@@ -13,31 +13,9 @@ export function UserMenu() {
   const locale = useLocale();
   const t = useTranslations();
   const [isOpen, setIsOpen] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    // 检查用户是否是管理员
-    const checkAdminStatus = async () => {
-      if (session.data?.user?.id) {
-        try {
-          const response = await fetch('/api/user/admin-status');
-          if (response.ok) {
-            const data = await response.json();
-            setIsAdmin(data.isAdmin);
-          }
-        } catch (error) {
-          console.error('Failed to check admin status:', error);
-        }
-      }
-    };
-    
-    checkAdminStatus();
-  }, [session.data?.user?.id]);
 
   if (session.isPending) {
-    return (
-      <div className="h-6 w-6 rounded-full bg-muted animate-pulse" />
-    );
+    return <div className="h-6 w-6 rounded-full bg-muted animate-pulse" />;
   }
 
   if (!session.data?.user) {
@@ -45,15 +23,15 @@ export function UserMenu() {
       <div className="flex items-center gap-2">
         <Link
           href={`/${locale}/login`}
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          className="text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
-          {t('common.actions.signIn')}
+          {t("common.actions.signIn")}
         </Link>
         <Link
           href={`/${locale}/signup`}
-          className="bg-primary text-primary-foreground text-sm px-4 py-1.5 rounded-full hover:opacity-90 transition-opacity"
+          className="rounded-full bg-primary px-4 py-1.5 text-sm text-primary-foreground transition-opacity hover:opacity-90"
         >
-          {t('common.actions.signUp')}
+          {t("common.actions.signUp")}
         </Link>
       </div>
     );
@@ -66,13 +44,15 @@ export function UserMenu() {
   };
 
   const user = session.data.user;
-  const initial = user.name ? user.name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase();
+  const initial = user.name
+    ? user.name.charAt(0).toUpperCase()
+    : user.email.charAt(0).toUpperCase();
 
   return (
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="h-6 w-6 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-xs ring-1 ring-transparent hover:ring-blue-500/50 transition-all"
+        className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-xs text-white ring-1 ring-transparent transition-all hover:ring-blue-500/50"
       >
         {user.image ? (
           <img
@@ -87,17 +67,14 @@ export function UserMenu() {
 
       {isOpen && (
         <>
-          <div
-            className="fixed inset-0 z-10"
-            onClick={() => setIsOpen(false)}
-          />
-          <div className="absolute right-0 mt-2 min-w-[12rem] max-w-[18rem] bg-popover rounded-lg shadow-navbar border border-border py-1 z-20">
-            <div className="px-4 py-2 border-b border-border">
-              <p className="text-sm font-medium text-foreground break-words">
+          <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
+          <div className="absolute right-0 z-20 mt-2 min-w-[12rem] max-w-[18rem] rounded-lg border border-border bg-popover py-1 shadow-navbar">
+            <div className="border-border px-4 py-2">
+              <p className="break-words text-sm font-medium text-foreground">
                 {user.name || user.email}
               </p>
               {user.name && (
-                <p className="text-xs text-muted-foreground mt-0.5 break-words">
+                <p className="mt-0.5 break-words text-xs text-muted-foreground">
                   {user.email}
                 </p>
               )}
@@ -106,48 +83,19 @@ export function UserMenu() {
             <Link
               href={`/${locale}/dashboard`}
               onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 px-4 py-2 text-sm text-muted-foreground hover:bg-hover transition-colors"
+              className="flex items-center gap-3 px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-hover"
             >
-              <IconLayoutDashboard className="w-4 h-4" />
-              {t('navigation.main.dashboard')}
+              <IconLayoutDashboard className="h-4 w-4" />
+              {t("navigation.main.dashboard")}
             </Link>
 
-            {isAdmin && (
-              <Link
-                href={`/${locale}/admin`}
-                onClick={() => setIsOpen(false)}
-                className="flex items-center gap-3 px-4 py-2 text-sm text-muted-foreground hover:bg-hover transition-colors"
-              >
-                <IconShield className="w-4 h-4" />
-                {t('Admin.sidebar.title')}
-              </Link>
-            )}
-
-            <Link
-              href={`/${locale}/credits`}
-              onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 px-4 py-2 text-sm text-muted-foreground hover:bg-hover transition-colors"
-            >
-              <IconCoins className="w-4 h-4" />
-              {t('navigation.main.credits')}
-            </Link>
-
-            <Link
-              href={`/${locale}/profile`}
-              onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 px-4 py-2 text-sm text-muted-foreground hover:bg-hover transition-colors"
-            >
-              <IconUser className="w-4 h-4" />
-              {t('navigation.main.profile')}
-            </Link>
-
-            <div className="border-t border-border mt-1 pt-1">
+            <div className="border-t border-border pt-1">
               <button
                 onClick={handleSignOut}
-                className="flex items-center gap-3 w-full px-4 py-2 text-sm text-muted-foreground hover:bg-hover transition-colors text-left"
+                className="flex w-full items-center gap-3 px-4 py-2 text-left text-sm text-muted-foreground transition-colors hover:bg-hover"
               >
-                <IconLogout className="w-4 h-4" />
-                {t('common.actions.signOut')}
+                <IconLogout className="h-4 w-4" />
+                {t("common.actions.signOut")}
               </button>
             </div>
           </div>

@@ -62,12 +62,12 @@
     }
   },
   "hero": {
-    "badge": "⚡ 专为 Vibe Coding 打造的首款入门套件",
-    "title": "通过 Vibe Coding 将您的 AI SaaS 产品投入生产",
-    "description": "不懂编程？没问题。Sistine 加上 AI 编程助手，让您的 SaaS 创意在数小时内上线。您只需描述您的想法，即可交付用户真正喜爱的产品。",
+    "badge": "B2B企业的 AI SEO解决方案",
+    "title": "超越竞争对手，用AI创建真正有效的SEO内容",
+    "description": "evoSEO将360°竞争分析、AI内容创作和专家服务完美结合，为您提供透明、可控、高效的SEO内容系统。",
     "cta": {
-      "primary": "查看文档",
-      "secondary": "获取代码"
+      "primary": "开始免费试用→",
+      "secondary": "预约演示"
     }
   },
   "features": {

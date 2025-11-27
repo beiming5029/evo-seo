@@ -1,4 +1,17 @@
-import { pgTable, text, timestamp, boolean, integer, varchar, index } from "drizzle-orm/pg-core";
+import { randomUUID } from "crypto";
+import {
+  pgTable,
+  text,
+  timestamp,
+  boolean,
+  integer,
+  varchar,
+  index,
+  jsonb,
+  date,
+  numeric,
+  uniqueIndex
+} from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -70,113 +83,6 @@ export const verification = pgTable("verification", {
     .notNull(),
 });
 
-// Payment records (one-time purchases and subscription renewals)
-export const payment = pgTable("payment", {
-  id: text("id").primaryKey(),
-  provider: varchar("provider", { length: 32 }).default("creem").notNull(),
-  providerPaymentId: text("provider_payment_id").notNull().unique(),
-  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
-  amountCents: integer("amount_cents").notNull(),
-  currency: varchar("currency", { length: 8 }).default("usd").notNull(),
-  status: varchar("status", { length: 32 }).notNull(),
-  type: varchar("type", { length: 32 }).notNull(), // 'one_time' | 'subscription'
-  planKey: varchar("plan_key", { length: 64 }),
-  creditsGranted: integer("credits_granted").default(0).notNull(),
-  raw: text("raw"), // store provider payload as JSON string
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-// Active subscriptions
-export const subscription = pgTable("subscription", {
-  id: text("id").primaryKey(),
-  provider: varchar("provider", { length: 32 }).default("creem").notNull(),
-  providerSubId: text("provider_sub_id").notNull().unique(),
-  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
-  planKey: varchar("plan_key", { length: 64 }).notNull(),
-  status: varchar("status", { length: 32 }).notNull(),
-  currentPeriodEnd: timestamp("current_period_end"),
-  raw: text("raw"), // store provider payload as JSON string
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()).notNull(),
-});
-
-// Credit ledger for auditability
-export const creditLedger = pgTable("credit_ledger", {
-  id: text("id").primaryKey(),
-  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
-  delta: integer("delta").notNull(),
-  reason: varchar("reason", { length: 64 }).notNull(), // 'subscription_cycle' | 'one_time_pack' | 'adjustment' | 'chat_usage' | ...
-  paymentId: text("payment_id"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-export const subscriptionCreditSchedule = pgTable(
-  "subscription_credit_schedule",
-  {
-    id: text("id").primaryKey(),
-    subscriptionId: text("subscription_id")
-      .notNull()
-      .references(() => subscription.id, { onDelete: "cascade" })
-      .unique(),
-    userId: text("user_id")
-      .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
-    planKey: varchar("plan_key", { length: 64 }).notNull(),
-    creditsPerGrant: integer("credits_per_grant").notNull(),
-    intervalMonths: integer("interval_months").notNull(),
-    grantsRemaining: integer("grants_remaining").notNull(),
-    totalCreditsRemaining: integer("total_credits_remaining").notNull(),
-    nextGrantAt: timestamp("next_grant_at").notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at")
-      .defaultNow()
-      .$onUpdate(() => new Date())
-      .notNull(),
-  },
-  table => ({
-    nextGrantIdx: index("subscription_credit_schedule_next_grant_idx").on(table.nextGrantAt),
-  }),
-);
-
-// Chat sessions
-export const chatSession = pgTable("chat_session", {
-  id: text("id").primaryKey(),
-  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
-  title: text("title"),
-  model: varchar("model", { length: 48 }).default("doubao-1-5-thinking-pro-250415").notNull(),
-  totalMessages: integer("total_messages").default(0).notNull(),
-  totalCreditsUsed: integer("total_credits_used").default(0).notNull(),
-  lastMessageAt: timestamp("last_message_at"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()).notNull(),
-});
-
-// Chat messages
-export const chatMessage = pgTable("chat_message", {
-  id: text("id").primaryKey(),
-  sessionId: text("session_id").notNull().references(() => chatSession.id, { onDelete: "cascade" }),
-  role: varchar("role", { length: 16 }).notNull(), // 'user' | 'assistant' | 'system'
-  content: text("content").notNull(),
-  creditsUsed: integer("credits_used").default(0).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-// Generation history for images and videos
-export const generationHistory = pgTable("generation_history", {
-  id: text("id").primaryKey(),
-  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
-  type: varchar("type", { length: 16 }).notNull(), // 'image' | 'video'
-  prompt: text("prompt").notNull(),
-  imageUrl: text("image_url"), // For image-to-video generation
-  resultUrl: text("result_url"), // Final result URL
-  taskId: text("task_id"), // For async video generation tracking
-  status: varchar("status", { length: 16 }).notNull().default("pending"), // pending, processing, completed, failed
-  creditsUsed: integer("credits_used").default(0).notNull(),
-  metadata: text("metadata"), // JSON string for additional data
-  error: text("error"), // Error message if failed
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()).notNull(),
-});
 
 // Password reset tokens
 export const passwordResetToken = pgTable("password_reset_token", {
@@ -198,3 +104,240 @@ export const newsletterSubscription = pgTable("newsletter_subscription", {
   unsubscribedAt: timestamp("unsubscribed_at"),
   updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()).notNull(),
 });
+
+// Multi-tenant support
+export const tenant = pgTable("tenant", {
+  id: text("id").primaryKey().$defaultFn(() => randomUUID()),
+  name: text("name").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const tenantMembership = pgTable(
+  "tenant_membership",
+  {
+    id: text("id").primaryKey().$defaultFn(() => randomUUID()),
+    tenantId: text("tenant_id")
+      .notNull()
+      .references(() => tenant.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    role: varchar("role", { length: 16 }).default("member").notNull(), // member | admin
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    tenantUserUnique: uniqueIndex("tenant_membership_tenant_user_unique").on(
+      table.tenantId,
+      table.userId
+    ),
+  }),
+);
+
+// WordPress integration settings per tenant
+export const wpIntegration = pgTable(
+  "wp_integration",
+  {
+    id: text("id").primaryKey().$defaultFn(() => randomUUID()),
+    tenantId: text("tenant_id")
+      .notNull()
+      .references(() => tenant.id, { onDelete: "cascade" }),
+    siteUrl: text("site_url").notNull(),
+    wpUsername: text("wp_username").notNull(),
+    wpAppPassword: text("wp_app_password").notNull(), // encrypted at rest
+    status: varchar("status", { length: 32 }).default("disconnected").notNull(), // connected | error | disconnected
+    timezone: varchar("timezone", { length: 64 }).default("Asia/Shanghai").notNull(),
+    publishTimeLocal: varchar("publish_time_local", { length: 8 }).default("12:00").notNull(), // HH:mm
+    lastSyncAt: timestamp("last_sync_at"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()).notNull(),
+  },
+  (table) => ({
+    tenantUniqueIdx: uniqueIndex("wp_integration_tenant_unique_idx").on(table.tenantId),
+  }),
+);
+
+// Content calendar posts
+export const post = pgTable(
+  "post",
+  {
+    id: text("id").primaryKey().$defaultFn(() => randomUUID()),
+    tenantId: text("tenant_id")
+      .notNull()
+      .references(() => tenant.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    summary: text("summary"),
+    contentUrl: text("content_url").notNull(),
+    publishDate: date("publish_date").notNull(),
+    status: varchar("status", { length: 16 }).default("scheduled").notNull(), // scheduled | published | paused
+    platform: varchar("platform", { length: 32 }).default("wordpress").notNull(),
+    createdBy: text("created_by").references(() => user.id, { onDelete: "set null" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()).notNull(),
+  },
+  (table) => ({
+    tenantPublishDateIdx: index("post_tenant_publish_date_idx").on(table.tenantId, table.publishDate),
+  }),
+);
+
+export const postUpload = pgTable(
+  "post_upload",
+  {
+    id: text("id").primaryKey().$defaultFn(() => randomUUID()),
+    tenantId: text("tenant_id")
+      .notNull()
+      .references(() => tenant.id, { onDelete: "cascade" }),
+    postId: text("post_id")
+      .notNull()
+      .references(() => post.id, { onDelete: "cascade" }),
+    storageUrl: text("storage_url").notNull(),
+    previewUrl: text("preview_url"),
+    sizeBytes: integer("size_bytes"),
+    uploadedBy: text("uploaded_by").references(() => user.id, { onDelete: "set null" }),
+    uploadedAt: timestamp("uploaded_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    postIdx: index("post_upload_post_idx").on(table.postId),
+  }),
+);
+
+export const postPublishLog = pgTable(
+  "post_publish_log",
+  {
+    id: text("id").primaryKey().$defaultFn(() => randomUUID()),
+    tenantId: text("tenant_id")
+      .notNull()
+      .references(() => tenant.id, { onDelete: "cascade" }),
+    postId: text("post_id")
+      .notNull()
+      .references(() => post.id, { onDelete: "cascade" }),
+    publishedAt: timestamp("published_at"),
+    targetUrl: text("target_url"),
+    status: varchar("status", { length: 24 }).notNull(), // success | failed | skipped_paused
+    message: text("message"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    tenantPostIdx: index("post_publish_log_tenant_post_idx").on(table.tenantId, table.postId),
+  }),
+);
+
+// KPI and metrics
+export const kpiSnapshot = pgTable(
+  "kpi_snapshot",
+  {
+    id: text("id").primaryKey().$defaultFn(() => randomUUID()),
+    tenantId: text("tenant_id")
+      .notNull()
+      .references(() => tenant.id, { onDelete: "cascade" }),
+    periodStart: date("period_start").notNull(),
+    periodEnd: date("period_end").notNull(),
+    type: varchar("type", { length: 32 }).notNull(), // inquiries | traffic | keywords | tasks
+    valueNumeric: numeric("value_numeric", { precision: 20, scale: 4 }).default("0").notNull(),
+    deltaNumeric: numeric("delta_numeric", { precision: 20, scale: 4 }).default("0").notNull(),
+    meta: jsonb("meta"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    tenantTypePeriodIdx: index("kpi_snapshot_tenant_type_period_idx").on(
+      table.tenantId,
+      table.type,
+      table.periodStart
+    ),
+  }),
+);
+
+export const inquiryStat = pgTable(
+  "inquiry_stat",
+  {
+    id: text("id").primaryKey().$defaultFn(() => randomUUID()),
+    tenantId: text("tenant_id")
+      .notNull()
+      .references(() => tenant.id, { onDelete: "cascade" }),
+    period: date("period").notNull(), // month bucket (use first day of month)
+    count: integer("count").default(0).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    tenantPeriodIdx: index("inquiry_stat_tenant_period_idx").on(table.tenantId, table.period),
+  }),
+);
+
+export const trafficStat = pgTable(
+  "traffic_stat",
+  {
+    id: text("id").primaryKey().$defaultFn(() => randomUUID()),
+    tenantId: text("tenant_id")
+      .notNull()
+      .references(() => tenant.id, { onDelete: "cascade" }),
+    period: date("period").notNull(), // date or month bucket
+    clicks: integer("clicks").default(0).notNull(),
+    impressions: integer("impressions").default(0).notNull(),
+    ctr: numeric("ctr", { precision: 8, scale: 4 }).default("0").notNull(),
+    position: numeric("position", { precision: 8, scale: 2 }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    tenantPeriodIdx: index("traffic_stat_tenant_period_idx").on(table.tenantId, table.period),
+  }),
+);
+
+export const keywordRanking = pgTable(
+  "keyword_ranking",
+  {
+    id: text("id").primaryKey().$defaultFn(() => randomUUID()),
+    tenantId: text("tenant_id")
+      .notNull()
+      .references(() => tenant.id, { onDelete: "cascade" }),
+    keyword: text("keyword").notNull(),
+    targetUrl: text("target_url"),
+    rank: integer("rank"),
+    rankDelta: integer("rank_delta"),
+    capturedAt: timestamp("captured_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    tenantCapturedIdx: index("keyword_ranking_tenant_captured_idx").on(
+      table.tenantId,
+      table.capturedAt
+    ),
+  }),
+);
+
+export const report = pgTable(
+  "report",
+  {
+    id: text("id").primaryKey().$defaultFn(() => randomUUID()),
+    tenantId: text("tenant_id")
+      .notNull()
+      .references(() => tenant.id, { onDelete: "cascade" }),
+    type: varchar("type", { length: 32 }).notNull(), // diagnosis | review
+    title: text("title").notNull(),
+    periodStart: date("period_start").notNull(),
+    periodEnd: date("period_end").notNull(),
+    fileUrl: text("file_url").notNull(),
+    createdBy: text("created_by").references(() => user.id, { onDelete: "set null" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    tenantCreatedIdx: index("report_tenant_created_idx").on(table.tenantId, table.createdAt),
+  }),
+);
+
+export const dataImportJob = pgTable(
+  "data_import_job",
+  {
+    id: text("id").primaryKey().$defaultFn(() => randomUUID()),
+    tenantId: text("tenant_id")
+      .notNull()
+      .references(() => tenant.id, { onDelete: "cascade" }),
+    type: varchar("type", { length: 32 }).notNull(), // inquiries | traffic | keywords | kpi
+    sourceFileUrl: text("source_file_url").notNull(),
+    status: varchar("status", { length: 32 }).default("pending").notNull(), // pending | processing | failed | completed
+    summary: text("summary"),
+    createdBy: text("created_by").references(() => user.id, { onDelete: "set null" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    completedAt: timestamp("completed_at"),
+  },
+  (table) => ({
+    tenantCreatedIdx: index("data_import_job_tenant_created_idx").on(table.tenantId, table.createdAt),
+  }),
+);

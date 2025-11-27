@@ -9,7 +9,7 @@ export default function ProtectedLayout({
   return (
     <EmailVerifiedGuard requireEmailVerification={true}>
       <main className="min-h-screen">
-        <NavBar />
+        {/* <NavBar /> */}
         {children}
       </main>
     </EmailVerifiedGuard>

@@ -1,11 +1,11 @@
 {
-  "name": "sistine-starter-vibe-to-production",
+  "name": "evoSEO-starter-vibe-to-production",
   "version": "0.1.0",
   "description": "The first AI SaaS starter built for vibe coding. Ship production-ready AI SaaS using Cursor, Claude Code, or Windsurf.",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/liuxiaopai-ai/sistine-starter-vibe-to-production.git"
+    "url": "git+https://github.com/liuxiaopai-ai/evoSEO-starter-vibe-to-production.git"
   },
   "keywords": [
     "vibe-coding",
@@ -16,7 +16,7 @@
     "claude-code",
     "windsurf"
   ],
-  "author": "Sistine AI & Sistine Labs",
+  "author": "evoSEO & evoSEO Labs",
   "license": "MIT",
   "scripts": {
     "dev": "node scripts/run-dev.mjs",
@@ -94,3 +94,4 @@
   },
   "packageManager": "pnpm@10.11.1+sha512.e519b9f7639869dc8d5c3c5dfef73b3f091094b0a006d7317353c72b124e80e1afd429732e28705ad6bfa1ee879c1fce46c128ccebd3192101f43dd67c667912"
 }
+

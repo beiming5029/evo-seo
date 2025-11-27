@@ -2,7 +2,6 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { createAuthMiddleware } from "better-auth/api";
 import { db } from "./db";
-import { refundCredits } from "./credits";
 
 const defaultTrustedOrigins = ["http://localhost:3000"];
 
@@ -33,27 +32,7 @@ export const auth = betterAuth({
 
   trustedOrigins,
 
-  hooks: {
-    after: createAuthMiddleware(async (ctx) => {
-      // Listen for user registration events (email and OAuth)
-      if (ctx.path.startsWith("/sign-up")) {
-        const newSession = ctx.context.newSession;
-        if (newSession) {
-          try {
-            // Grant 300 credits as registration bonus
-            await refundCredits(
-              newSession.user.id,
-              300,
-              "registration_bonus"
-            );
-            console.log(`[Auth] New user registered, granted 300 credits: ${newSession.user.email}`);
-          } catch (error) {
-            console.error("[Auth] Failed to grant registration bonus:", error);
-          }
-        }
-      }
-    }),
-  },
+  hooks: {},
 });
 
 export { hashPassword } from "better-auth/crypto";

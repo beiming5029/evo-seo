@@ -1,4 +1,4 @@
-# Sistine Starter: Vibe to Production
+# evoSEO: Vibe to Production
 
 <div align="center">
   <h3>
@@ -22,14 +22,14 @@
 
 **Vibe Coding** is a revolutionary development approach where you describe what you want in plain language to AI coding assistants, and they write production-ready code for you. No traditional coding required.
 
-With Sistine Starter, you can:
+With evoSEO, you can:
 - 🎨 **Describe** features in plain English
 - 🤖 **AI writes** production-ready code
 - 🚢 **Ship** to real users in hours
 - 💰 **Accept** payments immediately
 - 📈 **Scale** to thousands of users
 
-### ✨ Features
+### �?Features
 
 #### 🏗 Production-Ready Foundation
 - **Authentication**: Better Auth with email/password and OAuth providers
@@ -66,7 +66,7 @@ With Sistine Starter, you can:
 
 #### Get Access
 
-**申请 GitHub 仓库权限**: [https://applysistine.vercel.app/](https://applysistine.vercel.app/)
+**申请 GitHub 仓库权限**: [https://applyevoSEO.vercel.app/](https://applyevoSEO.vercel.app/)
 
 获得权限后，按照以下步骤开始：
 
@@ -74,8 +74,8 @@ With Sistine Starter, you can:
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/liuxiaopai-ai/sistine-starter-vibe-to-production.git
-cd sistine-starter-vibe-to-production
+git clone https://github.com/liuxiaopai-ai/evoSEO-starter-vibe-to-production.git
+cd evoSEO-starter-vibe-to-production
 ```
 
 2. **Install dependencies**
@@ -164,11 +164,11 @@ pnpm db:studio    # Open Drizzle Studio
 
 ### 🌟 Success Stories
 
-> "I'm not a developer. I'm a marketer. But I shipped my AI SaaS in 3 days using Sistine + Cursor. Now making $5K MRR." - Marketing Manager turned Founder
+> "I'm not a developer. I'm a marketer. But I shipped my AI SaaS in 3 days using evoSEO + Cursor. Now making $5K MRR." - Marketing Manager turned Founder
 
 > "From idea to $10K MRR in 2 months. All vibes, no code." - Serial Entrepreneur
 
-> "Built and launched 3 different AI SaaS products this quarter alone. Vibe Coding with Sistine is my secret weapon." - Indie Hacker
+> "Built and launched 3 different AI SaaS products this quarter alone. Vibe Coding with evoSEO is my secret weapon." - Indie Hacker
 
 ### 🤝 Contributing
 
@@ -183,49 +183,32 @@ MIT License - see [LICENSE](./LICENSE) for details.
 <a name="中文"></a>
 ## 📖 中文
 
-### 🎯 什么是 Vibe Coding？
-
-**Vibe Coding** 是一种革命性的开发方式，你只需用自然语言向 AI 编程助手描述你想要的功能，AI 就会为你编写生产级代码。无需传统编程技能。
-
-使用 Sistine Starter，你可以：
-- 🎨 **描述**功能需求（用中文或英文）
-- 🤖 **AI 编写**生产级代码
-- 🚢 **发布**给真实用户（几小时内）
-- 💰 **接受**付款（立即开始）
-- 📈 **扩展**到数千用户
-
-### ✨ 功能特性
-
+### 🎯 什么是 Vibe Coding�?
+**Vibe Coding** 是一种革命性的开发方式，你只需用自然语言�?AI 编程助手描述你想要的功能，AI 就会为你编写生产级代码。无需传统编程技能�?
+使用 evoSEO，你可以�?- 🎨 **描述**功能需求（用中文或英文�?- 🤖 **AI 编写**生产级代�?- 🚢 **发布**给真实用户（几小时内�?- 💰 **接受**付款（立即开始）
+- 📈 **扩展**到数千用�?
+### �?功能特�?
 #### 🏗 生产级基础设施
-- **身份认证**：Better Auth 支持邮箱密码和 OAuth 登录
+- **身份认证**：Better Auth 支持邮箱密码�?OAuth 登录
 - **支付系统**：Creem 集成，支持订阅和用量计费
-- **数据库**：PostgreSQL + Drizzle ORM，类型安全查询
-- **部署**：一键部署到 Vercel、Railway 或任何平台
-
+- **数据�?*：PostgreSQL + Drizzle ORM，类型安全查�?- **部署**：一键部署到 Vercel、Railway 或任何平�?
 #### 🤖 AI 优化架构
-- 为 **Cursor**、**Claude Code** 和 **Windsurf** 预配置
-- 每个组件都为 AI 理解而结构化
+- �?**Cursor**�?*Claude Code** �?**Windsurf** 预配�?- 每个组件都为 AI 理解而结构化
 - Google Gemini AI 集成就绪
-- 为 AI 修改优化的文件结构
-
+- �?AI 修改优化的文件结�?
 #### 🎨 现代技术栈
 - **前端**：Next.js 14、TypeScript、Tailwind CSS
-- **UI 组件**：shadcn/ui - 美观、可定制的组件
-- **数据库**：PostgreSQL 配合 Drizzle ORM
+- **UI 组件**：shadcn/ui - 美观、可定制的组�?- **数据�?*：PostgreSQL 配合 Drizzle ORM
 - **认证**：Better Auth - 简单、安全、可扩展
 - **支付**：Creem - 订阅、用量计费等
-- **样式**：Tailwind CSS + CSS-in-JS 最大灵活性
-
-### 🚀 快速开始
-
+- **样式**：Tailwind CSS + CSS-in-JS 最大灵活�?
+### 🚀 快速开�?
 #### 前置要求
 - Node.js 18+
-- PostgreSQL 数据库
-- AI 编程助手（Cursor、Claude Code 或 Windsurf）
-
+- PostgreSQL 数据�?- AI 编程助手（Cursor、Claude Code �?Windsurf�?
 #### 获取访问权限
 
-**申请 GitHub 仓库权限**: [https://applysistine.vercel.app/](https://applysistine.vercel.app/)
+**申请 GitHub 仓库权限**: [https://applyevoSEO.vercel.app/](https://applyevoSEO.vercel.app/)
 
 获得权限后，按照以下步骤开始：
 
@@ -233,15 +216,14 @@ MIT License - see [LICENSE](./LICENSE) for details.
 
 1. **克隆仓库**
 ```bash
-git clone https://github.com/liuxiaopai-ai/sistine-starter-vibe-to-production.git
-cd sistine-starter-vibe-to-production
+git clone https://github.com/liuxiaopai-ai/evoSEO-starter-vibe-to-production.git
+cd evoSEO-starter-vibe-to-production
 ```
 
 2. **安装依赖**
 ```bash
 pnpm install
-# 或
-npm install
+# �?npm install
 ```
 
 3. **设置环境变量**
@@ -249,10 +231,8 @@ npm install
 cp .env.example .env.local
 ```
 
-编辑 `.env.local` 配置：
-```env
-# 数据库
-DATABASE_URL="postgresql://..."
+编辑 `.env.local` 配置�?```env
+# 数据�?DATABASE_URL="postgresql://..."
 
 # Better Auth
 BETTER_AUTH_SECRET="your-secret-key"
@@ -266,7 +246,7 @@ CREEM_WEBHOOK_SECRET="whsec_..."
 GOOGLE_GENERATIVE_AI_API_KEY="your-gemini-api-key"
 ```
 
-4. **设置数据库**
+4. **设置数据�?*
 ```bash
 pnpm db:push
 ```
@@ -276,30 +256,27 @@ pnpm db:push
 pnpm dev
 ```
 
-打开 [http://localhost:3000](http://localhost:3000) 查看你的应用！
-
+打开 [http://localhost:3000](http://localhost:3000) 查看你的应用�?
 ### 🎯 如何进行 Vibe Coding
 
-1. **在 AI 助手中打开项目**
-   - 在 Cursor、Claude Code 或 Windsurf 中打开项目
+1. **�?AI 助手中打开项目**
+   - �?Cursor、Claude Code �?Windsurf 中打开项目
 
 2. **描述你想要的功能**
    ```
-   "添加一个显示用户分析图表的仪表板"
-   "创建一个支持 MDX 的博客系统"
-   "实现一个带奖励的推荐计划"
+   "添加一个显示用户分析图表的仪表�?
+   "创建一个支�?MDX 的博客系�?
+   "实现一个带奖励的推荐计�?
    ```
 
-3. **让 AI 完成工作**
+3. **�?AI 完成工作**
    - AI 理解项目结构
    - 它编写生产级代码
-   - 所有集成自动工作
-
-4. **发布到生产环境**
+   - 所有集成自动工�?
+4. **发布到生产环�?*
    ```bash
    pnpm build
-   # 部署到 Vercel、Railway 等
-   ```
+   # 部署�?Vercel、Railway �?   ```
 
 ### 📚 文档
 
@@ -314,37 +291,29 @@ pnpm dev
 ```bash
 pnpm dev          # 启动开发服务器
 pnpm build        # 构建生产版本
-pnpm start        # 启动生产服务器
-pnpm lint         # 运行 ESLint
+pnpm start        # 启动生产服务�?pnpm lint         # 运行 ESLint
 pnpm db:generate  # 生成 Drizzle 迁移
-pnpm db:push      # 推送 schema 到数据库
+pnpm db:push      # 推�?schema 到数据库
 pnpm db:studio    # 打开 Drizzle Studio
 ```
 
 ### 🌟 成功案例
 
-> "我不是开发者，我是营销人员。但我用 Sistine + Cursor 在 3 天内发布了我的 AI SaaS。现在月收入 $5K。" - 营销经理转型创始人
-
-> "从想法到月收入 $10K 只用了 2 个月。全靠 Vibe，没写代码。" - 连续创业者
-
-> "仅这个季度就构建并发布了 3 个不同的 AI SaaS 产品。Sistine 的 Vibe Coding 是我的秘密武器。" - 独立开发者
-
+> "我不是开发者，我是营销人员。但我用 evoSEO + Cursor �?3 天内发布了我�?AI SaaS。现在月收入 $5K�? - 营销经理转型创始�?
+> "从想法到月收�?$10K 只用�?2 个月。全�?Vibe，没写代码�? - 连续创业�?
+> "仅这个季度就构建并发布了 3 个不同的 AI SaaS 产品。Sistine �?Vibe Coding 是我的秘密武器�? - 独立开发�?
 ### 🤝 贡献
 
-我们欢迎贡献！详情请查看 [CONTRIBUTING.md](./CONTRIBUTING.md)。
-
-### 📄 许可证
-
-MIT 许可证 - 详情见 [LICENSE](./LICENSE)。
-
+我们欢迎贡献！详情请查看 [CONTRIBUTING.md](./CONTRIBUTING.md)�?
+### 📄 许可�?
+MIT 许可�?- 详情�?[LICENSE](./LICENSE)�?
 ---
 
 <div align="center">
   <h3>🚀 Start Vibe Coding Today!</h3>
   <p>
-    <a href="https://github.com/liuxiaopai-ai/sistine-starter-vibe-to-production">GitHub</a> •
-    <a href="https://raphael.app">Website</a> •
-    <a href="https://twitter.com/bourneliu66">Twitter</a>
+    <a href="https://github.com/liuxiaopai-ai/evoSEO-starter-vibe-to-production">GitHub</a> �?    <a href="https://raphael.app">Website</a> �?    <a href="https://twitter.com/bourneliu66">Twitter</a>
   </p>
-  <p>Made with ❤️ by <a href="https://sistine.ai">Sistine AI</a> & Sistine Labs</p>
+  <p>Made with ❤️ by <a href="https://evoSEO.ai">evoSEO</a> & evoSEO Labs</p>
 </div>
+

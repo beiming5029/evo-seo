@@ -9,11 +9,7 @@ import { Logo } from "@/components/Logo";
 import { cn } from "@/lib/utils";
 import { ModeToggle } from "@/components/mode-toggle";
 import { LanguageSwitcher } from "@/components/language-switcher";
-import type { NavigationItem } from "@/features/navigation/types";
-import { marketingNavigationKeys } from "@/features/navigation/config";
 
-import { NavBarItem } from "./navbar-item";
-import { NavBarItemWithDropdown } from "./navbar-item-with-dropdown";
 import {
   UserMenu,
 } from "./user-menu";
@@ -54,24 +50,6 @@ export const DesktopNavbar = () => {
       </AnimatePresence>
       <div className="flex flex-row gap-2 items-center">
         <Logo />
-        <div className="flex items-center gap-1.5">
-          {marketingNavigationKeys.map((item) => (
-            item.subItems ? (
-              <NavBarItemWithDropdown 
-                key={item.key}
-                itemKey={item.key}
-                href={item.href}
-                subItems={item.subItems}
-              >
-                {t(item.key)}
-              </NavBarItemWithDropdown>
-            ) : (
-              <NavBarItem href={item.href} key={item.key}>
-                {t(item.key)}
-              </NavBarItem>
-            )
-          ))}
-        </div>
       </div>
       <div className="flex space-x-2 items-center">
         <LanguageSwitcher />

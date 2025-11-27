@@ -54,6 +54,14 @@ async function uploadToR2(
   return `${STORAGE_PUBLIC_URL}/${key}`;
 }
 
+export async function uploadBufferToR2(
+  key: string,
+  buffer: Buffer | Uint8Array,
+  contentType: string = "application/octet-stream",
+): Promise<string> {
+  return uploadToR2(key, buffer, contentType);
+}
+
 /**
  * Delete file from R2 storage
  */

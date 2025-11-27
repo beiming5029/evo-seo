@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { user as userTable, subscription as subscriptionTable } from "@/lib/db/schema";
-import { eq, and, desc } from "drizzle-orm";
+import { user as userTable } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 
 export async function GET(req: NextRequest) {
   try {
@@ -37,29 +37,9 @@ export async function GET(req: NextRequest) {
 
     const user = users[0];
 
-    // Get active subscription
-    const subscriptions = await db
-      .select()
-      .from(subscriptionTable)
-      .where(
-        and(
-          eq(subscriptionTable.userId, userId),
-          eq(subscriptionTable.status, "active")
-        )
-      )
-      .orderBy(desc(subscriptionTable.updatedAt))
-      .limit(1);
-
-    const activeSubscription = subscriptions[0];
-
     return NextResponse.json({
       user: {
-        ...user,
-        subscription: activeSubscription ? {
-          planKey: activeSubscription.planKey,
-          status: activeSubscription.status,
-          currentPeriodEnd: activeSubscription.currentPeriodEnd,
-        } : null,
+        ...user
       },
     });
   } catch (error) {

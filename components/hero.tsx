@@ -106,27 +106,6 @@ export const Hero = () => {
           <HiArrowRight className="text-muted-foreground group-hover:translate-x-1 stroke-[1px] h-3 w-3 transition-transform duration-200" />
         </Button>
       </motion.div>
-      <div className="p-4 border border-border bg-secondary rounded-[32px] mt-20 relative overflow-hidden">
-        <div className="absolute inset-x-0 bottom-0 h-40 w-full bg-gradient-to-b from-transparent via-background to-background scale-[1.1] pointer-events-none" />
-        <div className="p-2 bg-background border border-border rounded-[24px]">
-          <Image
-            src="https://a.offerget.pro/starter/sample.png"
-            alt="Product interface preview"
-            width={1920}
-            height={1080}
-            className="rounded-[20px] dark:hidden"
-            priority
-          />
-          <Image
-            src="https://a.offerget.pro/starter/sampledark.png"
-            alt="Product interface preview in dark mode"
-            width={1920}
-            height={1080}
-            className="rounded-[20px] hidden dark:block"
-            priority
-          />
-        </div>
-      </div>
     </div>
   );
 };

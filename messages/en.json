@@ -1,9 +1,9 @@
 {
   "common": {
     "brand": {
-      "name": "SISTINE",
-      "tagline": "Sistine AI & Sistine Labs",
-      "copyright": "Copyright © 2025 Sistine AI & Sistine Labs",
+      "name": "evoSEO",
+      "tagline": "evoSEO",
+      "copyright": "Copyright © 2025 evoSEO & evoSEO Labs",
       "allRightsReserved": "All rights reserved"
     },
     "actions": {
@@ -62,9 +62,9 @@
     }
   },
   "hero": {
-    "badge": "⚡ The First Starter Built for Vibe Coding",
+    "badge": "The First Starter Built for Vibe Coding",
     "title": "Vibe Code Your AI SaaS to Production",
-    "description": "No coding skills? Perfect. Sistine + AI coding assistants = Your SaaS idea live in hours. Just describe what you want. Ship what users love.",
+    "description": "No coding skills? Perfect. evoSEO + AI coding assistants = Your SaaS idea live in hours. Just describe what you want. Ship what users love.",
     "cta": {
       "primary": "View Docs",
       "secondary": "Get Code"
@@ -72,7 +72,7 @@
   },
   "features": {
     "title": "Everything You Need for Vibe Coding Success",
-    "subtitle": "Stop wasting time on boilerplate. Focus on describing your unique features while Sistine handles the foundation. Ship faster with AI.",
+    "subtitle": "Stop wasting time on boilerplate. Focus on describing your unique features while evoSEO handles the foundation. Ship faster with AI.",
     "items": {
       "aiOptimized": {
         "title": "Built for AI-Assisted Development",
@@ -95,7 +95,7 @@
   "pricing": {
     "title": "Pricing Plans",
     "subtitle": "Simple, transparent pricing that scales with your business",
-    "description": "This pricing section is built with Sistine Starter. Creem subscriptions, usage tracking, and billing portal included. Start free, upgrade when you need more power.",
+    "description": "This pricing section is built with evoSEO. Creem subscriptions, usage tracking, and billing portal included. Start free, upgrade when you need more power.",
     "billing": {
       "monthly": "Monthly",
       "yearly": "Yearly"
@@ -215,11 +215,11 @@
   },
   "testimonials": {
     "title": "Success Stories from Vibe Coders",
-    "subtitle": "Real developers and non-technical founders sharing their experience building AI SaaS products with Sistine and Vibe Coding.",
+    "subtitle": "Real developers and non-technical founders sharing their experience building AI SaaS products with evoSEO and Vibe Coding.",
     "items": [
       {
         "name": "Manu Arora",
-        "quote": "I'm not a developer. I'm a marketer. But I shipped my AI SaaS in 3 days using Sistine + Cursor. Now making $5K MRR.",
+        "quote": "I'm not a developer. I'm a marketer. But I shipped my AI SaaS in 3 days using evoSEO + Cursor. Now making $5K MRR.",
         "designation": "Marketing Manager turned Founder"
       },
       {
@@ -229,17 +229,17 @@
       },
       {
         "name": "Alice Johnson",
-        "quote": "From idea to $10K MRR in 2 months. All vibes, no code. Sistine made it possible to compete with funded startups.",
+        "quote": "From idea to $10K MRR in 2 months. All vibes, no code. evoSEO made it possible to compete with funded startups.",
         "designation": "Serial Entrepreneur"
       },
       {
         "name": "Bob Smith",
-        "quote": "Built and launched 3 different AI SaaS products this quarter alone. Vibe Coding with Sistine is my secret weapon.",
+        "quote": "Built and launched 3 different AI SaaS products this quarter alone. Vibe Coding with evoSEO is my secret weapon.",
         "designation": "Indie Hacker"
       },
       {
         "name": "Cathy Lee",
-        "quote": "I describe features in plain English to Claude Code. Sistine handles the rest. Shipping has never been this fast.",
+        "quote": "I describe features in plain English to Claude Code. evoSEO handles the rest. Shipping has never been this fast.",
         "designation": "Product Manager"
       },
       {
@@ -334,7 +334,7 @@
   },
   "cta": {
     "title": "Ready to Ship Your AI SaaS?",
-    "description": "Join hundreds of developers who launched their SaaS products with Sistine and Vibe Coding.",
+    "description": "Join hundreds of developers who launched their SaaS products with evoSEO and Vibe Coding.",
     "button": "Get Code"
   },
   "auth": {
@@ -420,7 +420,7 @@
   },
   "demo": {
     "badge": "Try Before You Buy",
-    "title": "Experience Sistine AI",
+    "title": "Experience evoSEO",
     "description": "Test our powerful AI features without signing up. Get 3 free trials to explore what we can do.",
     "limitReached": "You've reached the demo limit. Sign up to continue using our AI tools with full features!",
     "signUpNow": "Sign Up Now",
@@ -735,7 +735,7 @@
     "title": "Dashboard",
     "welcome": "Welcome back",
     "welcomeBonus": {
-      "title": "🎉 Welcome to Sistine!",
+      "title": "🎉 Welcome to evoSEO!",
       "message": "Congratulations on your successful registration! We've added 300 credits welcome bonus to your account.",
       "description": "Use these credits to try our AI chat, image generation, video generation, and more features.",
       "ctaButton": "Try Now",
@@ -778,7 +778,7 @@
         "viewCredits": "View Credits"
       }
     },
-    "paymentSuccess": "✅ Payment successful! Your credits will be updated shortly.",
+    "paymentSuccess": "�?Payment successful! Your credits will be updated shortly.",
     "creditHistory": {
       "title": "Credit History",
       "noRecords": "No credit history yet",
@@ -893,8 +893,8 @@
     "subtitle": "We'd love to hear from you. Send us a message and we'll respond as soon as possible.",
     "description": "Please reach out to us and we will get back to you at the speed of light.",
     "testimonial": {
-      "title": "Sistine AI is used by thousands of users",
-      "description": "With lots of AI applications around, Sistine AI stands out with its state of the art AI capabilities."
+      "title": "evoSEO is used by thousands of users",
+      "description": "With lots of AI applications around, evoSEO stands out with its state of the art AI capabilities."
     },
     "form": {
       "nameLabel": "Full Name",
@@ -996,3 +996,4 @@
     }
   }
 }
+
