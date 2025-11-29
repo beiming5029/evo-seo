@@ -60,17 +60,16 @@ export async function POST(req: NextRequest) {
         .delete(trafficStat)
         .where(and(eq(trafficStat.tenantId, targetTenantId), eq(trafficStat.period, period)));
 
-      const [row] = await db
-        .insert(trafficStat)
-        .values({
-          tenantId: targetTenantId,
-          period,
-          clicks: item.clicks ?? item.count ?? 0,
-          impressions: item.impressions ?? 0,
-          ctr: item.ctr ?? 0,
-          position: item.position,
-        })
-        .returning();
+      const payload: typeof trafficStat.$inferInsert = {
+        tenantId: targetTenantId,
+        period,
+        clicks: item.clicks ?? item.count ?? 0,
+        impressions: item.impressions ?? 0,
+        ctr: (item.ctr ?? 0).toString(),
+        position: item.position !== undefined && item.position !== null ? item.position.toString() : null,
+      };
+
+      const [row] = await db.insert(trafficStat).values(payload).returning();
       inserted.push(row);
     }
 

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Buffer } from "node:buffer";
 import { db } from "@/lib/db";
 import { blogPosts, postPublishLog, wpIntegration, tenant } from "@/lib/db/schema";
-import { and, eq, gte, lte, asc } from "drizzle-orm";
+import { and, eq, gte, lte, asc, getTableColumns } from "drizzle-orm";
 import { auth } from "@/lib/auth";
 
 const CRON_SECRET = process.env.CRON_SECRET;
@@ -112,7 +112,7 @@ export async function POST(req: NextRequest) {
     // 取今天需要发布的博客（状态 ready）
     const postsToHandle = await db
       .select({
-        ...blogPosts,
+        ...getTableColumns(blogPosts),
         tenantName: tenant.name,
         tenantSiteUrl: tenant.siteUrl,
       })

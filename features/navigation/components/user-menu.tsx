@@ -29,8 +29,9 @@ export function UserMenu() {
         mounted = false;
       };
     }
-    if (user.role) {
-      mark(user.role === "admin");
+    const role = (user as { role?: string } | undefined)?.role;
+    if (role) {
+      mark(role === "admin");
       return () => {
         mounted = false;
       };

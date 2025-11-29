@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
@@ -19,12 +20,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const router = useRouter();
   const session = useSession();
-  const isAdmin = session.data?.user?.role === "admin";
+  const user = session.data?.user;
+  const userRole = (user as { role?: string } | undefined)?.role;
+  const isAdmin = userRole === "admin";
 
-  if (session.status === "authenticated" && !isAdmin) {
-    router.replace(`/${locale}/dashboard`);
-    return null;
-  }
+  useEffect(() => {
+    if (!session.isPending && user && !isAdmin) {
+      router.replace(`/${locale}/dashboard`);
+    }
+  }, [session.isPending, user, isAdmin, router, locale]);
+
+  if (session.isPending) return null;
+  if (!user || !isAdmin) return null;
 
   return (
     <div className="flex min-h-screen flex-row bg-background/80">

@@ -276,7 +276,7 @@ export default function AdminUsersPage() {
                   {viewUser.name || "未设置姓名"} · {viewUser.email}
                 </p>
               </div>
-              <Button variant="ghost" onClick={() => setViewUser(null)}>
+              <Button variant="simple" onClick={() => setViewUser(null)}>
                 关闭
               </Button>
             </div>
@@ -348,7 +348,7 @@ export default function AdminUsersPage() {
                   {bindUser.name || "未设置姓名"} · {bindUser.email}
                 </p>
               </div>
-              <Button variant="ghost" onClick={() => setBindUser(null)}>
+              <Button variant="simple" onClick={() => setBindUser(null)}>
                 关闭
               </Button>
             </div>

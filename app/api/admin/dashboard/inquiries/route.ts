@@ -78,18 +78,17 @@ export async function POST(req: NextRequest) {
         )
       );
 
-    const [inserted] = await db
-      .insert(kpiSnapshot)
-      .values({
-        tenantId: resolvedTenantId,
-        type: "inquiries",
-        periodStart,
-        periodEnd,
-        valueNumeric: value,
-        deltaNumeric: delta ?? 0,
-        meta: null,
-      })
-      .returning();
+    const payload: typeof kpiSnapshot.$inferInsert = {
+      tenantId: resolvedTenantId,
+      type: "inquiries",
+      periodStart,
+      periodEnd,
+      valueNumeric: value.toString(),
+      deltaNumeric: (delta ?? 0).toString(),
+      meta: null,
+    };
+
+    const [inserted] = await db.insert(kpiSnapshot).values(payload).returning();
 
     return NextResponse.json({ kpi: inserted });
   } catch (error) {

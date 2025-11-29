@@ -20,7 +20,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "node scripts/run-dev.mjs",
-    "build": "npm run generate:blog-manifest && next build",
+    "build": "next build",
+    "build2": "npm run generate:blog-manifest && next build",
     "start": "next start",
     "lint": "next lint",
     "db:generate": "drizzle-kit generate",

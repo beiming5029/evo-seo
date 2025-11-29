@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { contentSchedule, tenant } from "@/lib/db/schema";
 import { ensureTenantForUser, listTenantsForUser } from "@/lib/db/tenant";
-import { and, asc, eq, gte, inArray, lte } from "drizzle-orm";
+import { and, asc, eq, gte, inArray, lte, getTableColumns } from "drizzle-orm";
 
 function getMonthDateRange(year?: number, month?: number) {
   const now = new Date();
@@ -56,7 +56,7 @@ export async function GET(req: NextRequest) {
 
     const rows = await db
       .select({
-        ...contentSchedule,
+        ...getTableColumns(contentSchedule),
         tenantName: tenant.name,
         tenantSiteUrl: tenant.siteUrl,
       })

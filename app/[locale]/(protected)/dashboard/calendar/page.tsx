@@ -167,7 +167,12 @@ export default function CalendarPage() {
             if (id) fetchDetail(id);
           }}
           eventContent={(arg) => {
-            const { tenantName, tenantSiteUrl, status } = arg.event.extendedProps as any;
+            const { tenantName, tenantSiteUrl, status } = arg.event.extendedProps as {
+              tenantName?: string;
+              tenantSiteUrl?: string;
+              status?: string | null;
+            };
+            const normalizedStatus = normalizeStatus(status);
             return {
               html: `
                 <div style="font-size:12px;font-weight:600;line-height:1.3;color:${arg.event.textColor};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
@@ -176,7 +181,7 @@ export default function CalendarPage() {
                 <div style="font-size:11px;color:#6b7280;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
                   ${tenantName || "站点"} ${tenantSiteUrl ? "· " + tenantSiteUrl : ""}
                 </div>
-                <div style="font-size:11px;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${statusLabel[status as any]}</div>
+                <div style="font-size:11px;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${statusLabel[normalizedStatus]}</div>
               `,
             };
           }}
@@ -207,7 +212,7 @@ export default function CalendarPage() {
                 </div>
               </div>
               <Button
-                variant="ghost"
+                variant="simple"
                 className="h-9 min-w-[72px] shrink-0 rounded-full px-3 text-sm text-muted-foreground hover:bg-muted/50"
                 onClick={() => setSelected(null)}
               >

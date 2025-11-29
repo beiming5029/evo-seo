@@ -1,7 +1,13 @@
 import type { NavigationItem } from "./types";
 
+type NavigationKeyItem = {
+  key: string;
+  href: string;
+  subItems?: Array<{ key: string; href: string; icon?: string }>;
+};
+
 // These are the navigation keys for translation
-export const marketingNavigationKeys = [
+export const marketingNavigationKeys: NavigationKeyItem[] = [
   {
     key: "pricing",
     href: "/pricing",
@@ -16,7 +22,7 @@ export const marketingNavigationKeys = [
   },
 ];
 
-export const appNavigationKeys = [
+export const appNavigationKeys: NavigationKeyItem[] = [
   {
     key: "dashboard",
     href: "/dashboard",

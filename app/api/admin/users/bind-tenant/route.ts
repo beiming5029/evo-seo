@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
         .where(eq(company.id, companyId))
         .limit(1);
       if (!existingCompany[0]) {
-        companyId = undefined;
+        companyId = null;
       }
     }
 

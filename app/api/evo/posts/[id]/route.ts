@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { contentSchedule, postUpload, tenant } from "@/lib/db/schema";
-import { asc, eq, and, inArray } from "drizzle-orm";
+import { asc, eq, and, inArray, getTableColumns } from "drizzle-orm";
 import { listTenantsForUser } from "@/lib/db/tenant";
 
 export async function GET(
@@ -20,7 +20,7 @@ export async function GET(
 
     const [item] = await db
       .select({
-        ...contentSchedule,
+        ...getTableColumns(contentSchedule),
         tenantName: tenant.name,
         tenantSiteUrl: tenant.siteUrl,
       })

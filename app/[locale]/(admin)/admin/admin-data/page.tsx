@@ -5,10 +5,10 @@ import { Button } from "@/components/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-type TenantOption = { id: string; name: string };
+type TenantOption = { id: string; name: string; siteUrl?: string | null };
 type UserOption = { id: string; name: string; tenants: TenantOption[] };
 type InquiryRow = { date: string; count: string };
-type TrafficRow = { date: string; clicks: string };
+type TrafficRow = { date: string; clicks: string; impressions?: string; ctr?: string; position?: string };
 type KeywordRow = { keyword: string; targetUrl: string; rank: string; trend: string };
 
 type SectionKey = "kpi" | "posts" | "reports";
@@ -349,12 +349,12 @@ export default function AdminDataPage() {
                     添加一行
                   </Button>
                   {inquiryRows.length > 1 && (
-                    <Button variant="ghost" onClick={() => setInquiryRows([{ date: "", count: "" }])}>
-                      重置列表
-                    </Button>
-                  )}
-                </div>
+                  <Button variant="simple" onClick={() => setInquiryRows([{ date: "", count: "" }])}>
+                    重置列表
+                  </Button>
+                )}
               </div>
+            </div>
             )}
 
             {seoType === "traffic" && (
@@ -404,7 +404,7 @@ export default function AdminDataPage() {
                     添加一行
                   </Button>
                   {trafficRows.length > 1 && (
-                    <Button variant="ghost" onClick={() => setTrafficRows([{ date: "", clicks: "" }])}>
+                    <Button variant="simple" onClick={() => setTrafficRows([{ date: "", clicks: "" }])}>
                       重置列表
                     </Button>
                   )}
@@ -482,7 +482,10 @@ export default function AdminDataPage() {
                     添加一行
                   </Button>
                   {keywordRows.length > 1 && (
-                    <Button variant="ghost" onClick={() => setKeywordRows([{ keyword: "", targetUrl: "", rank: "", trend: "stable" }])}>
+                    <Button
+                      variant="simple"
+                      onClick={() => setKeywordRows([{ keyword: "", targetUrl: "", rank: "", trend: "stable" }])}
+                    >
                       重置列表
                     </Button>
                   )}
