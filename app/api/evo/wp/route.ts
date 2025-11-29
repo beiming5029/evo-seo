@@ -11,7 +11,9 @@ export async function GET(req: NextRequest) {
     if (!session?.session?.userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const { tenantId } = await ensureTenantForUser(session.session.userId);
+    const url = new URL(req.url);
+    const tenantIdParam = url.searchParams.get("tenantId") || undefined;
+    const { tenantId } = await ensureTenantForUser(session.session.userId, tenantIdParam);
 
     const [integration] = await db
       .select()
@@ -32,7 +34,9 @@ export async function POST(req: NextRequest) {
     if (!session?.session?.userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const { tenantId, role } = await ensureTenantForUser(session.session.userId);
+    const url = new URL(req.url);
+    const tenantIdParam = url.searchParams.get("tenantId") || undefined;
+    const { tenantId, role } = await ensureTenantForUser(session.session.userId, tenantIdParam);
     if (role !== "admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
@@ -44,6 +48,7 @@ export async function POST(req: NextRequest) {
       wpAppPassword,
       timezone = "Asia/Shanghai",
       publishTimeLocal = "12:00",
+      autoPublish = false,
       status = "connected",
     } = body;
 
@@ -66,6 +71,7 @@ export async function POST(req: NextRequest) {
           wpAppPassword,
           timezone,
           publishTimeLocal,
+          autoPublish,
           status,
           updatedAt: new Date(),
         })
@@ -76,15 +82,16 @@ export async function POST(req: NextRequest) {
 
     const [inserted] = await db
       .insert(wpIntegration)
-      .values({
-        tenantId,
-        siteUrl,
-        wpUsername,
-        wpAppPassword,
-        timezone,
-        publishTimeLocal,
-        status,
-      })
+        .values({
+          tenantId,
+          siteUrl,
+          wpUsername,
+          wpAppPassword,
+          timezone,
+          publishTimeLocal,
+          autoPublish,
+          status,
+        })
       .returning();
 
     return NextResponse.json({ integration: inserted });

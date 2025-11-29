@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { post, postUpload } from "@/lib/db/schema";
-import { ensureTenantForUser } from "@/lib/db/tenant";
-import { and, asc, eq } from "drizzle-orm";
+import { contentSchedule, postUpload, tenant } from "@/lib/db/schema";
+import { asc, eq, and, inArray } from "drizzle-orm";
+import { listTenantsForUser } from "@/lib/db/tenant";
 
 export async function GET(
   req: NextRequest,
@@ -15,11 +15,18 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { tenantId } = await ensureTenantForUser(session.session.userId);
+    const tenantIds = (await listTenantsForUser(session.session.userId)).map((t) => t.id);
+    if (!tenantIds.length) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
     const [item] = await db
-      .select()
-      .from(post)
-      .where(and(eq(post.id, params.id), eq(post.tenantId, tenantId)))
+      .select({
+        ...contentSchedule,
+        tenantName: tenant.name,
+        tenantSiteUrl: tenant.siteUrl,
+      })
+      .from(contentSchedule)
+      .leftJoin(tenant, eq(contentSchedule.tenantId, tenant.id))
+      .where(and(eq(contentSchedule.id, params.id), inArray(contentSchedule.tenantId, tenantIds)))
       .limit(1);
 
     if (!item) {
@@ -48,13 +55,16 @@ export async function PATCH(
     if (!session?.session?.userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const { tenantId } = await ensureTenantForUser(session.session.userId);
+    const tenantIds = (await listTenantsForUser(session.session.userId)).map((t) => t.id);
+    if (!tenantIds.length) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     const body = await req.json();
 
     const [existing] = await db
       .select()
-      .from(post)
-      .where(and(eq(post.id, params.id), eq(post.tenantId, tenantId)))
+      .from(contentSchedule)
+      .where(and(eq(contentSchedule.id, params.id), inArray(contentSchedule.tenantId, tenantIds)))
       .limit(1);
 
     if (!existing) {
@@ -80,9 +90,9 @@ export async function PATCH(
     }
 
     const [updated] = await db
-      .update(post)
+      .update(contentSchedule)
       .set({ ...updatePayload, updatedAt: new Date() })
-      .where(eq(post.id, params.id))
+      .where(eq(contentSchedule.id, params.id))
       .returning();
 
     return NextResponse.json({ post: updated });

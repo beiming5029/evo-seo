@@ -32,7 +32,11 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.893.0",
+    "@aws-sdk/node-http-handler": "^3.374.0",
     "@better-auth/client": "0.0.2-alpha.3",
+    "@fullcalendar/core": "6.1.19",
+    "@fullcalendar/daygrid": "^6.1.10",
+    "@fullcalendar/react": "^6.1.10",
     "@hookform/resolvers": "^3.4.2",
     "@mapbox/rehype-prism": "^0.9.0",
     "@mdx-js/loader": "^3.0.1",
@@ -45,6 +49,8 @@
     "@tailwindcss/typography": "^0.5.13",
     "@tanstack/react-store": "^0.7.5",
     "@types/mdx": "^2.0.13",
+    "@vercel/analytics": "^1.5.0",
+    "@vercel/speed-insights": "^1.2.0",
     "better-auth": "^1.3.11",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -70,14 +76,13 @@
     "react-markdown": "^10.1.0",
     "react-wrap-balancer": "^1.1.1",
     "reading-time": "^1.5.0",
+    "recharts": "^2.9.0",
     "rehype-highlight": "^7.0.2",
     "remark-gfm": "^4.0.0",
     "resend": "^6.1.0",
     "sonner": "^2.0.7",
     "tailwind-merge": "^2.3.0",
-    "zod": "^3.23.8",
-    "@vercel/analytics": "^1.5.0",
-    "@vercel/speed-insights": "^1.2.0"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -94,4 +99,3 @@
   },
   "packageManager": "pnpm@10.11.1+sha512.e519b9f7639869dc8d5c3c5dfef73b3f091094b0a006d7317353c72b124e80e1afd429732e28705ad6bfa1ee879c1fce46c128ccebd3192101f43dd67c667912"
 }
-

@@ -16,7 +16,9 @@ export async function GET(req: NextRequest) {
     if (!session?.session?.userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const { tenantId } = await ensureTenantForUser(session.session.userId);
+    const url = new URL(req.url);
+    const tenantIdParam = url.searchParams.get("tenantId") || undefined;
+    const { tenantId } = await ensureTenantForUser(session.session.userId, tenantIdParam);
 
     const [kpis, inquiries, traffic, keywords] = await Promise.all([
       db
@@ -29,13 +31,13 @@ export async function GET(req: NextRequest) {
         .select()
         .from(inquiryStat)
         .where(eq(inquiryStat.tenantId, tenantId))
-        .orderBy(desc(inquiryStat.period))
+        .orderBy(asc(inquiryStat.period))
         .limit(12),
       db
         .select()
         .from(trafficStat)
         .where(eq(trafficStat.tenantId, tenantId))
-        .orderBy(desc(trafficStat.period))
+        .orderBy(asc(trafficStat.period))
         .limit(12),
       db
         .select()

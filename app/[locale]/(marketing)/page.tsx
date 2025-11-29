@@ -99,10 +99,10 @@ export default function Home() {
                 用 AI 创建真正有效的 SEO 内容
               </h1>
             </div>
-            <p className="mt-4 text-base md:text-lg text-muted-foreground max-w-2xl leading-relaxed">
-              <div>evoSEO 将 360° 竞争分析、AI 内容创作和专家服务完美结合，</div>
-              <div>为您提供透明、可控、高效的 SEO 内容系统</div>
-            </p>
+            <div className="mt-4 text-base md:text-lg text-muted-foreground max-w-2xl leading-relaxed space-y-1">
+              <p>evoSEO 将 360° 竞争分析、AI 内容创作和专家服务完美结合，</p>
+              <p>为您提供透明、可控、高效的 SEO 内容系统</p>
+            </div>
             <div className="mt-8 flex flex-col sm:flex-row gap-3">
               <Button className="rounded-full px-6">开始免费试用</Button>
               <Button variant="outline" className="rounded-full px-6" as="a" href="/contact">

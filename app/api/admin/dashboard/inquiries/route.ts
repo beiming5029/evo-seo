@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { requireAdmin } from "@/lib/auth/admin";
 import { db } from "@/lib/db";
-import { kpiSnapshot, user as userTable } from "@/lib/db/schema";
+import { inquiryStat, kpiSnapshot, user as userTable } from "@/lib/db/schema";
 import { ensureTenantForUser } from "@/lib/db/tenant";
 import { and, eq } from "drizzle-orm";
 
@@ -15,18 +15,16 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { userEmail, userId, periodStart, periodEnd, value, delta } = body as {
+    const { tenantId, userEmail, userId, periodStart, periodEnd, value, delta, data } = body as {
+      tenantId?: string;
       userEmail?: string;
       userId?: string;
-      periodStart: string;
-      periodEnd: string;
-      value: number;
+      periodStart?: string;
+      periodEnd?: string;
+      value?: number;
       delta?: number;
+      data?: Array<{ date?: string; period?: string; count?: number }>;
     };
-
-    if (!periodStart || !periodEnd || value === undefined || value === null) {
-      return NextResponse.json({ error: "缺少参数" }, { status: 400 });
-    }
 
     let targetUserId = userId;
     if (!targetUserId && userEmail) {
@@ -34,18 +32,46 @@ export async function POST(req: NextRequest) {
       targetUserId = target[0]?.id;
     }
 
-    if (!targetUserId) {
-      return NextResponse.json({ error: "未找到目标用户" }, { status: 404 });
+    if (!tenantId && !targetUserId) {
+      return NextResponse.json({ error: "缺少目标租户或用户" }, { status: 400 });
     }
 
-    const { tenantId } = await ensureTenantForUser(targetUserId);
+    const { tenantId: resolvedTenantId } = await ensureTenantForUser(
+      targetUserId || session.session.userId,
+      tenantId
+    );
 
-    // 先删除同周期的 inquiries 记录再插入
+    if (Array.isArray(data) && data.length) {
+      const inserted = [];
+      for (const item of data) {
+        const period = item.date || item.period;
+        if (!period) continue;
+        const count = item.count ?? 0;
+        await db
+          .delete(inquiryStat)
+          .where(and(eq(inquiryStat.tenantId, resolvedTenantId), eq(inquiryStat.period, period)));
+        const [row] = await db
+          .insert(inquiryStat)
+          .values({
+            tenantId: resolvedTenantId,
+            period,
+            count,
+          })
+          .returning();
+        inserted.push(row);
+      }
+      return NextResponse.json({ inquiries: inserted });
+    }
+
+    if (!periodStart || !periodEnd || value === undefined || value === null) {
+      return NextResponse.json({ error: "缺少参数" }, { status: 400 });
+    }
+
     await db
       .delete(kpiSnapshot)
       .where(
         and(
-          eq(kpiSnapshot.tenantId, tenantId),
+          eq(kpiSnapshot.tenantId, resolvedTenantId),
           eq(kpiSnapshot.type, "inquiries"),
           eq(kpiSnapshot.periodStart, periodStart),
           eq(kpiSnapshot.periodEnd, periodEnd)
@@ -55,7 +81,7 @@ export async function POST(req: NextRequest) {
     const [inserted] = await db
       .insert(kpiSnapshot)
       .values({
-        tenantId,
+        tenantId: resolvedTenantId,
         type: "inquiries",
         periodStart,
         periodEnd,

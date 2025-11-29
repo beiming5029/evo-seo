@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { requireAdmin } from "@/lib/auth/admin";
 import { db } from "@/lib/db";
-import { post, user as userTable } from "@/lib/db/schema";
+import { contentSchedule, user as userTable } from "@/lib/db/schema";
 import { ensureTenantForUser } from "@/lib/db/tenant";
 import { eq } from "drizzle-orm";
 
@@ -15,7 +15,17 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { userEmail, userId, title, summary, contentUrl, publishDate, status = "scheduled" } = body as {
+    const {
+      tenantId,
+      userEmail,
+      userId,
+      title,
+      summary,
+      contentUrl,
+      publishDate,
+      status = "scheduled",
+    } = body as {
+      tenantId?: string;
       userEmail?: string;
       userId?: string;
       title: string;
@@ -34,16 +44,16 @@ export async function POST(req: NextRequest) {
       const target = await db.select().from(userTable).where(eq(userTable.email, userEmail)).limit(1);
       targetUserId = target[0]?.id;
     }
-    if (!targetUserId) {
-      return NextResponse.json({ error: "未找到目标用户" }, { status: 404 });
-    }
 
-    const { tenantId } = await ensureTenantForUser(targetUserId);
+    const { tenantId: resolvedTenantId } = await ensureTenantForUser(
+      targetUserId || session.session.userId,
+      tenantId
+    );
 
     const [created] = await db
-      .insert(post)
+      .insert(contentSchedule)
       .values({
-        tenantId,
+        tenantId: resolvedTenantId,
         title,
         summary,
         contentUrl,

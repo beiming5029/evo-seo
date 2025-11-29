@@ -2,39 +2,36 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useLocale } from "next-intl";
 import { Button } from "@/components/button";
-import { TrendingUp, CalendarRange, FileText, MessageCircle } from "lucide-react";
+import { TenantSwitcher } from "@/components/tenant-switcher";
+import { CalendarRange, FileText, MessageCircle, TrendingUp } from "lucide-react";
 
-type InquiryStat = { period: string; count: number };
-type KpiSnapshot = { type: string; valueNumeric: string; deltaNumeric: string };
 type OverviewResponse = {
-  inquiries: InquiryStat[];
-  kpis: KpiSnapshot[];
+  siteCount: number;
+  currentMonthInquiries: number;
+  currentMonthArticles: number;
+  latestReport: { id: string; title: string; date?: string; fileUrl: string } | null;
 };
-type Post = { id: string; status: string; publishDate: string };
-type Report = { id: string; title: string; fileUrl: string; createdAt?: string; periodEnd?: string };
 
 export default function DashboardPage() {
-  const locale = useLocale();
+  const [tenantId, setTenantId] = useState("");
   const [overview, setOverview] = useState<OverviewResponse | null>(null);
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [copyMessage, setCopyMessage] = useState<string | null>(null);
+
+  const cardClass =
+    "group relative flex h-56 flex-col justify-between rounded-xl border border-border bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md";
 
   useEffect(() => {
+    if (!tenantId) return;
     const load = async () => {
       try {
         setLoading(true);
-        const [kpiRes, postRes, reportRes] = await Promise.all([
-          fetch("/api/evo/kpi/overview"),
-          fetch("/api/evo/posts"),
-          fetch("/api/evo/reports"),
-        ]);
-        if (kpiRes.ok) setOverview(await kpiRes.json());
-        if (postRes.ok) setPosts((await postRes.json()).posts || []);
-        if (reportRes.ok) setReports((await reportRes.json()).reports || []);
+        const qs = tenantId ? `?tenantId=${tenantId}` : "";
+        const res = await fetch(`/api/evo/dashboard/overview${qs}`);
+        if (!res.ok) throw new Error(await res.text());
+        setOverview(await res.json());
         setError(null);
       } catch (err) {
         console.error("Failed to load dashboard", err);
@@ -44,29 +41,40 @@ export default function DashboardPage() {
       }
     };
     load();
-  }, []);
+  }, [tenantId]);
 
-  const inquiryTotal = overview?.inquiries?.[0]?.count ?? 0;
-  const inquiryDelta = useMemo(() => {
-    const delta = overview?.kpis?.find((k) => k.type === "inquiries")?.deltaNumeric;
-    if (!delta) return "—";
-    const num = Number(delta);
-    if (Number.isNaN(num)) return "—";
-    return num >= 0 ? `比上月增长 ${num}%` : `比上月下降 ${Math.abs(num)}%`;
+  const siteCountText = useMemo(() => {
+    const count = overview?.siteCount ?? 1;
+    return `当前有 ${count} 个站点正在持续获客`;
   }, [overview]);
 
-  const publishedCount = posts.filter((p) => p.status === "published").length;
-  const scheduledCount = posts.filter((p) => p.status === "scheduled").length;
-  const latestReport = reports[0];
-  const latestReportDate = latestReport?.periodEnd || latestReport?.createdAt;
+  const latestReportDate = overview?.latestReport?.date
+    ? new Date(overview.latestReport.date).toISOString().slice(0, 10)
+    : null;
 
-  const cardClass = "rounded-xl border border-border bg-white p-6 shadow-sm h-56 flex flex-col justify-between";
+  const handleCopyWechat = async () => {
+    try {
+      await navigator.clipboard.writeText("lsiy_lee");
+      setCopyMessage("已复制微信号");
+    } catch (error) {
+      setCopyMessage("复制失败，请手动添加微信：lsiy_lee");
+    } finally {
+      setTimeout(() => setCopyMessage(null), 2000);
+    }
+  };
 
   return (
-    <div className="p-6 md:p-8 bg-white min-h-screen text-foreground">
-      <div className="mb-4">
-        <h1 className="text-3xl md:text-4xl font-bold">Dashboard</h1>
-        <p className="text-muted-foreground mt-2">欢迎回来，查看您的 SEO 服务概况</p>
+    <div className="min-h-screen bg-white p-6 text-foreground md:p-8">
+      <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h1 className="text-3xl font-bold md:text-4xl">Dashboard</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            欢迎回来，查看您的流量增长大盘。{siteCountText}
+          </p>
+        </div>
+        <div className="w-72">
+          <TenantSwitcher value={tenantId} onChange={setTenantId} />
+        </div>
       </div>
 
       {error && (
@@ -76,79 +84,71 @@ export default function DashboardPage() {
       )}
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className={cardClass}>
+        <Link href="/dashboard/analytics" className={cardClass}>
           <div className="flex items-start justify-between">
             <div>
               <p className="text-lg font-semibold">本月新增询盘</p>
-              <p className="text-sm text-muted-foreground mt-1">{inquiryDelta}</p>
+              <p className="mt-1 text-sm text-muted-foreground">总览当月询盘表现</p>
             </div>
             <TrendingUp className="h-5 w-5 text-muted-foreground" />
           </div>
-          <div className="text-5xl font-bold">{loading ? "—" : inquiryTotal}</div>
-        </div>
+          <div className="text-5xl font-bold">
+            {loading ? "..." : overview?.currentMonthInquiries ?? 0}
+          </div>
+        </Link>
 
-        <div className={cardClass}>
+        <Link href="/dashboard/calendar" className={cardClass}>
           <div className="flex items-start justify-between">
             <div>
               <p className="text-lg font-semibold">文章日历（本月）</p>
-              <p className="text-sm text-muted-foreground mt-1">发布进度</p>
+              <p className="mt-1 text-sm text-muted-foreground">排期与发布数量</p>
             </div>
             <CalendarRange className="h-5 w-5 text-muted-foreground" />
           </div>
-          <div className="flex items-center gap-10 text-3xl font-bold">
-            <div className="flex flex-col">
-              <span>{loading ? "—" : publishedCount}</span>
-              <span className="text-xs text-muted-foreground mt-1">已发布文章</span>
-            </div>
-            <div className="flex flex-col">
-              <span>{loading ? "—" : scheduledCount}</span>
-              <span className="text-xs text-muted-foreground mt-1">待发布文章</span>
-            </div>
+          <div className="text-5xl font-bold">
+            {loading ? "..." : overview?.currentMonthArticles ?? 0}
           </div>
-        </div>
+        </Link>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2 mt-4">
-        <div className={cardClass}>
+      <div className="mt-4 grid gap-4 lg:grid-cols-2">
+        <Link href="/dashboard/reports" className={cardClass}>
           <div className="flex items-start justify-between">
             <p className="text-lg font-semibold">最新服务报告</p>
             <FileText className="h-5 w-5 text-muted-foreground" />
           </div>
-          {latestReport ? (
-            <div className="rounded-md border border-border/60 bg-muted/30 p-4 text-sm">
-              <p className="font-semibold">{latestReport.title}</p>
-              {latestReportDate && (
-                <p className="text-muted-foreground mt-1">
-                  {new Date(latestReportDate).toISOString().slice(0, 10)}
-                </p>
-              )}
-              <Link
-                href={latestReport.fileUrl}
-                target="_blank"
-                className="mt-2 inline-flex text-primary hover:underline"
-              >
-                下载报告
-              </Link>
+          {overview?.latestReport ? (
+            <div className="rounded-lg border border-border/70 bg-muted/30 p-4 text-sm">
+              <p className="font-semibold text-foreground">{overview.latestReport.title}</p>
+              {latestReportDate && <p className="mt-1 text-muted-foreground">{latestReportDate}</p>}
+              <span className="mt-2 inline-flex text-primary">点击卡片查看全部报告</span>
             </div>
           ) : (
             <p className="text-sm text-muted-foreground">暂无报告</p>
           )}
-        </div>
+        </Link>
 
         <div className={cardClass}>
           <div className="flex items-start justify-between">
             <p className="text-lg font-semibold">24/7 专家客服</p>
             <MessageCircle className="h-5 w-5 text-muted-foreground" />
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            遇到问题？我们的 SEO 专家团队随时为您提供帮助
+          <p className="mt-1 text-sm text-muted-foreground">
+            遇到问题？我们的 SEO 专家团队随时为您提供服务。微信号：lsiy_lee
           </p>
-          <Button className="mt-6 w-full justify-center rounded-full bg-foreground text-background hover:bg-foreground/90">
-            开始在线咨询
+          <Button
+            className="mt-6 w-full justify-center rounded-full bg-foreground text-background hover:bg-foreground/90"
+            onClick={handleCopyWechat}
+          >
+            复制微信号并添加
           </Button>
+          {copyMessage && (
+            <div className="mt-3 rounded-md border border-border/60 bg-muted/40 px-3 py-2 text-xs text-foreground">
+              {copyMessage}
+            </div>
+          )}
         </div>
       </div>
-
     </div>
   );
 }

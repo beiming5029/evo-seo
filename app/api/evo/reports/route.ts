@@ -14,7 +14,9 @@ export async function GET(req: NextRequest) {
     if (!session?.session?.userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const { tenantId } = await ensureTenantForUser(session.session.userId);
+    const url = new URL(req.url);
+    const tenantIdParam = url.searchParams.get("tenantId") || undefined;
+    const { tenantId } = await ensureTenantForUser(session.session.userId, tenantIdParam);
 
     const reports = await db
       .select()
@@ -35,7 +37,9 @@ export async function POST(req: NextRequest) {
     if (!session?.session?.userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const { tenantId, role } = await ensureTenantForUser(session.session.userId);
+    const url = new URL(req.url);
+    const tenantIdParam = url.searchParams.get("tenantId") || undefined;
+    const { tenantId, role } = await ensureTenantForUser(session.session.userId, tenantIdParam);
     if (role !== "admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }

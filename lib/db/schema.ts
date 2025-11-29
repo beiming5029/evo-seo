@@ -10,9 +10,21 @@ import {
   jsonb,
   date,
   numeric,
-  uniqueIndex
+  uniqueIndex,
+  bigserial
 } from "drizzle-orm/pg-core";
 
+// 公司/客户表：用户只绑定一家，公司下可有多个站点
+export const company = pgTable("company", {
+  id: text("id").primaryKey().$defaultFn(() => randomUUID()),
+  name: text("name").notNull(),
+  contactEmail: text("contact_email"),
+  validUntil: date("valid_until"),
+  cooperationStartDate: date("cooperation_start_date"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// 用户基础表：包含角色、订阅、封禁等信息（Better Auth 主表）
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
@@ -29,6 +41,8 @@ export const user = pgTable("user", {
   banned: boolean("banned").default(false).notNull(),
   banReason: text("ban_reason"),
   banExpires: timestamp("ban_expires"),
+  // 所属公司，一对一绑定
+  companyId: text("company_id").references(() => company.id, { onDelete: "set null" }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
@@ -36,6 +50,7 @@ export const user = pgTable("user", {
     .notNull(),
 });
 
+// 会话表：Better Auth session
 export const session = pgTable("session", {
   id: text("id").primaryKey(),
   expiresAt: timestamp("expires_at").notNull(),
@@ -51,6 +66,7 @@ export const session = pgTable("session", {
     .references(() => user.id, { onDelete: "cascade" }),
 });
 
+// 第三方账号表：OAuth/凭证账号绑定
 export const account = pgTable("account", {
   id: text("id").primaryKey(),
   accountId: text("account_id").notNull(),
@@ -71,6 +87,7 @@ export const account = pgTable("account", {
     .notNull(),
 });
 
+// 验证码/验证链接表
 export const verification = pgTable("verification", {
   id: text("id").primaryKey(),
   identifier: text("identifier").notNull(),
@@ -84,7 +101,7 @@ export const verification = pgTable("verification", {
 });
 
 
-// Password reset tokens
+// 重置密码 token
 export const passwordResetToken = pgTable("password_reset_token", {
   id: text("id").primaryKey(),
   userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
@@ -93,7 +110,7 @@ export const passwordResetToken = pgTable("password_reset_token", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-// Newsletter subscriptions
+// Newsletter 订阅
 export const newsletterSubscription = pgTable("newsletter_subscription", {
   id: text("id").primaryKey(),
   email: text("email").notNull().unique(),
@@ -105,13 +122,20 @@ export const newsletterSubscription = pgTable("newsletter_subscription", {
   updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()).notNull(),
 });
 
-// Multi-tenant support
+// 多租户主体（站点），归属公司
 export const tenant = pgTable("tenant", {
   id: text("id").primaryKey().$defaultFn(() => randomUUID()),
   name: text("name").notNull(),
+  companyId: text("company_id").references(() => company.id, { onDelete: "cascade" }),
+  siteUrl: text("site_url"),
+  // 兼容旧数据：站点级的联系邮箱/合作期（推荐使用 company 表字段）
+  contactEmail: text("contact_email"),
+  validUntil: date("valid_until"),
+  cooperationStartDate: date("cooperation_start_date"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// 多租户成员表：用户-租户关联与租户内角色
 export const tenantMembership = pgTable(
   "tenant_membership",
   {
@@ -133,7 +157,51 @@ export const tenantMembership = pgTable(
   }),
 );
 
-// WordPress integration settings per tenant
+// 品牌知识库：品牌语调/产品描述/客户画像
+export const brandConfig = pgTable(
+  "brand_config",
+  {
+    id: text("id").primaryKey().$defaultFn(() => randomUUID()),
+    companyId: text("company_id")
+      .notNull()
+      .references(() => company.id, { onDelete: "cascade" }),
+    brandVoice: text("brand_voice"),
+    productDesc: text("product_desc"),
+    targetAudience: text("target_audience"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => ({
+    companyUniqueIdx: uniqueIndex("brand_config_company_unique_idx").on(table.companyId),
+  }),
+);
+
+// 博客文章（n8n -> supabase 的正文记录）
+export const blogPosts = pgTable(
+  "blog_posts",
+  {
+    id: bigserial("id", { mode: "number" }).primaryKey(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    title: text("title").notNull(),
+    slug: text("slug").notNull(),
+    excerpt: text("excerpt"),
+    content: text("content"),
+    category: text("category"),
+    tags: jsonb("tags"),
+    status: text("status").default("ready"), // ready | published | draft
+    featuredImage: text("featured_image"),
+    allImages: jsonb("all_images"),
+    tenantId: text("tenant_id").references(() => tenant.id, { onDelete: "set null" }),
+  },
+  (table) => ({
+    slugUniqueIdx: uniqueIndex("blog_posts_slug_unique_idx").on(table.slug),
+  })
+);
+
+// WordPress 集成：应用密码/时区/定时发布配置
 export const wpIntegration = pgTable(
   "wp_integration",
   {
@@ -147,6 +215,7 @@ export const wpIntegration = pgTable(
     status: varchar("status", { length: 32 }).default("disconnected").notNull(), // connected | error | disconnected
     timezone: varchar("timezone", { length: 64 }).default("Asia/Shanghai").notNull(),
     publishTimeLocal: varchar("publish_time_local", { length: 8 }).default("12:00").notNull(), // HH:mm
+    autoPublish: boolean("auto_publish").default(false).notNull(),
     lastSyncAt: timestamp("last_sync_at"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()).notNull(),
@@ -156,9 +225,9 @@ export const wpIntegration = pgTable(
   }),
 );
 
-// Content calendar posts
-export const post = pgTable(
-  "post",
+// 文章排期/日历（客户端展示/定时发布源）
+export const contentSchedule = pgTable(
+  "content_schedule",
   {
     id: text("id").primaryKey().$defaultFn(() => randomUUID()),
     tenantId: text("tenant_id")
@@ -168,17 +237,21 @@ export const post = pgTable(
     summary: text("summary"),
     contentUrl: text("content_url").notNull(),
     publishDate: date("publish_date").notNull(),
-    status: varchar("status", { length: 16 }).default("scheduled").notNull(), // scheduled | published | paused
+    status: varchar("status", { length: 16 }).default("ready").notNull(), // ready | published | draft
     platform: varchar("platform", { length: 32 }).default("wordpress").notNull(),
     createdBy: text("created_by").references(() => user.id, { onDelete: "set null" }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()).notNull(),
   },
   (table) => ({
-    tenantPublishDateIdx: index("post_tenant_publish_date_idx").on(table.tenantId, table.publishDate),
+    tenantPublishDateIdx: index("content_schedule_tenant_publish_date_idx").on(
+      table.tenantId,
+      table.publishDate
+    ),
   }),
 );
 
+// 文章上传内容记录（存储 URL/预览）
 export const postUpload = pgTable(
   "post_upload",
   {
@@ -188,7 +261,7 @@ export const postUpload = pgTable(
       .references(() => tenant.id, { onDelete: "cascade" }),
     postId: text("post_id")
       .notNull()
-      .references(() => post.id, { onDelete: "cascade" }),
+      .references(() => contentSchedule.id, { onDelete: "cascade" }),
     storageUrl: text("storage_url").notNull(),
     previewUrl: text("preview_url"),
     sizeBytes: integer("size_bytes"),
@@ -200,6 +273,7 @@ export const postUpload = pgTable(
   }),
 );
 
+// 发文日志：定时/手动发布状态记录
 export const postPublishLog = pgTable(
   "post_publish_log",
   {
@@ -207,9 +281,8 @@ export const postPublishLog = pgTable(
     tenantId: text("tenant_id")
       .notNull()
       .references(() => tenant.id, { onDelete: "cascade" }),
-    postId: text("post_id")
-      .notNull()
-      .references(() => post.id, { onDelete: "cascade" }),
+    // 记录对应的文章 ID（博客/排期均使用，同步 ID 为字符串存储，避免 FK 限制）
+    postId: text("post_id").notNull(),
     publishedAt: timestamp("published_at"),
     targetUrl: text("target_url"),
     status: varchar("status", { length: 24 }).notNull(), // success | failed | skipped_paused
@@ -221,7 +294,7 @@ export const postPublishLog = pgTable(
   }),
 );
 
-// KPI and metrics
+// KPI 快照（询盘/流量等汇总）
 export const kpiSnapshot = pgTable(
   "kpi_snapshot",
   {
@@ -246,6 +319,7 @@ export const kpiSnapshot = pgTable(
   }),
 );
 
+// 询盘月度统计
 export const inquiryStat = pgTable(
   "inquiry_stat",
   {
@@ -262,6 +336,7 @@ export const inquiryStat = pgTable(
   }),
 );
 
+// 自然流量统计（点击/展现/CTR/排名）
 export const trafficStat = pgTable(
   "traffic_stat",
   {
@@ -281,6 +356,7 @@ export const trafficStat = pgTable(
   }),
 );
 
+// 关键词排名记录（Top10 列表）
 export const keywordRanking = pgTable(
   "keyword_ranking",
   {
@@ -302,6 +378,7 @@ export const keywordRanking = pgTable(
   }),
 );
 
+// 服务报告（诊断/复盘）
 export const report = pgTable(
   "report",
   {
@@ -322,6 +399,7 @@ export const report = pgTable(
   }),
 );
 
+// 数据导入任务队列（导入 CSV/JSON）
 export const dataImportJob = pgTable(
   "data_import_job",
   {

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { post, postUpload } from "@/lib/db/schema";
+import { contentSchedule, postUpload } from "@/lib/db/schema";
 import { ensureTenantForUser } from "@/lib/db/tenant";
 import { eq } from "drizzle-orm";
 import { uploadBufferToR2 } from "@/lib/r2-storage";
@@ -26,8 +26,8 @@ export async function POST(req: NextRequest) {
 
     const [existing] = await db
       .select()
-      .from(post)
-      .where(eq(post.id, postId))
+      .from(contentSchedule)
+      .where(eq(contentSchedule.id, postId))
       .limit(1);
 
     if (!existing || existing.tenantId !== tenantId) {

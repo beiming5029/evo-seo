@@ -6,19 +6,18 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { MessageCircle } from "lucide-react";
 
-const navItems = [
+const baseNavItems = [
   { key: "home", label: "主页", path: "" },
-  { key: "calendar", label: "内容日历", path: "/calendar" },
   { key: "analytics", label: "效果看板", path: "/analytics" },
+  { key: "calendar", label: "内容日历", path: "/calendar" },
   { key: "reports", label: "服务报告", path: "/reports" },
   { key: "settings", label: "设置", path: "/settings" },
-  { key: "import", label: "数据导入", path: "/import" },
-  { key: "adminData", label: "数据录入", path: "/admin-data" },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const locale = useLocale();
   const pathname = usePathname();
+  const navItems = baseNavItems;
 
   return (
     <div className="flex min-h-screen flex-row bg-background/80">

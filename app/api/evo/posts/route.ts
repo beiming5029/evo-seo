@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { post } from "@/lib/db/schema";
-import { ensureTenantForUser } from "@/lib/db/tenant";
-import { and, asc, eq, gte, lte } from "drizzle-orm";
+import { contentSchedule, tenant } from "@/lib/db/schema";
+import { ensureTenantForUser, listTenantsForUser } from "@/lib/db/tenant";
+import { and, asc, eq, gte, inArray, lte } from "drizzle-orm";
 
 function getMonthDateRange(year?: number, month?: number) {
   const now = new Date();
@@ -22,8 +22,19 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { tenantId } = await ensureTenantForUser(session.session.userId);
     const url = new URL(req.url);
+    const tenantIdParam = url.searchParams.get("tenantId") || undefined;
+    let tenantIds: string[] = [];
+    if (tenantIdParam) {
+      const { tenantId } = await ensureTenantForUser(session.session.userId, tenantIdParam);
+      tenantIds = [tenantId];
+    } else {
+      const list = await listTenantsForUser(session.session.userId);
+      tenantIds = list.map((t) => t.id);
+    }
+    if (!tenantIds.length) {
+      return NextResponse.json({ posts: [] });
+    }
     const year = url.searchParams.get("year");
     const month = url.searchParams.get("month");
     const startParam = url.searchParams.get("start");
@@ -44,16 +55,21 @@ export async function GET(req: NextRequest) {
     }
 
     const rows = await db
-      .select()
-      .from(post)
+      .select({
+        ...contentSchedule,
+        tenantName: tenant.name,
+        tenantSiteUrl: tenant.siteUrl,
+      })
+      .from(contentSchedule)
+      .leftJoin(tenant, eq(contentSchedule.tenantId, tenant.id))
       .where(
         and(
-          eq(post.tenantId, tenantId),
-          gte(post.publishDate, startDate),
-          lte(post.publishDate, endDate)
+          inArray(contentSchedule.tenantId, tenantIds),
+          gte(contentSchedule.publishDate, startDate),
+          lte(contentSchedule.publishDate, endDate)
         )
       )
-      .orderBy(asc(post.publishDate));
+      .orderBy(asc(contentSchedule.publishDate));
 
     return NextResponse.json({ posts: rows });
   } catch (error) {
@@ -68,16 +84,24 @@ export async function POST(req: NextRequest) {
     if (!session?.session?.userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const { tenantId } = await ensureTenantForUser(session.session.userId);
     const body = await req.json();
-    const { title, summary, contentUrl, publishDate, status = "scheduled", platform = "wordpress" } = body;
+    const {
+      title,
+      summary,
+      contentUrl,
+      publishDate,
+      status = "scheduled",
+      platform = "wordpress",
+      tenantId: tenantIdFromBody,
+    } = body;
+    const { tenantId } = await ensureTenantForUser(session.session.userId, tenantIdFromBody);
 
     if (!title || !contentUrl || !publishDate) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
     const [inserted] = await db
-      .insert(post)
+      .insert(contentSchedule)
       .values({
         tenantId,
         title,

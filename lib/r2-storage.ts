@@ -1,4 +1,6 @@
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { NodeHttpHandler } from "@aws-sdk/node-http-handler";
+import https from "https";
 
 // R2 Configuration
 const STORAGE_ACCESS_KEY_ID = process.env.STORAGE_ACCESS_KEY_ID || '';
@@ -6,6 +8,9 @@ const STORAGE_SECRET_ACCESS_KEY = process.env.STORAGE_SECRET_ACCESS_KEY || '';
 const STORAGE_PUBLIC_URL = process.env.STORAGE_PUBLIC_URL || '';
 const STORAGE_ENDPOINT = process.env.STORAGE_ENDPOINT || '';
 const STORAGE_BUCKET_NAME = process.env.STORAGE_BUCKET_NAME || 'starter';
+const STORAGE_SSL_NO_VERIFY =
+  process.env.STORAGE_SSL_NO_VERIFY === "1" ||
+  process.env.STORAGE_SSL_NO_VERIFY?.toLowerCase() === "true";
 
 // Extract endpoint URL from the full endpoint if needed
 const getEndpointUrl = () => {
@@ -17,15 +22,23 @@ const getEndpointUrl = () => {
   return STORAGE_ENDPOINT;
 };
 
+const insecureAgent = STORAGE_SSL_NO_VERIFY
+  ? new https.Agent({ rejectUnauthorized: false })
+  : undefined;
+
 // Create S3 client configured for R2
 // Using R2's S3-compatible API with the correct endpoint
 const r2Client = STORAGE_ACCESS_KEY_ID && STORAGE_SECRET_ACCESS_KEY ? new S3Client({
   region: "auto",
   endpoint: getEndpointUrl(),
+  forcePathStyle: true,
   credentials: {
     accessKeyId: STORAGE_ACCESS_KEY_ID,
     secretAccessKey: STORAGE_SECRET_ACCESS_KEY,
   },
+  requestHandler: new NodeHttpHandler({
+    httpsAgent: insecureAgent,
+  }),
 }) : null;
 
 /**

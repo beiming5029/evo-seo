@@ -2,20 +2,21 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// 获取默认发件邮箱的函�?const getDefaultFromEmail = () => {
+// 获取默认发件邮箱的函�?
+const getDefaultFromEmail = () => {
   // 1. 优先使用用户配置的完整发件地址
   if (process.env.RESEND_FROM_EMAIL) {
     return process.env.RESEND_FROM_EMAIL;
   }
   
-  // 2. 开发环境使�?Resend 测试邮箱
+  // 2. 开发环境使�?Resend 测试邮箱
   if (process.env.NODE_ENV === 'development') {
     return 'evoSEO <onboarding@resend.dev>';
   }
   
   // 3. 生产环境要求必须配置
   if (!process.env.RESEND_VERIFIED_DOMAIN) {
-    console.error('�?RESEND_VERIFIED_DOMAIN is required in production');
+    console.error('�?RESEND_VERIFIED_DOMAIN is required in production');
     console.error('Please add RESEND_VERIFIED_DOMAIN to your environment variables');
     console.error('Example: RESEND_VERIFIED_DOMAIN=yourdomain.com');
     // 返回一个明显的错误邮箱，让问题立即暴露
@@ -67,7 +68,8 @@ export async function sendEmail({
   }
 }
 
-// 发送验证邮�?export async function sendVerificationEmail(email: string, token: string) {
+// 发送验证邮箱
+export async function sendVerificationEmail(email: string, token: string) {
   const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/verify-email?token=${token}`;
   
   return sendEmail({
@@ -90,7 +92,8 @@ export async function sendEmail({
   });
 }
 
-// 发送密码重置邮�?export async function sendPasswordResetEmail(email: string, token: string) {
+// 发送密码重置邮�?
+export async function sendPasswordResetEmail(email: string, token: string) {
   const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${token}`;
   
   return sendEmail({
@@ -113,7 +116,8 @@ export async function sendEmail({
   });
 }
 
-// 发送欢迎邮�?export async function sendWelcomeEmail(email: string, name?: string) {
+// 发送欢迎邮�?
+export async function sendWelcomeEmail(email: string, name?: string) {
   return sendEmail({
     to: email,
     subject: 'Welcome to evoSEO!',
@@ -139,7 +143,8 @@ export async function sendEmail({
   });
 }
 
-// 发送订单成功邮�?export async function sendPurchaseEmail(email: string, orderDetails: any) {
+// 发送订单成功邮
+export async function sendPurchaseEmail(email: string, orderDetails: any) {
   const planName = orderDetails.type === 'subscription' 
     ? `${orderDetails.plan} Subscription` 
     : `${orderDetails.credits} Credits Pack`;
@@ -169,7 +174,8 @@ export async function sendEmail({
   });
 }
 
-// 发送订阅到期提�?export async function sendSubscriptionExpiryReminder(email: string, daysRemaining: number) {
+// 发送订阅到期提
+export async function sendSubscriptionExpiryReminder(email: string, daysRemaining: number) {
   return sendEmail({
     to: email,
     subject: `Your subscription expires in ${daysRemaining} days - evoSEO`,
@@ -189,7 +195,8 @@ export async function sendEmail({
   });
 }
 
-// 发送积分不足提�?export async function sendLowCreditsNotification(email: string, remainingCredits: number) {
+// 发送积分不足提
+export async function sendLowCreditsNotification(email: string, remainingCredits: number) {
   return sendEmail({
     to: email,
     subject: 'Low Credits Alert - evoSEO',

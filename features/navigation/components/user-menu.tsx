@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { signOut, useSession } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { IconLayoutDashboard, IconLogout } from "@tabler/icons-react";
+import { IconLayoutDashboard, IconLogout, IconSettings } from "@tabler/icons-react";
 
 export function UserMenu() {
   const session = useSession();
@@ -13,12 +13,49 @@ export function UserMenu() {
   const locale = useLocale();
   const t = useTranslations();
   const [isOpen, setIsOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  const user = session.data?.user;
+
+  // 补充 role 缺失的情况
+  useEffect(() => {
+    let mounted = true;
+    const mark = (val: boolean) => {
+      if (mounted) setIsAdmin(val);
+    };
+    if (!user) {
+      mark(false);
+      return () => {
+        mounted = false;
+      };
+    }
+    if (user.role) {
+      mark(user.role === "admin");
+      return () => {
+        mounted = false;
+      };
+    }
+    const check = async () => {
+      try {
+        const res = await fetch("/api/user/admin-status");
+        if (!res.ok) return;
+        const data = await res.json();
+        mark(Boolean(data.isAdmin));
+      } catch (error) {
+        console.error("Failed to fetch admin status", error);
+      }
+    };
+    check();
+    return () => {
+      mounted = false;
+    };
+  }, [user]);
 
   if (session.isPending) {
     return <div className="h-6 w-6 rounded-full bg-muted animate-pulse" />;
   }
 
-  if (!session.data?.user) {
+  if (!user) {
     return (
       <div className="flex items-center gap-2">
         <Link
@@ -43,10 +80,12 @@ export function UserMenu() {
     router.refresh();
   };
 
-  const user = session.data.user;
   const initial = user.name
     ? user.name.charAt(0).toUpperCase()
     : user.email.charAt(0).toUpperCase();
+
+  const entryPath = isAdmin ? "/admin" : "/dashboard";
+  const entryLabel = isAdmin ? "管理后台" : t("navigation.main.dashboard");
 
   return (
     <div className="relative">
@@ -81,13 +120,23 @@ export function UserMenu() {
             </div>
 
             <Link
-              href={`/${locale}/dashboard`}
+              href={`/${locale}${entryPath}`}
               onClick={() => setIsOpen(false)}
               className="flex items-center gap-3 px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-hover"
             >
               <IconLayoutDashboard className="h-4 w-4" />
-              {t("navigation.main.dashboard")}
+              {entryLabel}
             </Link>
+            {isAdmin && (
+              <Link
+                href={`/${locale}/dashboard/settings`}
+                onClick={() => setIsOpen(false)}
+                className="flex items-center gap-3 px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-hover"
+              >
+                <IconSettings className="h-4 w-4" />
+                管理设置
+              </Link>
+            )}
 
             <div className="border-t border-border pt-1">
               <button
