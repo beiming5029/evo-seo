@@ -5,6 +5,8 @@ import { blogPosts, tenant } from "@/lib/db/schema";
 import { ensureTenantForUser, listTenantsForUser } from "@/lib/db/tenant";
 import { and, asc, eq, gte, inArray, lte } from "drizzle-orm";
 
+export const dynamic = "force-dynamic";
+
 function getMonthDateRange(year?: number, month?: number) {
   const now = new Date();
   const y = year ?? now.getFullYear();

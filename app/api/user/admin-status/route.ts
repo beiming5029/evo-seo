@@ -5,6 +5,9 @@ import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 
+// Force dynamic to allow access to headers during build/static generation
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const session = await auth.api.getSession({

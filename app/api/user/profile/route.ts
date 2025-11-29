@@ -4,6 +4,9 @@ import { db } from "@/lib/db";
 import { user as userTable } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 
+// Accesses request headers; keep dynamic to avoid static rendering issues
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
   try {
     // Get session from Better Auth

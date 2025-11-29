@@ -10,6 +10,8 @@ import {
 import { ensureTenantForUser } from "@/lib/db/tenant";
 import { desc, eq, asc } from "drizzle-orm";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
   try {
     const session = await auth.api.getSession({ headers: req.headers });

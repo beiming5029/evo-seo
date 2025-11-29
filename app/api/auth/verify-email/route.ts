@@ -3,6 +3,8 @@ import { db } from "@/lib/db";
 import { user, verification } from "@/lib/db/schema";
 import { eq, and, gt } from "drizzle-orm";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);

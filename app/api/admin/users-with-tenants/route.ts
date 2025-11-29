@@ -5,6 +5,8 @@ import { db } from "@/lib/db";
 import { brandConfig, company, tenant, tenantMembership, user, wpIntegration } from "@/lib/db/schema";
 import { and, eq, ilike, sql } from "drizzle-orm";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
   try {
     await requireAdmin();

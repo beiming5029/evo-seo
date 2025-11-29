@@ -5,6 +5,8 @@ import { contentSchedule, inquiryStat, report, tenantMembership } from "@/lib/db
 import { ensureTenantForUser } from "@/lib/db/tenant";
 import { and, desc, eq, gte, lte } from "drizzle-orm";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
   try {
     const session = await auth.api.getSession({ headers: req.headers });
