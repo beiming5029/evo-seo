@@ -9,15 +9,18 @@ import { Button } from "@/components/button";
 const FullCalendar = dynamic(() => import("@fullcalendar/react"), { ssr: false });
 
 type Post = {
-  id: number | string;
+  id: string;
   tenantId: string;
   tenantName?: string | null;
   tenantSiteUrl?: string | null;
   title: string;
   excerpt?: string | null;
-  slug: string;
+  slug?: string | null;
   publishDate: string | null;
   status: string | null;
+  articleTitle?: string | null;
+  articleExcerpt?: string | null;
+  articleSlug?: string | null;
 };
 
 const statusLabel: Record<"ready" | "published" | "draft", string> = {
@@ -46,7 +49,7 @@ export default function CalendarPage() {
     setLoading(true);
     try {
       const params = start && end ? `?start=${start}&end=${end}` : "";
-      const res = await fetch(`/api/blog-posts${params}`);
+      const res = await fetch(`/api/evo/posts${params}`);
       if (!res.ok) throw new Error(await res.text());
       const data = await res.json();
       setPosts(data.posts || []);
@@ -67,7 +70,7 @@ export default function CalendarPage() {
         .filter((p) => p.publishDate)
         .map((p) => ({
           id: String(p.id),
-          title: p.title,
+          title: p.title || p.articleTitle || "未命名文章",
           date: p.publishDate!,
           backgroundColor:
             normalizeStatus(p.status) === "published"
@@ -92,6 +95,7 @@ export default function CalendarPage() {
             tenantName: p.tenantName || "站点",
             tenantSiteUrl: p.tenantSiteUrl || "",
             status: normalizeStatus(p.status),
+            articleTitle: p.articleTitle,
           },
         })),
     [posts]
@@ -99,19 +103,19 @@ export default function CalendarPage() {
 
   const fetchDetail = async (id: string | number) => {
     try {
-      const res = await fetch(`/api/blog-posts/${id}`);
+      const res = await fetch(`/api/evo/posts/${id}`);
       if (!res.ok) throw new Error(await res.text());
       const data = await res.json();
       setSelected({
-        id: data.id,
-        tenantId: data.tenantId,
-        tenantName: data.tenantName,
-        tenantSiteUrl: data.tenantSiteUrl,
-        title: data.title,
-        excerpt: data.excerpt,
-        slug: data.slug,
-        publishDate: data.publishDate,
-        status: data.status,
+        id: data.post?.id,
+        tenantId: data.post?.tenantId,
+        tenantName: data.post?.tenantName,
+        tenantSiteUrl: data.post?.tenantSiteUrl,
+        title: data.post?.title || data.article?.title || "未命名文章",
+        excerpt: data.post?.summary || data.article?.excerpt,
+        slug: data.article?.slug || data.post?.contentUrl,
+        publishDate: data.post?.publishDate,
+        status: data.post?.status,
       });
     } catch (error) {
       console.error("Failed to load post detail", error);

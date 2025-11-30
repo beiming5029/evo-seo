@@ -6,7 +6,7 @@
 - tenant：id (uuid PK), name, created_at
 - tenant_membership：id (uuid PK), tenant_id FK -> tenant, user_id FK -> user, role ('member'|'admin'), 唯一索引 (tenant_id, user_id)
 - wp_integration：id (uuid PK), tenant_id FK, site_url, wp_username, wp_app_password, status ('connected'|'error'|'disconnected'), timezone (默认 Asia/Shanghai), publish_time_local (默认 12:00), last_sync_at
-- post：id (uuid PK), tenant_id FK, title, summary, content_url, publish_date (date), status ('scheduled'|'published'|'paused'), platform ('wordpress'), created_by, created_at, updated_at，索引 (tenant_id, publish_date)
+- post：id (uuid PK), tenant_id FK, title, summary, content_url, publish_date (date), status ('ready'|'published'|'draft'), platform ('wordpress'), created_by, created_at, updated_at，索引 (tenant_id, publish_date)
 - post_upload：id (uuid PK), tenant_id FK, post_id FK, storage_url, preview_url, size_bytes, uploaded_by, uploaded_at，索引 (post_id)
 - post_publish_log：id (uuid PK), tenant_id FK, post_id FK, published_at, target_url, status ('success'|'failed'|'skipped_paused'), message
 - kpi_snapshot：id (uuid PK), tenant_id FK, period_start (date), period_end (date), type ('inquiries'|'traffic'|'keywords'|'tasks'), value_numeric, delta_numeric, meta jsonb，索引 (tenant_id, type, period_start)
@@ -72,7 +72,7 @@
 导入文件走 `/api/evo/import`，生成 data_import_job（状态 pending/processing/...），当前未附带后台处理逻辑，可按需要添加 worker/cron 解析文件入库。
 
 ## 发布任务（WP 集成）扩展点
-`app/api/cron/publish/route.ts` 现仅将当日、已到时的 scheduled 文章置为 published 并记录 log。接入 WP REST 的推荐步骤：
+`app/api/cron/publish/route.ts` 现仅将当日、已到时的 ready 文章置为 published 并记录 log。接入 WP REST 的推荐步骤：
 1) 读取 wp_integration（site_url/wp_username/wp_app_password）。
 2) 使用 Basic Auth（用户名:应用密码）调用 `POST {site_url}/wp-json/wp/v2/posts`，传递 title/content/status=publish。
 3) 成功后写入 post_publish_log.target_url 为 WP 返回的 link。

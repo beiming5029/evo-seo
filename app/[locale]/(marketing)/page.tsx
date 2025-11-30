@@ -104,7 +104,9 @@ export default function Home() {
               <p>为您提供透明、可控、高效的 SEO 内容系统</p>
             </div>
             <div className="mt-8 flex flex-col sm:flex-row gap-3">
-              <Button className="rounded-full px-6">开始免费试用</Button>
+              <Button as="a" href="/dashboard" className="rounded-full px-6">
+                开始免费试用
+              </Button>
               <Button variant="outline" className="rounded-full px-6" as="a" href="/contact">
                 预约演示
               </Button>
@@ -188,9 +190,8 @@ export default function Home() {
               加入 500+ 企业客户的行列，让 AI 和专家团队为您的增长保驾护航
             </p>
             <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
-              <Button className="px-6 rounded-full">立即开始免费试用</Button>
-              <Button variant="outline" className="px-6 rounded-full" as="a" href="/contact">
-                联系我们
+              <Button as="a" href="/dashboard" className="px-6 rounded-full">
+                立即开始免费试用
               </Button>
             </div>
             <p className="mt-3 text-xs text-muted-foreground">

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { contentSchedule, tenant } from "@/lib/db/schema";
+import { blogPosts, contentSchedule, tenant } from "@/lib/db/schema";
 import { ensureTenantForUser, listTenantsForUser } from "@/lib/db/tenant";
 import { and, asc, eq, gte, inArray, lte, getTableColumns } from "drizzle-orm";
 
@@ -59,9 +59,14 @@ export async function GET(req: NextRequest) {
         ...getTableColumns(contentSchedule),
         tenantName: tenant.name,
         tenantSiteUrl: tenant.siteUrl,
+        articleTitle: blogPosts.title,
+        articleSlug: blogPosts.slug,
+        articleStatus: blogPosts.status,
+        articleExcerpt: blogPosts.excerpt,
       })
       .from(contentSchedule)
       .leftJoin(tenant, eq(contentSchedule.tenantId, tenant.id))
+      .leftJoin(blogPosts, eq(contentSchedule.articleId, blogPosts.id))
       .where(
         and(
           inArray(contentSchedule.tenantId, tenantIds),
@@ -90,7 +95,7 @@ export async function POST(req: NextRequest) {
       summary,
       contentUrl,
       publishDate,
-      status = "scheduled",
+      status = "ready",
       platform = "wordpress",
       tenantId: tenantIdFromBody,
     } = body;

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
@@ -21,16 +21,37 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   const session = useSession();
   const user = session.data?.user;
-  const userRole = (user as { role?: string } | undefined)?.role;
-  const isAdmin = userRole === "admin";
+  const [adminChecked, setAdminChecked] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    if (!session.isPending && user && !isAdmin) {
+    const check = async () => {
+      if (session.isPending) return;
+      if (!user) {
+        setAdminChecked(true);
+        setIsAdmin(false);
+        return;
+      }
+      try {
+        const res = await fetch("/api/user/admin-status", { cache: "no-store" });
+        const data = await res.json();
+        setIsAdmin(Boolean(data?.isAdmin));
+      } catch (err) {
+        setIsAdmin(false);
+      } finally {
+        setAdminChecked(true);
+      }
+    };
+    check();
+  }, [session.isPending, user]);
+
+  useEffect(() => {
+    if (adminChecked && !isAdmin) {
       router.replace(`/${locale}/dashboard`);
     }
-  }, [session.isPending, user, isAdmin, router, locale]);
+  }, [adminChecked, isAdmin, router, locale]);
 
-  if (session.isPending) return null;
+  if (session.isPending || !adminChecked) return null;
   if (!user || !isAdmin) return null;
 
   return (

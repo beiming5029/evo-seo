@@ -29,7 +29,7 @@ CREATE TABLE "content_schedule" (
 	"summary" text,
 	"content_url" text NOT NULL,
 	"publish_date" date NOT NULL,
-	"status" varchar(16) DEFAULT 'scheduled' NOT NULL,
+	"status" varchar(16) DEFAULT 'ready' NOT NULL,
 	"platform" varchar(32) DEFAULT 'wordpress' NOT NULL,
 	"created_by" text,
 	"created_at" timestamp DEFAULT now() NOT NULL,

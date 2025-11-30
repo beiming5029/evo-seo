@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { contentSchedule, postUpload, tenant } from "@/lib/db/schema";
+import { blogPosts, contentSchedule, postUpload, tenant } from "@/lib/db/schema";
 import { asc, eq, and, inArray, getTableColumns } from "drizzle-orm";
 import { listTenantsForUser } from "@/lib/db/tenant";
 
@@ -23,9 +23,15 @@ export async function GET(
         ...getTableColumns(contentSchedule),
         tenantName: tenant.name,
         tenantSiteUrl: tenant.siteUrl,
+        articleTitle: blogPosts.title,
+        articleSlug: blogPosts.slug,
+        articleExcerpt: blogPosts.excerpt,
+        articleContent: blogPosts.content,
+        articleStatus: blogPosts.status,
       })
       .from(contentSchedule)
       .leftJoin(tenant, eq(contentSchedule.tenantId, tenant.id))
+      .leftJoin(blogPosts, eq(contentSchedule.articleId, blogPosts.id))
       .where(and(eq(contentSchedule.id, params.id), inArray(contentSchedule.tenantId, tenantIds)))
       .limit(1);
 
@@ -39,7 +45,19 @@ export async function GET(
       .where(eq(postUpload.postId, item.id))
       .orderBy(asc(postUpload.uploadedAt));
 
-    return NextResponse.json({ post: item, uploads });
+    const article =
+      item?.articleTitle || item?.articleContent
+        ? {
+            id: item.articleId,
+            title: item.articleTitle,
+            slug: item.articleSlug,
+            excerpt: item.articleExcerpt,
+            content: item.articleContent,
+            status: item.articleStatus,
+          }
+        : null;
+
+    return NextResponse.json({ post: item, uploads, article });
   } catch (error) {
     console.error("[evo/posts/:id] GET error", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
@@ -71,7 +89,7 @@ export async function PATCH(
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
 
-    const allowedStatus = ["scheduled", "published", "paused"];
+    const allowedStatus = ["ready", "published", "draft"];
     const updatePayload: Record<string, any> = {};
 
     if (body.title !== undefined) updatePayload.title = body.title;

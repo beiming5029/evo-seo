@@ -409,7 +409,7 @@
           "type": "varchar(16)",
           "primaryKey": false,
           "notNull": true,
-          "default": "'scheduled'"
+          "default": "'ready'"
         },
         "platform": {
           "name": "platform",

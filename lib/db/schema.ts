@@ -11,7 +11,8 @@ import {
   date,
   numeric,
   uniqueIndex,
-  bigserial
+  bigserial,
+  bigint
 } from "drizzle-orm/pg-core";
 
 // 公司/客户表：用户只绑定一家，公司下可有多个站点
@@ -233,6 +234,9 @@ export const contentSchedule = pgTable(
     tenantId: text("tenant_id")
       .notNull()
       .references(() => tenant.id, { onDelete: "cascade" }),
+    articleId: bigint("article_id", { mode: "number" }).references(() => blogPosts.id, {
+      onDelete: "set null",
+    }),
     title: text("title").notNull(),
     summary: text("summary"),
     contentUrl: text("content_url").notNull(),

@@ -216,7 +216,7 @@
 | `title` | text | Not Null | 文章标题 (冗余存储用于列表展示) |
 | `externalId` | text | Nullable | 关联 Supabase 的文章 ID |
 | `platform` | varchar | Default 'wordpress' | 'wordpress' 或 'manual' |
-| `status` | varchar | Default 'scheduled' | 'scheduled' 或 'published' |
+| `status` | varchar | Default 'ready' | 'ready' 或 'published' |
 | `publishDate` | date | Not Null | 计划发布日期 |
 | `createdAt` | timestamp | Default Now | 创建时间 |
 

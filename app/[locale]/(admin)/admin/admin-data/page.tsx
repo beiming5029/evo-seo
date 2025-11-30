@@ -10,8 +10,35 @@ type UserOption = { id: string; name: string; tenants: TenantOption[] };
 type InquiryRow = { date: string; count: string };
 type TrafficRow = { date: string; clicks: string; impressions?: string; ctr?: string; position?: string };
 type KeywordRow = { keyword: string; targetUrl: string; rank: string; trend: string };
+type DailyArticleRow = { day: number; articleId: string; title?: string; loading?: boolean; error?: string };
 
 type SectionKey = "kpi" | "posts" | "reports";
+
+const getCurrentMonth = () => {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+};
+
+const getDaysInMonth = (month: string) => {
+  const match = month.match(/^(\d{4})-(\d{2})$/);
+  if (!match) return 31;
+  const year = Number(match[1]);
+  const monthNum = Number(match[2]);
+  if (!Number.isFinite(year) || !Number.isFinite(monthNum)) return 31;
+  return new Date(Date.UTC(year, monthNum, 0)).getUTCDate();
+};
+
+const buildRowsForMonth = (month: string, prev?: DailyArticleRow[]) => {
+  const days = getDaysInMonth(month);
+  const prevMap = new Map((prev || []).map((row) => [row.day, row]));
+  return Array.from({ length: days }, (_, idx) => {
+    const day = idx + 1;
+    const existing = prevMap.get(day);
+    return existing
+      ? { ...existing, loading: false }
+      : { day, articleId: "" };
+  });
+};
 
 export default function AdminDataPage() {
   const [users, setUsers] = useState<UserOption[]>([]);
@@ -26,8 +53,14 @@ export default function AdminDataPage() {
   const [keywordRows, setKeywordRows] = useState<KeywordRow[]>([
     { keyword: "", targetUrl: "", rank: "", trend: "stable" },
   ]);
+  const initialMonthRef = useRef(getCurrentMonth());
+  const [selectedMonth, setSelectedMonth] = useState(initialMonthRef.current);
+  const [articleRows, setArticleRows] = useState<DailyArticleRow[]>(() =>
+    buildRowsForMonth(initialMonthRef.current)
+  );
   const [saving, setSaving] = useState(false);
   const fetchedOnce = useRef(false);
+  const articleTitleCache = useRef<Record<string, string>>({});
 
   useEffect(() => {
     const loadUsers = async () => {
@@ -49,6 +82,10 @@ export default function AdminDataPage() {
     loadUsers();
   }, []);
 
+  useEffect(() => {
+    setArticleRows((prev) => buildRowsForMonth(selectedMonth, prev));
+  }, [selectedMonth]);
+
   const tenantOptions = useMemo(
     () =>
       (users.find((u) => u.id === selectedUserId)?.tenants || []).map((t) => ({
@@ -69,6 +106,55 @@ export default function AdminDataPage() {
   const clearAlerts = () => {
     setMessage(null);
     setError(null);
+  };
+
+  const updateArticleRow = (day: number, updater: (row: DailyArticleRow) => DailyArticleRow) => {
+    setArticleRows((prev) => prev.map((row) => (row.day === day ? updater(row) : row)));
+  };
+
+  const handleArticleIdChange = (day: number, value: string) => {
+    updateArticleRow(day, (row) => ({
+      ...row,
+      articleId: value,
+      error: undefined,
+      title: value !== row.articleId ? undefined : row.title,
+    }));
+  };
+
+  const previewArticle = async (day: number, value: string) => {
+    const trimmed = value.trim();
+    if (!trimmed) {
+      updateArticleRow(day, (row) => ({ ...row, title: undefined, error: undefined, loading: false }));
+      return;
+    }
+    if (!/^\d+$/.test(trimmed)) {
+      updateArticleRow(day, (row) => ({ ...row, title: undefined, error: "请输入数字 ID", loading: false }));
+      return;
+    }
+    const cached = articleTitleCache.current[trimmed];
+    if (cached) {
+      updateArticleRow(day, (row) => ({ ...row, title: cached, error: undefined, loading: false }));
+      return;
+    }
+    updateArticleRow(day, (row) => ({ ...row, loading: true, error: undefined }));
+    try {
+      const res = await fetch(`/api/admin/dashboard/posts?articleId=${Number(trimmed)}`);
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || "校验失败");
+      }
+      const data = await res.json();
+      const title = data?.article?.title || `文章 ${trimmed}`;
+      articleTitleCache.current[trimmed] = title;
+      updateArticleRow(day, (row) => ({ ...row, loading: false, title, error: undefined }));
+    } catch (err: any) {
+      updateArticleRow(day, (row) => ({
+        ...row,
+        loading: false,
+        title: undefined,
+        error: err?.message || "校验失败，请稍后再试",
+      }));
+    }
   };
 
   const submitSeo = async () => {
@@ -137,34 +223,52 @@ export default function AdminDataPage() {
     }
   };
 
-  const submitPost = async (form: HTMLFormElement) => {
+  const submitMonthlyPosts = async () => {
     const tenantId = ensureTenantSelected();
     if (!tenantId) {
       setError("请选择关联站点");
       return;
     }
-    const payload = {
-      tenantId,
-      title: (form.elements.namedItem("postTitle") as HTMLInputElement).value,
-      summary: (form.elements.namedItem("postSummary") as HTMLInputElement).value,
-      contentUrl: (form.elements.namedItem("postContentUrl") as HTMLInputElement).value,
-      publishDate: (form.elements.namedItem("postDate") as HTMLInputElement).value,
-      status: (form.elements.namedItem("postStatus") as HTMLSelectElement).value,
-    };
+    if (!/^\d{4}-\d{2}$/.test(selectedMonth)) {
+      setError("请选择有效月份");
+      return;
+    }
+    const filled = articleRows
+      .map((row) => ({ ...row, numericId: Number(row.articleId.trim()) }))
+      .filter((row) => row.articleId.trim().length > 0);
+    if (!filled.length) {
+      setError("请至少填写一个文章 ID");
+      return;
+    }
+    const invalid = filled.filter((row) => !Number.isFinite(row.numericId));
+    if (invalid.length) {
+      setError("文章 ID 需为数字");
+      return;
+    }
     try {
       setSaving(true);
       clearAlerts();
       const res = await fetch("/api/admin/dashboard/posts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          tenantId,
+          month: selectedMonth,
+          articles: filled.map((row) => ({
+            day: row.day,
+            articleId: row.numericId,
+          })),
+        }),
       });
-      if (!res.ok) throw new Error(await res.text());
-      setMessage("文章已创建/排期");
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || "提交失败");
+      }
+      const data = await res.json();
+      setMessage(`已保存当月排期（${data?.daysHandled ?? filled.length} 天）`);
       setTimeout(() => setMessage(null), 3000);
-      form.reset();
-    } catch (err) {
-      setError("提交失败，请检查必填项");
+    } catch (err: any) {
+      setError(err?.message || "提交失败，请检查文章 ID");
     } finally {
       setSaving(false);
     }
@@ -269,7 +373,7 @@ export default function AdminDataPage() {
       </div>
       <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-white p-3 shadow-sm">
         <TabButton value="kpi" label="数据录入" />
-        <TabButton value="posts" label="文章排期上传" />
+        <TabButton value="posts" label="文章上传表单" />
         <TabButton value="reports" label="服务报告上传" />
       </div>
 
@@ -503,44 +607,88 @@ export default function AdminDataPage() {
       {section === "posts" && (
         <div className="grid gap-6">
           <form
-            className="space-y-4 rounded-xl border border-border bg-white p-6 shadow-sm"
+            className="space-y-5 rounded-xl border border-border bg-white p-6 shadow-sm"
             onSubmit={async (e) => {
               e.preventDefault();
-              await submitPost(e.currentTarget);
+              await submitMonthlyPosts();
             }}
           >
-            <h2 className="text-lg font-semibold">文章排期上传</h2>
-            <div className="grid gap-3 md:grid-cols-3"></div>
-            <div className="space-y-1">
-              <Label>标题</Label>
-              <Input name="postTitle" required />
+            <div className="flex flex-col gap-2">
+              <h2 className="text-lg font-semibold">文章上传表单</h2>
+              <p className="text-sm text-muted-foreground">
+                选择月份后为当月每天填写文章 ID（Supabase），系统将自动读取标题便于核对，建议一次填满 28~31 条。
+              </p>
             </div>
-            <div className="space-y-1">
-              <Label>摘要</Label>
-              <Input name="postSummary" />
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-1">
+                <Label>月份</Label>
+                <Input
+                  type="month"
+                  value={selectedMonth}
+                  onChange={(e) => setSelectedMonth(e.target.value)}
+                  required
+                />
+                <p className="text-xs text-muted-foreground">自动生成当月 {articleRows.length} 天的上传列表</p>
+              </div>
+              <div className="space-y-1">
+                <Label>账号/网站</Label>
+                <p className="text-xs text-muted-foreground">
+                  目标用户与关联站点已在顶部选择，提交时将写入对应站点的排期。
+                </p>
+              </div>
             </div>
-            <div className="space-y-1">
-              <Label>内容链接 / 文章 ID</Label>
-              <Input name="postContentUrl" required />
+
+            <div className="space-y-3 rounded-lg border border-dashed border-border bg-muted/30 p-3 md:p-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="text-sm font-medium text-foreground">当月文章 ID 列表（共 {articleRows.length} 天）</div>
+                <Button
+                  type="button"
+                  variant="simple"
+                  onClick={() => {
+                    articleTitleCache.current = {};
+                    setArticleRows(buildRowsForMonth(selectedMonth));
+                  }}
+                >
+                  清空当月填写
+                </Button>
+              </div>
+
+              <div className="grid gap-2">
+                {articleRows.map((row) => (
+                  <div
+                    key={row.day}
+                    className="grid grid-cols-[72px_1fr] items-start gap-3 rounded-md border border-border/70 bg-white px-3 py-2 shadow-sm md:px-4 md:py-3"
+                  >
+                    <div className="flex flex-col justify-center text-sm font-semibold text-muted-foreground">
+                      <span>{row.day} 号</span>
+                    </div>
+                    <div className="space-y-1">
+                      <Input
+                        type="number"
+                        inputMode="numeric"
+                        value={row.articleId}
+                        onChange={(e) => handleArticleIdChange(row.day, e.target.value)}
+                        onBlur={(e) => previewArticle(row.day, e.target.value)}
+                        placeholder="输入文章 ID（数字）"
+                      />
+                      {row.loading && <p className="text-xs text-muted-foreground">校验中...</p>}
+                      {row.title && !row.loading && (
+                        <p className="text-xs text-foreground">
+                          标题：{row.title}
+                        </p>
+                      )}
+                      {row.error && !row.loading && (
+                        <p className="text-xs text-destructive">{row.error}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="space-y-1">
-              <Label>发布日期</Label>
-              <Input name="postDate" type="date" required />
-            </div>
-            <div className="space-y-1">
-              <Label>状态</Label>
-              <select
-                name="postStatus"
-                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
-                defaultValue="scheduled"
-              >
-                <option value="scheduled">待发布</option>
-                <option value="published">已发布</option>
-                <option value="paused">已暂停</option>
-              </select>
-            </div>
+
             <Button type="submit" disabled={saving} className="w-full">
-              保存文章
+              保存当月文章排期
             </Button>
           </form>
         </div>

@@ -3,35 +3,48 @@ import Link from "next/link";
 import { Button } from "@/components/button";
 import { PostCopyActions } from "@/components/post-copy-actions";
 
-type BlogPost = {
-  id: number | string;
-  title: string;
-  slug: string;
-  status: string | null;
-  publishDate?: string | null;
-  excerpt?: string | null;
-  content?: string | null;
-  category?: string | null;
-  tags?: any;
-  featuredImage?: string | null;
+type ScheduleWithArticle = {
+  id: string;
+  tenantId: string;
   tenantName?: string | null;
   tenantSiteUrl?: string | null;
+  title?: string | null;
+  summary?: string | null;
+  contentUrl?: string | null;
+  publishDate?: string | null;
+  status?: string | null;
+  article?: {
+    title?: string | null;
+    excerpt?: string | null;
+    content?: string | null;
+    slug?: string | null;
+    status?: string | null;
+  } | null;
 };
 
 const normalizeStatus = (s: string | null | undefined) =>
   s === "published" ? "已发布" : s === "draft" ? "暂停" : "待发布";
 
-async function getPost(id: string): Promise<BlogPost | null> {
+async function getPost(id: string): Promise<ScheduleWithArticle | null> {
   const cookie = headers().get("cookie") || "";
-  const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || ""}/api/blog-posts/${id}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || ""}/api/evo/posts/${id}`, {
     headers: { cookie },
     cache: "no-store",
   });
   if (!res.ok) return null;
   const data = await res.json();
+  if (!data?.post) return null;
   return {
-    ...data,
-    publishDate: data.publishDate,
+    id: data.post.id,
+    tenantId: data.post.tenantId,
+    tenantName: data.post.tenantName,
+    tenantSiteUrl: data.post.tenantSiteUrl,
+    title: data.post.title || data.article?.title,
+    summary: data.post.summary || data.article?.excerpt,
+    contentUrl: data.post.contentUrl,
+    publishDate: data.post.publishDate,
+    status: data.post.status,
+    article: data.article || null,
   };
 }
 
@@ -52,6 +65,11 @@ export default async function BlogPostPage({ params }: { params: { id: string } 
     );
   }
 
+  const title = post.title || "未命名文章";
+  const excerpt = post.summary || post.article?.excerpt || "";
+  const content = post.article?.content || "";
+  const status = normalizeStatus(post.status);
+
   return (
     <div className="space-y-4 p-6">
       <div className="flex items-center justify-between">
@@ -59,11 +77,10 @@ export default async function BlogPostPage({ params }: { params: { id: string } 
           <p className="text-xs text-muted-foreground">
             {post.tenantName || "站点"} {post.tenantSiteUrl ? `- ${post.tenantSiteUrl}` : ""}
           </p>
-          <h1 className="text-2xl font-semibold text-foreground">{post.title}</h1>
+          <h1 className="text-2xl font-semibold text-foreground">{title}</h1>
           <div className="space-x-3 text-sm text-muted-foreground">
             <span>发布日期：{post.publishDate || "未设置"}</span>
-            <span>状态：{normalizeStatus(post.status)}</span>
-            {post.category && <span>分类：{post.category}</span>}
+            <span>状态：{status}</span>
           </div>
         </div>
         <Button as={Link} href="/dashboard/calendar" variant="outline">
@@ -71,13 +88,13 @@ export default async function BlogPostPage({ params }: { params: { id: string } 
         </Button>
       </div>
 
-      <PostCopyActions html={post.content || ""} />
+      <PostCopyActions html={content} />
 
-      {post.excerpt && <p className="text-base text-foreground">{post.excerpt}</p>}
+      {excerpt && <p className="text-base text-foreground">{excerpt}</p>}
 
       <article
         className="prose max-w-none prose-headings:mt-4 prose-p:my-3 prose-li:my-1"
-        dangerouslySetInnerHTML={{ __html: post.content || "" }}
+        dangerouslySetInnerHTML={{ __html: content }}
       />
     </div>
   );
