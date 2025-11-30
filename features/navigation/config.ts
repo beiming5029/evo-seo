@@ -8,9 +8,13 @@ type NavigationKeyItem = {
 
 // These are the navigation keys for translation
 export const marketingNavigationKeys: NavigationKeyItem[] = [
+  // {
+  //   key: "pricing",
+  //   href: "/pricing",
+  // },
   {
-    key: "pricing",
-    href: "/pricing",
+    key: "dashboard",
+    href: "/dashboard",
   },
   {
     key: "blog",

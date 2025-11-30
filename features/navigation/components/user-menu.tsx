@@ -130,12 +130,12 @@ export function UserMenu() {
             </Link>
             {isAdmin && (
               <Link
-                href={`/${locale}/dashboard/settings`}
+                href={`/${locale}/dashboard`}
                 onClick={() => setIsOpen(false)}
                 className="flex items-center gap-3 px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-hover"
               >
                 <IconSettings className="h-4 w-4" />
-                管理设置
+                仪表盘
               </Link>
             )}
 

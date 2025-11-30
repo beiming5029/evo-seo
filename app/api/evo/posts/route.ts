@@ -49,13 +49,19 @@ export async function GET(req: NextRequest) {
       .where(
         and(
           inArray(contentSchedule.tenantId, tenantIds),
+          inArray(contentSchedule.status, ["ready", "published", "draft"]),
           gte(contentSchedule.publishDate, startDate),
           lte(contentSchedule.publishDate, endDate)
         )
       )
       .orderBy(asc(contentSchedule.publishDate));
 
-    return NextResponse.json({ posts: rows });
+    const normalized = rows.map((row) => ({
+      ...row,
+      status: row.status === "draft" ? "ready" : row.status,
+    }));
+
+    return NextResponse.json({ posts: normalized });
   } catch (error) {
     console.error("[evo/posts] GET error", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

@@ -57,12 +57,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="flex min-h-screen flex-row bg-background/80">
       <aside className="sticky top-0 hidden h-screen w-56 flex-shrink-0 border-r border-border/60 bg-card/50 p-4 md:flex md:flex-col">
-        <div className="mb-6 flex items-center gap-2 text-base font-semibold text-foreground">
+        <Link
+          href={`/${locale}/`}
+          className="mb-6 flex items-center gap-2 text-base font-semibold text-foreground"
+        >
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-foreground text-sm font-bold text-background">
             E
           </div>
           <span className="text-lg font-semibold">evoSEO</span>
-        </div>
+        </Link>
         <nav className="space-y-1">
           {navItems.map((item) => {
             const href = `/${locale}${item.path}`;
