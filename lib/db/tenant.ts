@@ -143,18 +143,50 @@ export async function listTenantsForUser(userId: string) {
     .from(user)
     .where(eq(user.id, userId))
     .limit(1);
-  if (!userRecord?.companyId) return [];
 
+  // 如果没有 company，直接返回已有的 membership（兼容旧数据）
+  if (!userRecord?.companyId) {
+    const memberships = await db
+      .select({
+        id: tenantMembership.tenantId,
+        name: tenant.name,
+        siteUrl: tenant.siteUrl,
+        role: tenantMembership.role,
+      })
+      .from(tenantMembership)
+      .leftJoin(tenant, eq(tenantMembership.tenantId, tenant.id))
+      .where(eq(tenantMembership.userId, userId));
+    return memberships;
+  }
+
+  // 取用户公司下的全部站点，如缺少 membership 则补齐
   const tenants = await db
     .select({
-      id: tenantMembership.tenantId,
+      id: tenant.id,
       name: tenant.name,
       siteUrl: tenant.siteUrl,
-      role: tenantMembership.role,
     })
-    .from(tenantMembership)
-    .leftJoin(tenant, eq(tenantMembership.tenantId, tenant.id))
-    .where(and(eq(tenantMembership.userId, userId), eq(tenant.companyId, userRecord.companyId)));
+    .from(tenant)
+    .where(eq(tenant.companyId, userRecord.companyId));
 
-  return tenants;
+  for (const t of tenants) {
+    await ensureMembership(userId, t.id);
+  }
+
+  // 若公司下无站点，则返回已有 membership（防御）
+  if (!tenants.length) {
+    const memberships = await db
+      .select({
+        id: tenantMembership.tenantId,
+        name: tenant.name,
+        siteUrl: tenant.siteUrl,
+        role: tenantMembership.role,
+      })
+      .from(tenantMembership)
+      .leftJoin(tenant, eq(tenantMembership.tenantId, tenant.id))
+      .where(eq(tenantMembership.userId, userId));
+    if (memberships.length) return memberships;
+  }
+
+  return tenants.map((t) => ({ id: t.id, name: t.name, siteUrl: t.siteUrl, role: "admin" as const }));
 }

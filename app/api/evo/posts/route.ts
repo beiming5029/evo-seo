@@ -23,36 +23,15 @@ export async function GET(req: NextRequest) {
     }
 
     const url = new URL(req.url);
-    const tenantIdParam = url.searchParams.get("tenantId") || undefined;
-    let tenantIds: string[] = [];
-    if (tenantIdParam) {
-      const { tenantId } = await ensureTenantForUser(session.session.userId, tenantIdParam);
-      tenantIds = [tenantId];
-    } else {
-      const list = await listTenantsForUser(session.session.userId);
-      tenantIds = list.map((t) => t.id);
-    }
+    // 聚合当前用户所有可访问站点（先确保有 tenant/company）
+    await ensureTenantForUser(session.session.userId);
+    const list = await listTenantsForUser(session.session.userId);
+    const tenantIds = list.map((t) => t.id);
     if (!tenantIds.length) {
       return NextResponse.json({ posts: [] });
     }
-    const year = url.searchParams.get("year");
-    const month = url.searchParams.get("month");
-    const startParam = url.searchParams.get("start");
-    const endParam = url.searchParams.get("end");
-
-    let startDate: string;
-    let endDate: string;
-
-    if (startParam && endParam) {
-      startDate = startParam;
-      endDate = endParam;
-    } else {
-      const parsedYear = year ? Number.parseInt(year, 10) : undefined;
-      const parsedMonth = month ? Number.parseInt(month, 10) : undefined;
-      const { start, end } = getMonthDateRange(parsedYear, parsedMonth);
-      startDate = start;
-      endDate = end;
-    }
+    // 固定返回当前月份的排期
+    const { start: startDate, end: endDate } = getMonthDateRange();
 
     const rows = await db
       .select({
