@@ -38,7 +38,8 @@ export async function POST(req: NextRequest) {
 
     const { tenantId: resolvedTenantId } = await ensureTenantForUser(
       targetUserId || session.session.userId,
-      tenantId
+      tenantId,
+      { allowCrossCompany: true }
     );
 
     if (Array.isArray(data) && data.length) {

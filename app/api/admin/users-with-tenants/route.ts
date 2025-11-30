@@ -34,6 +34,7 @@ export async function GET(req: NextRequest) {
         companyValidUntil: company.validUntil,
         companyCooperationStartDate: company.cooperationStartDate,
         tenantId: tenant.id,
+        tenantCompanyId: tenant.companyId,
         tenantName: tenant.name,
         siteUrl: sql<string | null>`coalesce(${wpIntegration.siteUrl}, ${tenant.siteUrl})`,
         brandVoice: brandConfig.brandVoice,
@@ -45,7 +46,8 @@ export async function GET(req: NextRequest) {
       .from(user)
       .leftJoin(company, eq(user.companyId, company.id))
       .leftJoin(tenantMembership, eq(tenantMembership.userId, user.id))
-      .leftJoin(tenant, eq(tenantMembership.tenantId, tenant.id))
+      // 只返回与用户公司匹配的租户，避免同一租户挂载到多个公司
+      .leftJoin(tenant, and(eq(tenantMembership.tenantId, tenant.id), eq(tenant.companyId, company.id)))
       .leftJoin(brandConfig, eq(brandConfig.companyId, company.id))
       .leftJoin(wpIntegration, eq(wpIntegration.tenantId, tenant.id))
       .where(conditions.length ? and(...conditions) : undefined);
@@ -108,7 +110,10 @@ export async function GET(req: NextRequest) {
         };
         const userItem = grouped.get(row.userId);
         userItem?.tenants.push(tenantItem); // 兼容旧字段
-        userItem?.company?.tenants.push(tenantItem);
+        // 仅在租户归属于该公司时，才挂到 company.tenants，避免跨公司串租户
+        if (row.tenantCompanyId && row.companyId && row.tenantCompanyId === row.companyId) {
+          userItem?.company?.tenants.push(tenantItem);
+        }
 
         // 品牌信息挂在公司层（取首个有值的品牌配置）
         if (row.brandVoice || row.productDesc || row.targetAudience) {

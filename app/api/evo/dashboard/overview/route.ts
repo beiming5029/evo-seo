@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { contentSchedule, inquiryStat, report, tenantMembership } from "@/lib/db/schema";
-import { ensureTenantForUser } from "@/lib/db/tenant";
-import { and, desc, eq, gte, lte } from "drizzle-orm";
+import { ensureTenantForUser, listTenantsForUser } from "@/lib/db/tenant";
+import { and, desc, eq, gte, inArray, lte } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
 
@@ -14,9 +14,17 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const url = new URL(req.url);
-    const tenantIdParam = url.searchParams.get("tenantId") || undefined;
-    const { tenantId } = await ensureTenantForUser(session.session.userId, tenantIdParam);
+    // 确保至少有一个站点
+    await ensureTenantForUser(session.session.userId);
+    const tenantIds = (await listTenantsForUser(session.session.userId)).map((t) => t.id);
+    if (!tenantIds.length) {
+      return NextResponse.json({
+        siteCount: 0,
+        currentMonthInquiries: 0,
+        currentMonthArticles: 0,
+        latestReport: null,
+      });
+    }
 
     const now = new Date();
     const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
@@ -32,18 +40,14 @@ export async function GET(req: NextRequest) {
         })
         .from(inquiryStat)
         .where(
-          and(
-            eq(inquiryStat.tenantId, tenantId),
-            gte(inquiryStat.period, startStr),
-            lte(inquiryStat.period, endStr)
-          )
+          and(inArray(inquiryStat.tenantId, tenantIds), gte(inquiryStat.period, startStr), lte(inquiryStat.period, endStr))
         ),
       db
         .select({ id: contentSchedule.id })
         .from(contentSchedule)
         .where(
           and(
-            eq(contentSchedule.tenantId, tenantId),
+            inArray(contentSchedule.tenantId, tenantIds),
             gte(contentSchedule.publishDate, startStr),
             lte(contentSchedule.publishDate, endStr)
           )
@@ -57,7 +61,7 @@ export async function GET(req: NextRequest) {
           fileUrl: report.fileUrl,
         })
         .from(report)
-        .where(eq(report.tenantId, tenantId))
+        .where(inArray(report.tenantId, tenantIds))
         .orderBy(desc(report.createdAt))
         .limit(1),
       db
@@ -71,7 +75,7 @@ export async function GET(req: NextRequest) {
     const currentMonthArticles = articles.length;
 
     return NextResponse.json({
-      siteCount: siteCountRow.length || 1,
+      siteCount: siteCountRow.length || tenantIds.length,
       currentMonthInquiries,
       currentMonthArticles,
       latestReport: latest

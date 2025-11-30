@@ -92,7 +92,8 @@ export async function POST(req: NextRequest) {
       }
       const { tenantId: resolvedTenantId } = await ensureTenantForUser(
         targetUserId || session.session.userId,
-        tenantId
+        tenantId,
+        { allowCrossCompany: true }
       );
 
       const normalizedItems = (articles || [])
@@ -197,7 +198,8 @@ export async function POST(req: NextRequest) {
 
     const { tenantId: resolvedTenantId } = await ensureTenantForUser(
       targetUserId || session.session.userId,
-      tenantId
+      tenantId,
+      { allowCrossCompany: true }
     );
 
     const [created] = await db

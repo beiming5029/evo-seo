@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/button";
-import { TenantSwitcher } from "@/components/tenant-switcher";
 import { CalendarRange, FileText, MessageCircle, TrendingUp } from "lucide-react";
 
 type OverviewResponse = {
@@ -14,7 +13,6 @@ type OverviewResponse = {
 };
 
 export default function DashboardPage() {
-  const [tenantId, setTenantId] = useState("");
   const [overview, setOverview] = useState<OverviewResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -24,12 +22,10 @@ export default function DashboardPage() {
     "group relative flex h-56 flex-col justify-between rounded-xl border border-border bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md";
 
   useEffect(() => {
-    if (!tenantId) return;
     const load = async () => {
       try {
         setLoading(true);
-        const qs = tenantId ? `?tenantId=${tenantId}` : "";
-        const res = await fetch(`/api/evo/dashboard/overview${qs}`);
+        const res = await fetch(`/api/evo/dashboard/overview`);
         if (!res.ok) throw new Error(await res.text());
         setOverview(await res.json());
         setError(null);
@@ -41,7 +37,7 @@ export default function DashboardPage() {
       }
     };
     load();
-  }, [tenantId]);
+  }, []);
 
   const siteCountText = useMemo(() => {
     const count = overview?.siteCount ?? 1;
@@ -71,9 +67,6 @@ export default function DashboardPage() {
           <p className="mt-2 text-sm text-muted-foreground">
             欢迎回来，查看您的流量增长大盘。{siteCountText}
           </p>
-        </div>
-        <div className="w-72">
-          <TenantSwitcher value={tenantId} onChange={setTenantId} />
         </div>
       </div>
 
