@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Buffer } from "node:buffer";
 import { db } from "@/lib/db";
-import { blogPosts, postPublishLog, wpIntegration, tenant } from "@/lib/db/schema";
-import { and, eq, gte, lte, asc, getTableColumns } from "drizzle-orm";
+import { blogPosts, contentSchedule, postPublishLog, wpIntegration, tenant } from "@/lib/db/schema";
+import { and, eq, gte, lte, asc } from "drizzle-orm";
 import { auth } from "@/lib/auth";
 
 const CRON_SECRET = process.env.CRON_SECRET;
@@ -109,23 +109,34 @@ export async function POST(req: NextRequest) {
     const skipped: string[] = [];
     const failed: string[] = [];
 
-    // 取今天需要发布的博客（状态 ready）
+    // 取今天需要发布的排期（状态 ready，对应 publishDate 当天）
     const postsToHandle = await db
       .select({
-        ...getTableColumns(blogPosts),
+        id: contentSchedule.id,
+        tenantId: contentSchedule.tenantId,
+        title: contentSchedule.title,
+        summary: contentSchedule.summary,
+        publishDate: contentSchedule.publishDate,
+        articleId: contentSchedule.articleId,
+        contentUrl: contentSchedule.contentUrl,
+        status: contentSchedule.status,
         tenantName: tenant.name,
         tenantSiteUrl: tenant.siteUrl,
+        articleTitle: blogPosts.title,
+        articleContent: blogPosts.content,
+        articleExcerpt: blogPosts.excerpt,
       })
-      .from(blogPosts)
-      .leftJoin(tenant, eq(blogPosts.tenantId, tenant.id))
+      .from(contentSchedule)
+      .leftJoin(tenant, eq(contentSchedule.tenantId, tenant.id))
+      .leftJoin(blogPosts, eq(contentSchedule.articleId, blogPosts.id))
       .where(
         and(
-          eq(blogPosts.status, "ready"),
-          gte(blogPosts.createdAt, start),
-          lte(blogPosts.createdAt, end)
+          eq(contentSchedule.status, "ready"),
+          gte(contentSchedule.publishDate, dateStr),
+          lte(contentSchedule.publishDate, dateStr)
         )
       )
-      .orderBy(asc(blogPosts.createdAt))
+      .orderBy(asc(contentSchedule.publishDate))
       .limit(CRON_MAX_POSTS_PER_RUN);
 
     for (const post of postsToHandle) {
@@ -140,9 +151,9 @@ export async function POST(req: NextRequest) {
       // 如果没有集成或 autoPublish 关闭，直接标记已发布（不推送）
       if (!integration || !integration.autoPublish) {
         await db
-          .update(blogPosts)
-          .set({ status: "published", createdAt: post.createdAt })
-          .where(eq(blogPosts.id, post.id));
+          .update(contentSchedule)
+          .set({ status: "published", updatedAt: new Date() })
+          .where(eq(contentSchedule.id, post.id));
         await db.insert(postPublishLog).values({
           tenantId: post.tenantId || "",
           postId: String(post.id),
@@ -164,9 +175,9 @@ export async function POST(req: NextRequest) {
       try {
         const link = await publishToWordPress(post, integration);
         await db
-          .update(blogPosts)
-          .set({ status: "published", createdAt: post.createdAt })
-          .where(eq(blogPosts.id, post.id));
+          .update(contentSchedule)
+          .set({ status: "published", updatedAt: new Date() })
+          .where(eq(contentSchedule.id, post.id));
 
         await db.insert(postPublishLog).values({
           tenantId: post.tenantId || "",
