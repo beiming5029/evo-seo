@@ -10,8 +10,8 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { key: "home", label: "概览", path: "/admin" },
   { key: "users", label: "用户管理", path: "/admin/users" },
-  { key: "import", label: "数据导入", path: "/admin/import" },
   { key: "account", label: "用户信息变更", path: "/admin/account" },
+  // { key: "import", label: "数据导入", path: "/admin/import" },
   { key: "adminData", label: "管理员上传", path: "/admin/admin-data" },
 ];
 

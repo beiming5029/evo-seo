@@ -81,3 +81,39 @@
 - `ensureTenantForUser(userId)`：首次访问自动创建 tenant + membership(admin)。
 - 现仅实现全局管理员视角：tenant_membership.role=admin 才能上传报告、导入数据、配置 WP。
 - 所有查询均按 tenantId 过滤，保证多租户隔离。***
+
+## 数据表梳理与关联（当前实际使用）
+
+核心实体与权限
+- user：用户主体（role/plan/credits/company_id 等）。company_id 关联公司。
+- company：公司信息（name/contact_email/valid_until/cooperation_start_date）。一公司多站点。
+- tenant：站点（name/company_id/site_url/...）；外键 company_id → company.id。
+- tenant_membership：用户-站点绑定与站内 role(admin/member)；tenant_id → tenant.id，user_id → user.id。
+- wp_integration：站点 WP 配置（site_url/wp_username/wp_app_password/status/timezone/publish_time_local/auto_publish）；tenant_id → tenant.id。
+
+内容与排期
+- blog_posts：正文仓库（n8n 入库），字段 title/slug/excerpt/content/category/tags/status/featured_image/all_images/tenant_id。
+- content_schedule：文章排期（日历数据源），字段 tenant_id、article_id(可指 blog_posts.id)、title/summary/content_url、publish_date、status(ready/published/draft)、platform、created_by。
+- post_upload：排期附件记录（tenant_id、post_id → content_schedule.id、storage_url/preview_url、size_bytes、uploaded_by、uploaded_at）。
+- post_publish_log：发布日志（tenant_id、post_id 字符串、published_at、target_url、status、message）。
+
+数据与报表
+- inquiry_stat：询盘月度统计（tenant_id、period、count）。
+- traffic_stat：流量统计（tenant_id、period、clicks/impressions/ctr/position）。
+- keyword_ranking：关键词排名记录（tenant_id、keyword/target_url/rank/rank_delta/captured_at）。
+- kpi_snapshot：KPI 汇总（tenant_id、period_start/period_end、type、value_numeric、delta_numeric、meta）。
+- report：服务报告（tenant_id、type、title、period_start/period_end、file_url、created_by、created_at）。
+- data_import_job：导入任务队列（tenant_id、type、source_file_url、status、summary、created_by、created_at、completed_at）。
+
+品牌与订阅
+- brand_config：公司品牌配置（company_id、brand_voice、product_desc、target_audience）。
+- newsletter_subscription：Newsletter 订阅（email/status/unsubscribe_token/user_id 可空）。
+
+认证相关
+- session/account/verification/password_reset_token：Better Auth 认证/重置流程使用。
+
+主要关联关系
+- company 1–N tenant；tenant_membership(tenant_id ↔ tenant.id, user_id ↔ user.id) 控制可见站点。
+- content_schedule.tenant_id → tenant.id，article_id 可 → blog_posts.id，created_by → user.id。
+- post_upload.post_id → content_schedule.id；wp_integration/report/inquiry_stat/traffic_stat/keyword_ranking/kpi_snapshot/data_import_job 等均含 tenant_id → tenant.id。
+- blog_posts.tenant_id → tenant.id（正文源）；brand_config.company_id → company.id；newsletter_subscription.user_id → user.id（可空）。
