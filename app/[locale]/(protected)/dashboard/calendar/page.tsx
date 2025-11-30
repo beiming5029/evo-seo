@@ -73,20 +73,14 @@ export default function CalendarPage() {
           backgroundColor:
             normalizeStatus(p.status) === "published"
               ? "#ECFDF3"
-              : normalizeStatus(p.status) === "draft"
-              ? "#F3F4F6"
               : "#FEF3C7",
           borderColor:
             normalizeStatus(p.status) === "published"
               ? "#BBF7D0"
-              : normalizeStatus(p.status) === "draft"
-              ? "#E5E7EB"
               : "#FDE68A",
           textColor:
             normalizeStatus(p.status) === "published"
               ? "#047857"
-              : normalizeStatus(p.status) === "draft"
-              ? "#374151"
               : "#92400E",
           extendedProps: {
             id: p.id,
