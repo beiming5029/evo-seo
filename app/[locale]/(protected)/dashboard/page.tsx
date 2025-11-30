@@ -19,7 +19,7 @@ export default function DashboardPage() {
   const [copyMessage, setCopyMessage] = useState<string | null>(null);
 
   const cardClass =
-    "group relative flex h-56 flex-col justify-between rounded-xl border border-border bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md";
+    "group relative flex h-56 flex-col justify-between rounded-xl border border-border bg-background p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md";
 
   useEffect(() => {
     const load = async () => {
@@ -60,7 +60,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white p-6 text-foreground md:p-8">
+    <div className="min-h-screen bg-background p-6 text-foreground md:p-8">
       <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-3xl font-bold md:text-4xl">Dashboard</h1>

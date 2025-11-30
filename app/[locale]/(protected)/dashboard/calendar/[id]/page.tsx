@@ -23,7 +23,7 @@ type ScheduleWithArticle = {
 };
 
 const normalizeStatus = (s: string | null | undefined) =>
-  s === "published" ? "已发布" : s === "draft" ? "暂停" : "待发布";
+  s === "published" ? "已发布" : "待发布";
 
 async function getPost(id: string): Promise<ScheduleWithArticle | null> {
   const cookie = headers().get("cookie") || "";

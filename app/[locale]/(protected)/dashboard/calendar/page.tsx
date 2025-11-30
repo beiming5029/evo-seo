@@ -23,15 +23,13 @@ type Post = {
   articleSlug?: string | null;
 };
 
-const statusLabel: Record<"ready" | "published" | "draft", string> = {
+const statusLabel: Record<"ready" | "published", string> = {
   ready: "待发布",
   published: "已发布",
-  draft: "暂停",
 };
 
-const normalizeStatus = (s: string | null | undefined): "ready" | "published" | "draft" => {
+const normalizeStatus = (s: string | null | undefined): "ready" | "published" => {
   if (s === "published") return "published";
-  if (s === "draft") return "draft";
   return "ready";
 };
 

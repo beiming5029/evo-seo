@@ -43,7 +43,6 @@ export async function GET(req: NextRequest) {
         slug: blogPosts.slug,
         excerpt: blogPosts.excerpt,
         status: blogPosts.status,
-        tenantId: blogPosts.tenantId,
       })
       .from(blogPosts)
       .where(eq(blogPosts.id, articleId))

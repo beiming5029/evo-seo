@@ -134,7 +134,7 @@ export default function AccountUpdatePage() {
 
       <div className="grid gap-6">
         <form
-          className="space-y-4 rounded-xl border border-border bg-white p-6 shadow-sm"
+          className="space-y-4 rounded-xl border border-border bg-background p-6 shadow-sm"
           onSubmit={async (e) => {
             e.preventDefault();
             await submitSettings(e.currentTarget);

@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 import { report } from "@/lib/db/schema";
 import { uploadBufferToR2 } from "@/lib/r2-storage";
 
-const MAX_UPLOAD_BYTES = 10 * 1024 * 1024; // 10MB
+const MAX_UPLOAD_BYTES = 4 * 1024 * 1024; // 4MB (Vercel body limit friendly)
 
 export async function POST(req: NextRequest) {
   try {

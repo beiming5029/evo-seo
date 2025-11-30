@@ -80,7 +80,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   "block rounded-md px-3 py-2 text-sm font-medium transition-colors",
                   active
                     ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 )}
               >
                 {item.label}

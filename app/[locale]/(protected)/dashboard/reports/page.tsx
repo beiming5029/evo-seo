@@ -51,7 +51,7 @@ export default function ReportsPage() {
     if (loading) return <p className="text-sm text-muted-foreground">加载中...</p>;
     if (!items.length)
       return (
-        <div className="flex min-h-[80px] items-center rounded-xl bg-white/70 px-4 py-3 text-sm text-muted-foreground shadow-sm">
+        <div className="flex min-h-[80px] items-center rounded-xl bg-background/70 px-4 py-3 text-sm text-muted-foreground shadow-sm">
           暂无报告
         </div>
       );
@@ -60,7 +60,7 @@ export default function ReportsPage() {
         {items.map((r) => (
           <div
             key={r.id}
-            className="flex min-h-[86px] items-center justify-between rounded-xl bg-white/70 px-4 py-3 text-sm shadow-sm"
+            className="flex min-h-[86px] items-center justify-between rounded-xl bg-background/70 px-4 py-3 text-sm shadow-sm"
           >
             <div className="flex items-center gap-2">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">

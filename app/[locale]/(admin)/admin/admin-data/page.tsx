@@ -371,7 +371,7 @@ export default function AdminDataPage() {
           </select>
         </div>
       </div>
-      <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-white p-3 shadow-sm">
+      <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-background p-3 shadow-sm">
         <TabButton value="kpi" label="数据录入" />
         <TabButton value="posts" label="文章上传表单" />
         <TabButton value="reports" label="服务报告上传" />
@@ -390,7 +390,7 @@ export default function AdminDataPage() {
 
       {section === "kpi" && (
         <div className="grid gap-6">
-          <div className="w-full space-y-4 rounded-xl border border-border bg-white p-6 shadow-sm">
+          <div className="w-full space-y-4 rounded-xl border border-border bg-background p-6 shadow-sm">
             <div className="grid gap-3 md:grid-cols-3"></div>
             <div className="flex items-center gap-2">
               {["inquiries", "traffic", "keywords"].map((key) => (
@@ -607,7 +607,7 @@ export default function AdminDataPage() {
       {section === "posts" && (
         <div className="grid gap-6">
           <form
-            className="space-y-5 rounded-xl border border-border bg-white p-6 shadow-sm"
+            className="space-y-5 rounded-xl border border-border bg-background p-6 shadow-sm"
             onSubmit={async (e) => {
               e.preventDefault();
               await submitMonthlyPosts();
@@ -658,7 +658,7 @@ export default function AdminDataPage() {
                 {articleRows.map((row) => (
                   <div
                     key={row.day}
-                    className="grid grid-cols-[72px_1fr] items-start gap-3 rounded-md border border-border/70 bg-white px-3 py-2 shadow-sm md:px-4 md:py-3"
+                    className="grid grid-cols-[72px_1fr] items-start gap-3 rounded-md border border-border/70 bg-background px-3 py-2 shadow-sm md:px-4 md:py-3"
                   >
                     <div className="flex flex-col justify-center text-sm font-semibold text-muted-foreground">
                       <span>{row.day} 号</span>
@@ -697,7 +697,7 @@ export default function AdminDataPage() {
       {section === "reports" && (
         <div className="grid gap-6">
           <form
-            className="space-y-4 rounded-xl border border-border bg-white p-6 shadow-sm"
+            className="space-y-4 rounded-xl border border-border bg-background p-6 shadow-sm"
             onSubmit={async (e) => {
               e.preventDefault();
               await submitReport(e.currentTarget);

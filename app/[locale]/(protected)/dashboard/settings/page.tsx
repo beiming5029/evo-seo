@@ -71,7 +71,7 @@ export default function SettingsPage() {
       )}
 
       <div className="space-y-4">
-        <div className="rounded-2xl border border-border/60 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-border/60 bg-background p-6 shadow-sm">
           <div className="space-y-1">
             <h2 className="text-xl font-semibold text-foreground">品牌知识库</h2>
             <p className="text-sm text-muted-foreground">AI 根据以下信息理解您的品牌和业务</p>
@@ -96,7 +96,7 @@ export default function SettingsPage() {
           )}
         </div>
 
-        <div className="rounded-2xl border border-border/60 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-border/60 bg-background p-6 shadow-sm">
           <div className="space-y-1">
             <h2 className="text-xl font-semibold text-foreground">账户信息</h2>
             <p className="text-sm text-muted-foreground">您的账户基本信息</p>

@@ -5,7 +5,7 @@ import { IconDatabaseImport, IconUpload, IconUsers } from "@tabler/icons-react";
 
 export default function AdminHomePage() {
   return (
-    <div className="bg-white p-6 md:p-8 text-foreground">
+    <div className="bg-background min-h-screen p-6 md:p-8 text-foreground">
       <div className="mb-6">
         <h1 className="text-3xl font-bold">管理后台</h1>
         <p className="text-sm text-muted-foreground mt-2">数据导入与录入</p>

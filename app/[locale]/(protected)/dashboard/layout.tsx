@@ -43,7 +43,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   "block rounded-md px-3 py-2 text-sm font-medium transition-colors",
                   active
                     ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 )}
               >
                 {item.label}
@@ -52,7 +52,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           })}
         </nav>
         {/* <div className="mt-auto">
-          <div className="rounded-xl border border-border bg-white p-3 text-left shadow-sm">
+          <div className="rounded-xl border border-border bg-background p-3 text-left shadow-sm">
             <div className="flex items-center gap-2">
               <MessageCircle className="h-4 w-4 text-foreground" />
               <p className="text-sm font-semibold text-foreground">24/7 专家客服</p>

@@ -994,6 +994,65 @@
       "placeholder": "Enter your email",
       "subscribe": "Subscribe"
     }
+  },
+  "landing": {
+    "meta": {
+      "title": "AI SEO for B2B Teams",
+      "description": "Transparent, data-driven AI SEO with expert support."
+    },
+    "hero": {
+      "badge": "AI SEO for B2B teams",
+      "title1": "Outrun competitors,",
+      "title2": "ship SEO content that actually works",
+      "desc1": "evoSEO blends 360° competitive analysis, AI writing, and expert services.",
+      "desc2": "Build a transparent, controllable, and efficient SEO content system.",
+      "ctaStart": "Start free trial",
+      "ctaDemo": "Book a demo"
+    },
+    "stats": {
+      "stat1": { "label": "Average traffic growth", "value": "200%" },
+      "stat2": { "label": "Content time saved", "value": "80%" },
+      "stat3": { "label": "Trusted by clients", "value": "500+" }
+    },
+    "why": {
+      "title": "Why evoSEO’s “glass box” model",
+      "desc": "Unlike opaque outsourcing, you stay in control at every step."
+    },
+    "features": {
+      "f1": { "title": "AI-first content", "desc": "SERP-aware generation to beat competitors." },
+      "f2": { "title": "Clear calendar", "desc": "Visual schedules so you always know what ships." },
+      "f3": { "title": "Real-time analytics", "desc": "Experts translate metrics into actions." },
+      "f4": { "title": "Pro reports", "desc": "Regular diagnostics and retros to keep improving." },
+      "f5": { "title": "One-click publish", "desc": "Deep CMS integration to auto-sync content." },
+      "f6": { "title": "Keyword precision", "desc": "Competitive planning to stand out in SERP." }
+    },
+    "busy": {
+      "title": "Built for busy B2B teams",
+      "desc": "No in-house SEO? We provide full service with full transparency."
+    },
+    "bullets": {
+      "b1": "Save 80% of content production time",
+      "b2": "Up to 200% organic growth in 3 months",
+      "b3": "Dedicated SEO experts on your team",
+      "b4": "Fully transparent workflow",
+      "b5": "Data-driven decisions",
+      "b6": "No SEO expertise required to start"
+    },
+    "case": {
+      "title": "Case · B2B tech company",
+      "indicator": "Metrics",
+      "metrics": {
+        "m1": { "label": "Engagement period", "value": "6 months" },
+        "m2": { "label": "Organic traffic", "value": "+320%" },
+        "m3": { "label": "New inquiries", "value": "+180%" },
+        "m4": { "label": "Articles shipped", "value": "48" }
+      }
+    },
+    "cta": {
+      "title": "Ready to boost your SEO?",
+      "desc": "Join 500+ customers. AI + experts, transparent delivery.",
+      "tip": "14-day free trial · No credit card · Cancel anytime"
+    }
   }
 }
 

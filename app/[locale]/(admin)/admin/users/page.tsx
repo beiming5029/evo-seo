@@ -268,7 +268,7 @@ export default function AdminUsersPage() {
       {/* 查看弹窗 */}
       {viewUser && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-4xl rounded-xl bg-white p-6 shadow-lg">
+          <div className="w-full max-w-4xl rounded-xl bg-background p-6 shadow-lg">
             <div className="flex items-start justify-between">
               <div>
                 <h3 className="text-lg font-semibold text-foreground">用户详情</h3>
@@ -340,7 +340,7 @@ export default function AdminUsersPage() {
       {/* 绑定/更新弹窗 */}
       {bindUser && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-3xl rounded-xl bg-white p-6 shadow-lg">
+          <div className="w-full max-w-3xl rounded-xl bg-background p-6 shadow-lg">
             <div className="flex items-start justify-between">
               <div>
                 <h3 className="text-lg font-semibold text-foreground">绑定/更新网站</h3>
