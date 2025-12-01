@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { TenantSwitcher } from "@/components/tenant-switcher";
+import { useTranslations } from "next-intl";
 import { ArrowDownRight, ArrowUpRight, Minus } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
@@ -10,6 +11,7 @@ type TrafficStat = { period: string; clicks: number; impressions: number; ctr: s
 type KeywordRanking = { keyword: string; targetUrl: string | null; rank: number | null; rankDelta: number | null };
 
 export default function AnalyticsPage() {
+  const t = useTranslations("dashboard.analytics");
   const [tenantId, setTenantId] = useState("");
   const [inquiries, setInquiries] = useState<InquiryStat[]>([]);
   const [traffic, setTraffic] = useState<TrafficStat[]>([]);
@@ -35,13 +37,13 @@ export default function AnalyticsPage() {
         setLatestDate(dates.length ? dates.sort().at(-1) || null : null);
         setError(null);
       } catch (err) {
-        setError("加载失败，请稍后重试");
+        setError(t("error"));
       } finally {
         setLoading(false);
       }
     };
     load();
-  }, [tenantId]);
+  }, [tenantId, t]);
 
   const last6Inquiries = useMemo(
     () => inquiries.map((i) => ({ period: i.period, value: Number(i.count) || 0 })).slice(-6),
@@ -53,7 +55,7 @@ export default function AnalyticsPage() {
   );
 
   const renderChart = (data: { period: string; value: number }[], color: string, label: string) => {
-    if (!data.length) return <p className="text-sm text-muted-foreground">暂无数据</p>;
+    if (!data.length) return <p className="text-sm text-muted-foreground">{t("noData")}</p>;
     return (
       <div className="space-y-3">
         <ResponsiveContainer width="100%" height={240}>
@@ -61,11 +63,7 @@ export default function AnalyticsPage() {
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
             <XAxis dataKey="period" tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
             <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 12 }} width={32} />
-            <Tooltip
-              contentStyle={{ fontSize: 12 }}
-              formatter={(v) => [v, label]}
-              labelFormatter={(l) => `周期：${l}`}
-            />
+            <Tooltip contentStyle={{ fontSize: 12 }} formatter={(v) => [v, label]} labelFormatter={(l) => l} />
             <Line type="monotone" dataKey="value" stroke={color} strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} />
           </LineChart>
         </ResponsiveContainer>
@@ -77,9 +75,10 @@ export default function AnalyticsPage() {
     <div className="space-y-6 p-6">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-foreground">效果看板</h1>
+          <h1 className="text-2xl font-semibold text-foreground">{t("title")}</h1>
           <p className="text-sm text-muted-foreground">
-            以下是您的核心增长指标。数据由您的专属 SEO 专家团队于 {latestDate || "近期"} 更新。
+            {t("subtitle")}
+            {latestDate ? ` · ${latestDate}` : ""}
           </p>
         </div>
         <div className="w-72">
@@ -96,39 +95,47 @@ export default function AnalyticsPage() {
       <div className="grid gap-4 lg:grid-cols-2">
         <div className="rounded-xl border border-border/60 bg-card/50 p-4">
           <div className="mb-2 flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-foreground">询盘趋势</h3>
-            <span className="text-xs text-muted-foreground">近 6 个月询盘数量变化</span>
+            <h3 className="text-lg font-semibold text-foreground">{t("inquiriesTitle")}</h3>
+            <span className="text-xs text-muted-foreground">{t("inquiriesSub")}</span>
           </div>
-          {loading ? <p className="text-sm text-muted-foreground">加载中...</p> : renderChart(last6Inquiries, "#16a34a", "询盘")}
+          {loading ? (
+            <p className="text-sm text-muted-foreground">{t("loading")}</p>
+          ) : (
+            renderChart(last6Inquiries, "#16a34a", t("inquiriesTitle"))
+          )}
         </div>
 
         <div className="rounded-xl border border-border/60 bg-card/50 p-4">
           <div className="mb-2 flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-foreground">自然流量趋势（GSC）</h3>
-            <span className="text-xs text-muted-foreground">近 6 个月网站访问量变化</span>
+            <h3 className="text-lg font-semibold text-foreground">{t("trafficTitle")}</h3>
+            <span className="text-xs text-muted-foreground">{t("trafficSub")}</span>
           </div>
-          {loading ? <p className="text-sm text-muted-foreground">加载中...</p> : renderChart(last6Traffic, "#2563eb", "点击")}
+          {loading ? (
+            <p className="text-sm text-muted-foreground">{t("loading")}</p>
+          ) : (
+            renderChart(last6Traffic, "#2563eb", t("trafficTitle"))
+          )}
         </div>
       </div>
 
       <div className="rounded-xl border border-border/60 bg-card/50 p-4">
         <div className="mb-2 flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-foreground">核心关键词排名</h3>
-            <p className="text-xs text-muted-foreground">您的重点关键词在搜索引擎中的位置</p>
+            <h3 className="text-lg font-semibold text-foreground">{t("keywordsTitle")}</h3>
+            <p className="text-xs text-muted-foreground">{t("keywordsSub")}</p>
           </div>
         </div>
         {loading ? (
-          <p className="text-sm text-muted-foreground">加载中...</p>
+          <p className="text-sm text-muted-foreground">{t("loading")}</p>
         ) : keywords.length ? (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead className="text-left text-muted-foreground">
                 <tr>
-                  <th className="px-2 py-2">关键词</th>
-                  <th className="px-2 py-2">目标网址</th>
-                  <th className="px-2 py-2">排名</th>
-                  <th className="px-2 py-2">变化</th>
+                  <th className="px-2 py-2">{t("table.keyword")}</th>
+                  <th className="px-2 py-2">{t("table.target")}</th>
+                  <th className="px-2 py-2">{t("table.rank")}</th>
+                  <th className="px-2 py-2">{t("table.delta")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -164,15 +171,15 @@ export default function AnalyticsPage() {
                         >
                           {trend > 0 ? (
                             <>
-                              <ArrowUpRight className="h-3 w-3" /> 上升
+                              <ArrowUpRight className="h-3 w-3" /> {t("trend.up")}
                             </>
                           ) : trend < 0 ? (
                             <>
-                              <ArrowDownRight className="h-3 w-3" /> 下降
+                              <ArrowDownRight className="h-3 w-3" /> {t("trend.down")}
                             </>
                           ) : (
                             <>
-                              <Minus className="h-3 w-3" /> 持平
+                              <Minus className="h-3 w-3" /> {t("trend.flat")}
                             </>
                           )}
                         </span>
@@ -184,7 +191,7 @@ export default function AnalyticsPage() {
             </table>
           </div>
         ) : (
-          <p className="text-sm text-muted-foreground">暂无关键词数据</p>
+          <p className="text-sm text-muted-foreground">{t("noData")}</p>
         )}
       </div>
     </div>

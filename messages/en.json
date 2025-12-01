@@ -34,6 +34,185 @@
       "inactive": "Inactive"
     }
   },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back",
+    "welcomeBonus": {
+      "title": "🎉 Welcome to evoSEO!",
+      "message": "Congratulations on your successful registration! We've added 300 credits welcome bonus to your account.",
+      "description": "Use these credits to try our AI chat, image generation, video generation, and more features.",
+      "ctaButton": "Try Now",
+      "dismissButton": "Got it"
+    },
+    "cards": {
+      "personalInfo": {
+        "title": "Personal Info",
+        "labels": {
+          "name": "Name",
+          "email": "Email",
+          "status": "Status",
+          "notSet": "Not set"
+        }
+      },
+      "quickActions": {
+        "title": "Quick Actions",
+        "editProfile": "Edit Profile",
+        "accountSettings": "Account Settings",
+        "securitySettings": "Security Settings",
+        "changePassword": "Change Password"
+      },
+      "statistics": {
+        "title": "Statistics",
+        "labels": {
+          "loginCount": "Login Count",
+          "memberSince": "Member Since",
+          "plan": "Plan",
+          "credits": "Credits",
+          "today": "Today"
+        },
+        "plans": {
+          "free": "Free",
+          "starterMonthly": "Starter Monthly",
+          "starterYearly": "Starter Yearly",
+          "proMonthly": "Pro Monthly",
+          "proYearly": "Pro Yearly"
+        },
+        "buyCredits": "Buy 200 Credits ($5)",
+        "viewCredits": "View Credits"
+      }
+    },
+    "paymentSuccess": "�?Payment successful! Your credits will be updated shortly.",
+    "creditHistory": {
+      "title": "Credit History",
+      "noRecords": "No credit history yet",
+      "columns": {
+        "time": "Time",
+        "type": "Type",
+        "description": "Description",
+        "amount": "Amount"
+      },
+      "types": {
+        "purchase": "Purchase",
+        "subscription": "Subscription",
+        "usage": "Usage",
+        "refund": "Refund",
+        "adjustment": "Adjustment",
+        "other": "Other"
+      },
+      "reasons": {
+        "subscription_cycle": "Subscription Credits",
+        "one_time_pack": "Credit Pack Purchase",
+        "chat_usage": "AI Chat Usage",
+        "refund": "Refund Credits",
+        "adjustment": "System Adjustment",
+        "registration_bonus": "New User Welcome Bonus"
+      }
+    },
+    "nav": {
+      "home": "Home",
+      "analytics": "Analytics",
+      "calendar": "Calendar",
+      "reports": "Reports",
+      "settings": "Settings"
+    },
+    "home": {
+      "welcome": "Welcome back",
+      "subtitle": "See your growth board. {count} sites are acquiring leads.",
+      "inquiriesTitle": "Inquiries this month",
+      "inquiriesDesc": "Overview of this month",
+      "calendarTitle": "Article calendar (month)",
+      "calendarDesc": "Scheduled and published",
+      "reportsTitle": "Latest report",
+      "reportsDesc": "Click to view all",
+      "noReport": "No reports yet",
+      "expertTitle": "24/7 Expert Support",
+      "expertDesc": "Need help? Our SEO experts are here. WeChat: lsiy_lee",
+      "copyWechat": "Copy WeChat ID",
+      "copied": "Copied WeChat ID",
+      "copyFailed": "Copy failed, add manually: lsiy_lee"
+    },
+    "calendar": {
+      "title": "Content Calendar",
+      "subtitle": "Auto counts published/scheduled posts. Default: current month.",
+      "published": "Published",
+      "ready": "Scheduled",
+      "statusPublished": "Published",
+      "statusReady": "Scheduled",
+      "loading": "Loading...",
+      "viewFull": "View full text",
+      "notFound": "Not found",
+      "close": "Close"
+    },
+    "reportsPage": {
+      "title": "Service Reports",
+      "subtitle": "Your expert reports",
+      "diagnosis": "Strategy diagnosis",
+      "review": "Review",
+      "loading": "Loading...",
+      "empty": "No reports",
+      "download": "Download"
+    },
+    "analytics": {
+      "title": "Analytics",
+      "subtitle": "Key growth indicators. Updated by your SEO team.",
+      "inquiriesTitle": "Inquiry trend",
+      "inquiriesSub": "Last 6 months inquiry changes",
+      "trafficTitle": "Organic traffic trend (GSC)",
+      "trafficSub": "Last 6 months site visits",
+      "keywordsTitle": "Core keyword ranking",
+      "keywordsSub": "Where your focus keywords rank",
+      "loading": "Loading...",
+      "error": "Failed to load, try again",
+      "noData": "No data",
+      "table": {
+        "keyword": "Keyword",
+        "target": "Target URL",
+        "rank": "Rank",
+        "delta": "Change"
+      },
+      "trend": {
+        "up": "Up",
+        "down": "Down",
+        "flat": "Flat"
+      }
+    },
+    "settingsPage": {
+      "title": "Settings",
+      "brand": "Brand",
+      "account": "Account",
+      "loading": "Loading...",
+      "error": "Failed to load, try again",
+      "brandTitle": "Brand knowledge base",
+      "brandDesc": "AI uses this to understand your brand and business.",
+      "brandVoice": "Brand voice",
+      "productDesc": "Product description",
+      "targetAudience": "Target audience",
+      "accountTitle": "Account info",
+      "accountDesc": "Your basic account details",
+      "email": "Email",
+      "company": "Company name",
+      "site": "Site URL",
+      "validUntil": "Valid until",
+      "notSet": "Not set"
+    }
+  },
+  "dashboard.nav.home": "Home",
+  "dashboard.nav.analytics": "Analytics",
+  "dashboard.nav.calendar": "Calendar",
+  "dashboard.nav.reports": "Reports",
+  "dashboard.nav.settings": "Settings",
+  "dashboard.home.welcome": "Welcome back",
+  "dashboard.home.subtitle": "See your growth board. {count} sites are acquiring leads.",
+  "dashboard.home.inquiriesTitle": "Inquiries this month",
+  "dashboard.home.inquiriesDesc": "Overview of this month",
+  "dashboard.home.calendarTitle": "Article calendar (month)",
+  "dashboard.home.calendarDesc": "Scheduled and published",
+  "dashboard.home.reportsTitle": "Latest report",
+  "dashboard.home.reportsDesc": "Click to view all",
+  "dashboard.home.noReport": "No reports yet",
+  "dashboard.home.expertTitle": "24/7 Expert Support",
+  "dashboard.home.expertDesc": "Need help? Our SEO experts are here. WeChat: lsiy_lee",
+  "dashboard.home.copyWechat": "Copy WeChat ID",
   "navigation": {
     "main": {
       "pricing": "Pricing",
@@ -731,81 +910,6 @@
       }
     }
   },
-  "dashboard": {
-    "title": "Dashboard",
-    "welcome": "Welcome back",
-    "welcomeBonus": {
-      "title": "🎉 Welcome to evoSEO!",
-      "message": "Congratulations on your successful registration! We've added 300 credits welcome bonus to your account.",
-      "description": "Use these credits to try our AI chat, image generation, video generation, and more features.",
-      "ctaButton": "Try Now",
-      "dismissButton": "Got it"
-    },
-    "cards": {
-      "personalInfo": {
-        "title": "Personal Info",
-        "labels": {
-          "name": "Name",
-          "email": "Email",
-          "status": "Status",
-          "notSet": "Not set"
-        }
-      },
-      "quickActions": {
-        "title": "Quick Actions",
-        "editProfile": "Edit Profile",
-        "accountSettings": "Account Settings",
-        "securitySettings": "Security Settings",
-        "changePassword": "Change Password"
-      },
-      "statistics": {
-        "title": "Statistics",
-        "labels": {
-          "loginCount": "Login Count",
-          "memberSince": "Member Since",
-          "plan": "Plan",
-          "credits": "Credits",
-          "today": "Today"
-        },
-        "plans": {
-          "free": "Free",
-          "starterMonthly": "Starter Monthly",
-          "starterYearly": "Starter Yearly",
-          "proMonthly": "Pro Monthly",
-          "proYearly": "Pro Yearly"
-        },
-        "buyCredits": "Buy 200 Credits ($5)",
-        "viewCredits": "View Credits"
-      }
-    },
-    "paymentSuccess": "�?Payment successful! Your credits will be updated shortly.",
-    "creditHistory": {
-      "title": "Credit History",
-      "noRecords": "No credit history yet",
-      "columns": {
-        "time": "Time",
-        "type": "Type",
-        "description": "Description",
-        "amount": "Amount"
-      },
-      "types": {
-        "purchase": "Purchase",
-        "subscription": "Subscription",
-        "usage": "Usage",
-        "refund": "Refund",
-        "adjustment": "Adjustment",
-        "other": "Other"
-      },
-      "reasons": {
-        "subscription_cycle": "Subscription Credits",
-        "one_time_pack": "Credit Pack Purchase",
-        "chat_usage": "AI Chat Usage",
-        "refund": "Refund Credits",
-        "adjustment": "System Adjustment",
-        "registration_bonus": "New User Welcome Bonus"
-      }
-    }
-  },
   "credits": {
     "title": "Credits Management",
     "subtitle": "Manage your credits and view usage history",
@@ -1010,21 +1114,48 @@
       "ctaDemo": "Book a demo"
     },
     "stats": {
-      "stat1": { "label": "Average traffic growth", "value": "200%" },
-      "stat2": { "label": "Content time saved", "value": "80%" },
-      "stat3": { "label": "Trusted by clients", "value": "500+" }
+      "stat1": {
+        "label": "Average traffic growth",
+        "value": "200%"
+      },
+      "stat2": {
+        "label": "Content time saved",
+        "value": "80%"
+      },
+      "stat3": {
+        "label": "Trusted by clients",
+        "value": "500+"
+      }
     },
     "why": {
       "title": "Why evoSEO’s “glass box” model",
       "desc": "Unlike opaque outsourcing, you stay in control at every step."
     },
     "features": {
-      "f1": { "title": "AI-first content", "desc": "SERP-aware generation to beat competitors." },
-      "f2": { "title": "Clear calendar", "desc": "Visual schedules so you always know what ships." },
-      "f3": { "title": "Real-time analytics", "desc": "Experts translate metrics into actions." },
-      "f4": { "title": "Pro reports", "desc": "Regular diagnostics and retros to keep improving." },
-      "f5": { "title": "One-click publish", "desc": "Deep CMS integration to auto-sync content." },
-      "f6": { "title": "Keyword precision", "desc": "Competitive planning to stand out in SERP." }
+      "f1": {
+        "title": "AI-first content",
+        "desc": "SERP-aware generation to beat competitors."
+      },
+      "f2": {
+        "title": "Clear calendar",
+        "desc": "Visual schedules so you always know what ships."
+      },
+      "f3": {
+        "title": "Real-time analytics",
+        "desc": "Experts translate metrics into actions."
+      },
+      "f4": {
+        "title": "Pro reports",
+        "desc": "Regular diagnostics and retros to keep improving."
+      },
+      "f5": {
+        "title": "One-click publish",
+        "desc": "Deep CMS integration to auto-sync content."
+      },
+      "f6": {
+        "title": "Keyword precision",
+        "desc": "Competitive planning to stand out in SERP."
+      }
     },
     "busy": {
       "title": "Built for busy B2B teams",
@@ -1042,10 +1173,22 @@
       "title": "Case · B2B tech company",
       "indicator": "Metrics",
       "metrics": {
-        "m1": { "label": "Engagement period", "value": "6 months" },
-        "m2": { "label": "Organic traffic", "value": "+320%" },
-        "m3": { "label": "New inquiries", "value": "+180%" },
-        "m4": { "label": "Articles shipped", "value": "48" }
+        "m1": {
+          "label": "Engagement period",
+          "value": "6 months"
+        },
+        "m2": {
+          "label": "Organic traffic",
+          "value": "+320%"
+        },
+        "m3": {
+          "label": "New inquiries",
+          "value": "+180%"
+        },
+        "m4": {
+          "label": "Articles shipped",
+          "value": "48"
+        }
       }
     },
     "cta": {
@@ -1055,4 +1198,3 @@
     }
   }
 }
-

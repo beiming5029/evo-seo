@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import "@/styles/fullcalendar.css";
 import { Button } from "@/components/button";
+import { useTranslations } from "next-intl";
 
 const FullCalendar = dynamic(() => import("@fullcalendar/react"), { ssr: false });
 
@@ -39,6 +40,7 @@ export default function CalendarPage() {
   const [selected, setSelected] = useState<Post | null>(null);
   const [currentTitle, setCurrentTitle] = useState("");
   const fetchKeyRef = useRef<string>("");
+  const t = useTranslations("dashboard.calendar");
 
   const loadPosts = async (start?: string, end?: string) => {
     const key = `${start || ""}-${end || ""}`;
@@ -68,7 +70,7 @@ export default function CalendarPage() {
         .filter((p) => p.publishDate)
         .map((p) => ({
           id: String(p.id),
-          title: p.title || p.articleTitle || "未命名文章",
+          title: p.title || p.articleTitle || t("notFound"),
           date: p.publishDate!,
           backgroundColor:
             normalizeStatus(p.status) === "published"
@@ -84,7 +86,7 @@ export default function CalendarPage() {
               : "#92400E",
           extendedProps: {
             id: p.id,
-            tenantName: p.tenantName || "站点",
+            tenantName: p.tenantName || t("notFound"),
             tenantSiteUrl: p.tenantSiteUrl || "",
             status: normalizeStatus(p.status),
             articleTitle: p.articleTitle,
@@ -122,19 +124,17 @@ export default function CalendarPage() {
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-foreground">内容日历</h1>
-            <p className="text-sm text-muted-foreground">
-              系统自动统计已发布/待发布文章，默认展示本月，可查看合作起始月至当前月的排期。
-            </p>
+            <h1 className="text-2xl font-semibold text-foreground">{t("title")}</h1>
+            <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
           </div>
           <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
             <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-1 text-emerald-700">
               <span className="h-2 w-2 rounded-full bg-emerald-500" />
-              已发布 {publishedCount}
+              {t("published")} {publishedCount}
             </span>
             <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-1 text-amber-700">
               <span className="h-2 w-2 rounded-full bg-amber-500" />
-              待发布 {scheduledCount}
+              {t("ready")} {scheduledCount}
             </span>
             {/* <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-1 text-slate-600">
               <span className="h-2 w-2 rounded-full bg-slate-500" />
@@ -144,7 +144,7 @@ export default function CalendarPage() {
         </div>
       </div>
 
-      {loading && <div className="text-sm text-muted-foreground">加载中...</div>}
+      {loading && <div className="text-sm text-muted-foreground">{t("loading")}</div>}
 
       <div className="overflow-hidden rounded-2xl border border-border/60 bg-card/60">
         <FullCalendar
@@ -175,9 +175,11 @@ export default function CalendarPage() {
                   ${arg.event.title}
                 </div>
                 <div style="font-size:11px;color:#6b7280;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                  ${tenantName || "站点"} ${tenantSiteUrl ? "· " + tenantSiteUrl : ""}
+                  ${tenantName || ""} ${tenantSiteUrl ? "· " + tenantSiteUrl : ""}
                 </div>
-                <div style="font-size:11px;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${statusLabel[normalizedStatus]}</div>
+                <div style="font-size:11px;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${
+                  normalizedStatus === "published" ? t("statusPublished") : t("statusReady")
+                }</div>
               `,
             };
           }}
@@ -201,10 +203,15 @@ export default function CalendarPage() {
                 <h3 className="text-xl font-semibold leading-7 text-foreground">{selected.title}</h3>
                 <div className="space-y-1 text-xs text-muted-foreground">
                   <p className="font-medium text-foreground">
-                    {selected.tenantName || "站点"} {selected.tenantSiteUrl ? `· ${selected.tenantSiteUrl}` : ""}
+                    {selected.tenantName || t("notFound")} {selected.tenantSiteUrl ? `· ${selected.tenantSiteUrl}` : ""}
                   </p>
-                  <p>发布日期：{selected.publishDate || "未设置"}</p>
-                  <p>发布状态：{statusLabel[normalizeStatus(selected.status)]}</p>
+                  <p>
+                    {t("statusPublished")}：{selected.publishDate || t("notFound")}
+                  </p>
+                  <p>
+                    {t("statusPublished")}：
+                    {normalizeStatus(selected.status) === "published" ? t("statusPublished") : t("statusReady")}
+                  </p>
                 </div>
               </div>
               <Button
@@ -212,7 +219,7 @@ export default function CalendarPage() {
                 className="h-9 min-w-[72px] shrink-0 rounded-full px-3 text-sm text-muted-foreground hover:bg-muted/50"
                 onClick={() => setSelected(null)}
               >
-                关闭
+                {t("close")}
               </Button>
             </div>
 
@@ -226,7 +233,7 @@ export default function CalendarPage() {
                 className="px-5"
                 onClick={() => window.open(`/dashboard/calendar/${selected.id}`, "_self")}
               >
-                查看全文
+                {t("viewFull")}
               </Button>
             </div>
           </div>
@@ -244,16 +251,17 @@ export default function CalendarPage() {
             onClick={async () => {
               try {
                 const res = await fetch("/api/cron/publish", { method: "POST" });
-                console.log('/api/cron/publish - res', res)
                 if (!res.ok) throw new Error(await res.text());
                 const data = await res.json();
-                alert(`已触发发布：已处理 ${data.processed} 篇，成功 ${data.published?.length || 0}，跳过 ${data.skipped?.length || 0}，失败 ${data.failed?.length || 0}`);
+                alert(
+                  `Trigger publish: processed ${data.processed}, success ${data.published?.length || 0}, skipped ${data.skipped?.length || 0}, failed ${data.failed?.length || 0}`
+                );
               } catch (err: any) {
-                alert(`触发失败：${err?.message || err}`);
+                alert(`Trigger failed: ${err?.message || err}`);
               }
             }}
           >
-            立即发布今日文章
+            {t("viewFull")}
           </Button>
         </div>
       </div>

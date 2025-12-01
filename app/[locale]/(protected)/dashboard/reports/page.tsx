@@ -3,6 +3,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { TenantSwitcher } from "@/components/tenant-switcher";
 import { FileDown, FileText } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 type Report = {
   id: string;
@@ -19,6 +20,7 @@ export default function ReportsPage() {
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const t = useTranslations("dashboard.reportsPage");
 
   const load = async (tenant: string) => {
     try {
@@ -29,7 +31,7 @@ export default function ReportsPage() {
       setReports(data.reports || []);
       setError(null);
     } catch (err: any) {
-      setError("加载失败，请稍后重试");
+      setError(t("loading"));
     } finally {
       setLoading(false);
     }
@@ -48,11 +50,11 @@ export default function ReportsPage() {
   }, [reports]);
 
   const renderList = (items: Report[]) => {
-    if (loading) return <p className="text-sm text-muted-foreground">加载中...</p>;
+    if (loading) return <p className="text-sm text-muted-foreground">{t("loading")}</p>;
     if (!items.length)
       return (
         <div className="flex min-h-[80px] items-center rounded-xl bg-background/70 px-4 py-3 text-sm text-muted-foreground shadow-sm">
-          暂无报告
+          {t("empty")}
         </div>
       );
     return (
@@ -78,6 +80,7 @@ export default function ReportsPage() {
               className="inline-flex items-center gap-1 text-primary hover:underline"
             >
               <FileDown className="h-5 w-5" />
+              <span className="sr-only">{t("download")}</span>
             </a>
           </div>
         ))}
@@ -89,10 +92,8 @@ export default function ReportsPage() {
     <div className="space-y-6 p-6">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-foreground">服务报告</h1>
-          <p className="text-sm text-muted-foreground">
-            这里是您的 evoSEO 专家团队为您出具的深度报告。
-          </p>
+          <h1 className="text-2xl font-semibold text-foreground">{t("title")}</h1>
+          <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
         </div>
         <div className="w-72">
           <TenantSwitcher value={tenantId} onChange={setTenantId} />
@@ -107,12 +108,12 @@ export default function ReportsPage() {
 
       <div className="space-y-6">
         <section className="rounded-2xl bg-muted/40 p-4">
-          <h3 className="text-lg font-semibold text-foreground">策略诊断报告</h3>
+          <h3 className="text-lg font-semibold text-foreground">{t("diagnosis")}</h3>
           <div className="mt-3">{renderList(grouped.diagnosis)}</div>
         </section>
 
         <section className="rounded-2xl bg-muted/40 p-4">
-          <h3 className="text-lg font-semibold text-foreground">双月度复盘报告</h3>
+          <h3 className="text-lg font-semibold text-foreground">{t("review")}</h3>
           <div className="mt-3">{renderList(grouped.review)}</div>
         </section>
       </div>

@@ -1,23 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { MessageCircle } from "lucide-react";
 
-const baseNavItems = [
-  { key: "home", label: "主页", path: "" },
-  { key: "analytics", label: "效果看板", path: "/analytics" },
-  { key: "calendar", label: "内容日历", path: "/calendar" },
-  { key: "reports", label: "服务报告", path: "/reports" },
-  { key: "settings", label: "设置", path: "/settings" },
-];
+const baseNavKeys = ["home", "analytics", "calendar", "reports", "settings"] as const;
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const locale = useLocale();
   const pathname = usePathname();
-  const navItems = baseNavItems;
+  const t = useTranslations("dashboard.nav");
+  const navItems = baseNavKeys.map((key) => ({
+    key,
+    label: t(key),
+    path: key === "home" ? "" : `/${key}`,
+  }));
 
   return (
     <div className="flex min-h-screen flex-row bg-background/80">
