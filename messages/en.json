@@ -196,23 +196,6 @@
       "notSet": "Not set"
     }
   },
-  "dashboard.nav.home": "Home",
-  "dashboard.nav.analytics": "Analytics",
-  "dashboard.nav.calendar": "Calendar",
-  "dashboard.nav.reports": "Reports",
-  "dashboard.nav.settings": "Settings",
-  "dashboard.home.welcome": "Welcome back",
-  "dashboard.home.subtitle": "See your growth board. {count} sites are acquiring leads.",
-  "dashboard.home.inquiriesTitle": "Inquiries this month",
-  "dashboard.home.inquiriesDesc": "Overview of this month",
-  "dashboard.home.calendarTitle": "Article calendar (month)",
-  "dashboard.home.calendarDesc": "Scheduled and published",
-  "dashboard.home.reportsTitle": "Latest report",
-  "dashboard.home.reportsDesc": "Click to view all",
-  "dashboard.home.noReport": "No reports yet",
-  "dashboard.home.expertTitle": "24/7 Expert Support",
-  "dashboard.home.expertDesc": "Need help? Our SEO experts are here. WeChat: lsiy_lee",
-  "dashboard.home.copyWechat": "Copy WeChat ID",
   "navigation": {
     "main": {
       "pricing": "Pricing",

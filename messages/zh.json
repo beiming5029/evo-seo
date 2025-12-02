@@ -195,23 +195,6 @@
       "notSet": "未配置"
     }
   },
-  "dashboard.nav.home": "主页",
-  "dashboard.nav.analytics": "效果看板",
-  "dashboard.nav.calendar": "内容日历",
-  "dashboard.nav.reports": "服务报告",
-  "dashboard.nav.settings": "设置",
-  "dashboard.home.welcome": "欢迎回来",
-  "dashboard.home.subtitle": "查看您的增长大盘。当前有 {count} 个站点正在持续获客。",
-  "dashboard.home.inquiriesTitle": "本月新增询盘",
-  "dashboard.home.inquiriesDesc": "总览当月询盘表现",
-  "dashboard.home.calendarTitle": "文章日历（本月）",
-  "dashboard.home.calendarDesc": "排期与发布数量",
-  "dashboard.home.reportsTitle": "最新服务报告",
-  "dashboard.home.reportsDesc": "点击查看全部报告",
-  "dashboard.home.noReport": "暂无报告",
-  "dashboard.home.expertTitle": "24/7 专家客服",
-  "dashboard.home.expertDesc": "遇到问题？SEO 专家随时为您服务。微信号：lsiy_lee",
-  "dashboard.home.copyWechat": "复制微信号并添加",
   "navigation": {
     "main": {
       "pricing": "定价",

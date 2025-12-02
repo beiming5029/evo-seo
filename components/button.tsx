@@ -4,7 +4,7 @@ import React from "react";
 export const Button: React.FC<{
   children?: React.ReactNode;
   className?: string;
-  variant?: "simple" | "outline" | "primary";
+  variant?: "simple" | "outline" | "primary" | "gradient";
   size?: "sm" | "md" | "lg";
   as?: React.ElementType;
   [x: string]: any;
@@ -30,6 +30,8 @@ export const Button: React.FC<{
       ? "bg-background hover:bg-primary hover:shadow-xl text-foreground border border-border hover:text-primary-foreground transition font-medium duration-200 rounded-full flex items-center justify-center"
       : variant === "primary"
       ? "bg-primary hover:bg-primary/90 border border-transparent text-primary-foreground transition font-medium duration-200 rounded-full flex items-center justify-center shadow-[0px_-1px_0px_0px_rgba(255,255,255,0.25)_inset,_0px_1px_0px_0px_rgba(255,255,255,0.25)_inset]"
+      : variant === "gradient"
+      ? "bg-brand-gradient hover:opacity-90 border border-transparent text-white transition font-medium duration-200 rounded-full flex items-center justify-center shadow-glow"
       : "";
   return (
     <Tag

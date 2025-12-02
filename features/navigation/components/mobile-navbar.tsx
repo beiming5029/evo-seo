@@ -48,9 +48,9 @@ export const MobileNavbar = () => {
   return (
     <div
       className={cn(
-        "flex justify-between bg-background items-center w-full rounded-full px-4 py-2 transition duration-200",
+        "flex justify-between bg-navbar items-center w-full rounded-full px-4 py-2 transition duration-200",
         showBackground &&
-          "bg-secondary shadow-[0px_-2px_0px_0px_hsl(var(--muted)),0px_2px_0px_0px_hsl(var(--muted))]"
+          "shadow-[0px_-2px_0px_0px_hsl(var(--muted)),0px_2px_0px_0px_hsl(var(--muted))]"
       )}
     >
       <Logo />

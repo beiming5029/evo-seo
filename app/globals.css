@@ -5,81 +5,108 @@
 
 @layer base {
   :root {
-    /* 亮色主题（保持现有风格，轻微对比度优化） */
-    --background: 0 0% 100%;
-    --foreground: 222 17% 12%;
+    /*
+      Vibrant Intelligence Theme (活力智能)
+      设计灵感：Outranking & SEO.ING
+      关键词：高饱和、渐变、通透、科技感
+    */
 
+    /* 基础背景：极简白，但带有冷色调倾向 */
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%; /* 深邃蓝黑文字，比纯黑更柔和 */
+
+    /* 卡片：纯白，依靠阴影和微弱边框区分 */
     --card: 0 0% 100%;
-    --card-foreground: 222 17% 12%;
+    --card-foreground: 222 47% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 17% 12%;
+    --popover-foreground: 222 47% 11%;
 
-    --primary: 222 18% 12%;
-    --primary-foreground: 210 40% 98%;
+    /*
+      Primary Brand Color: Electric Violet (电光紫)
+      这是主品牌色，用于强调和核心交互。
+      对应 Hex: #7c3aed (Violet-600 调整版)
+    */
+    --primary: 262 83% 58%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 15% 96%;
-    --secondary-foreground: 222 17% 15%;
+    /*
+      Secondary Brand Color: Bright Cyan (亮青)
+      用于辅助渐变和次要高亮。
+    */
+    --secondary: 190 90% 50%;
+    --secondary-foreground: 222 47% 11%;
 
-    --muted: 210 16% 96%;
-    --muted-foreground: 215 16% 35%;
+    /* 柔和的背景色，用于区分区块 */
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 15% 96%;
-    --accent-foreground: 222 17% 12%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
 
-    --border: 214 15% 90%;
-    --input: 214 15% 90%;
-    --ring: 222 18% 20%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
 
-    --gradient-from: 210 15% 98%;
-    --gradient-to: 210 12% 92%;
+    /* 边框颜色：非常淡，减少视觉干扰 */
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+
+    /* Ring 颜色与主色一致 */
+    --ring: 262 83% 58%;
+
+    --radius: 0.75rem; /* 稍微圆润一点的圆角，更现代 */
 
     --navbar-bg: 0 0% 100%;
-    --navbar-bg-scrolled: 210 15% 96%;
+    --navbar-bg-scrolled: 0 0% 100%; /* 滚动后保持纯白，依靠阴影 */
 
-    --shadow-color: 214 15% 90%;
+    --shadow-color: 220 14% 90%; /* 浅色阴影 */
 
-    --hover-bg: 210 15% 95%;
-    --hover-foreground: 222 17% 10%;
+    --hover-bg: 262 83% 97%;
+    --hover-foreground: 262 83% 40%;
   }
 
   .dark {
-    /* 深色主题，压暗背景、提升对比，贴近示例效果 */
-    --background: 220 15% 7%;
-    --foreground: 210 35% 95%;
+    /*
+      Dark Mode: Deep Space (深空)
+      背景不再是灰黑，而是带有丰富蓝紫色调的深色，
+      营造出“发光”的霓虹感。
+    */
+    --background: 240 10% 4%; /* 极深的蓝紫色背景 */
+    --foreground: 210 40% 98%;
 
-    --card: 220 14% 10%;
-    --card-foreground: 210 35% 95%;
+    --card: 240 10% 7%; /* 略浅于背景 */
+    --card-foreground: 210 40% 98%;
 
-    --popover: 220 14% 10%;
-    --popover-foreground: 210 35% 95%;
+    --popover: 240 10% 7%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 0 0% 100%;
-    --primary-foreground: 220 14% 8%;
+    /* 深色模式下的主色：更亮，带有荧光感 */
+    --primary: 263 70% 65%;
+    --primary-foreground: 210 40% 98%;
 
-    --secondary: 215 14% 16%;
-    --secondary-foreground: 210 35% 92%;
+    --secondary: 190 90% 60%; /* 提亮青色 */
+    --secondary-foreground: 222 47% 11%;
 
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 215 15% 72%;
+    --muted: 240 10% 12%;
+    --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 214 17% 18%;
-    --accent-foreground: 210 35% 95%;
+    --accent: 240 10% 12%;
+    --accent-foreground: 210 40% 98%;
 
-    --border: 218 14% 18%;
-    --input: 218 14% 18%;
-    --ring: 220 15% 40%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
 
-    --gradient-from: 220 14% 10%;
-    --gradient-to: 216 14% 14%;
+    --border: 240 10% 12%;
+    --input: 240 10% 12%;
+    --ring: 263 70% 65%;
 
-    --navbar-bg: 220 14% 9%;
-    --navbar-bg-scrolled: 218 14% 14%;
+    --navbar-bg: 240 10% 4%;
+    --navbar-bg-scrolled: 240 10% 7%;
 
-    --shadow-color: 220 14% 10%;
+    --shadow-color: 240 10% 4%;
 
-    --hover-bg: 215 14% 18%;
-    --hover-foreground: 210 35% 95%;
+    --hover-bg: 263 70% 15%;
+    --hover-foreground: 210 40% 98%;
   }
 }
 
@@ -93,18 +120,39 @@ body {
   width: 100%;
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
+  /*
+    全局背景光晕效果 (Light Mode)
+    在右上角和左下角添加微妙的彩色光晕，打破单调。
+  */
+  background-image:
+    radial-gradient(circle at 100% 0%, hsla(262, 83%, 90%, 0.3) 0%, transparent 25%),
+    radial-gradient(circle at 0% 100%, hsla(190, 90%, 90%, 0.3) 0%, transparent 25%);
+  background-attachment: fixed;
 }
 
 .dark body {
-  /* 轻量网格背景，营造深色科技质感 */
+  /*
+    全局背景光晕效果 (Dark Mode)
+    深色模式下的光晕更深邃，模拟星云感。
+  */
   background-image:
-    linear-gradient(transparent 0%, transparent 96%, hsla(0, 0%, 100%, 0.05) 100%),
-    linear-gradient(90deg, transparent 0%, transparent 96%, hsla(0, 0%, 100%, 0.05) 100%);
-  background-size: 120px 120px;
+    radial-gradient(circle at 100% 0%, hsla(262, 83%, 20%, 0.15) 0%, transparent 30%),
+    radial-gradient(circle at 0% 20%, hsla(190, 90%, 20%, 0.1) 0%, transparent 30%);
+  background-size: cover;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* 新增：品牌渐变文字工具类 */
+  .text-gradient-brand {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-500 to-secondary;
+  }
+
+  /* 新增：品牌渐变背景工具类 */
+  .bg-gradient-brand {
+    @apply bg-gradient-to-r from-primary via-purple-500 to-secondary;
   }
 }
