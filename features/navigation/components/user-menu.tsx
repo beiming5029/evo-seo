@@ -58,7 +58,7 @@ export function UserMenu() {
 
   if (!user) {
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 z-[1]">
         <Link
           href={`/${locale}/login`}
           className="text-sm text-muted-foreground transition-colors hover:text-foreground"

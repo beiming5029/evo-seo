@@ -427,7 +427,7 @@ export default function AdminUsersPage() {
                     <Input
                       name="wpAppPassword"
                       type="password"
-                      placeholder="****"
+                      placeholder=""
                       value={bindForm.wpAppPassword}
                       onChange={(e) => setBindForm((prev) => ({ ...prev, wpAppPassword: e.target.value }))}
                     />

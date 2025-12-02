@@ -128,7 +128,6 @@ export default async function Home({ params: { locale } }: { params: { locale: L
 
           <Container className="grid gap-16 lg:grid-cols-2 items-center relative z-10">
             <div>
-              <Badge className="mb-4 border-primary/20 text-primary bg-primary/5">Efficiency</Badge>
               <h3 className="text-3xl md:text-4xl font-black leading-tight mb-6">{t("busy.title")}</h3>
               <p className="text-lg text-muted-foreground mb-8 leading-relaxed">{t("busy.desc")}</p>
               <ul className="space-y-4">
