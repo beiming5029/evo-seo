@@ -135,6 +135,8 @@
       "title": "Content Calendar",
       "subtitle": "Auto counts published/scheduled posts. Default: current month.",
       "published": "Published",
+      "publishDate": "PublishDate",
+      "publishStatus": "PublishStatus",
       "ready": "Scheduled",
       "statusPublished": "Published",
       "statusReady": "Scheduled",

@@ -122,7 +122,7 @@ export default function SettingsPage() {
               </div>
               <div>
                 <p className="text-muted-foreground">{t("validUntil")}</p>
-                <p className="mt-1 text-base font-semibold">{formattedDate(account?.validUntil)}</p>
+                <p className="mt-1 text-base">{formattedDate(account?.validUntil)}</p>
               </div>
             </div>
           )}

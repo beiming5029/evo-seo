@@ -135,6 +135,8 @@
       "subtitle": "系统统计已发布/待发布文章，默认展示本月。",
       "published": "已发布",
       "ready": "待发布",
+      "publishDate": "发布时间",
+      "publishStatus": "发布状态",
       "statusPublished": "已发布",
       "statusReady": "待发布",
       "loading": "加载中...",

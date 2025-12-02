@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { Button } from "@/components/button";
+import { notify } from "@/lib/notify";
 
 type Job = {
   id: string;
@@ -27,6 +28,7 @@ export default function ImportPage() {
       setMessage(null);
     } catch (error) {
       setMessage("加载失败");
+      notify.error("加载失败");
     } finally {
       setLoading(false);
     }
@@ -43,6 +45,7 @@ export default function ImportPage() {
     const file = formData.get("file");
     if (!(file instanceof File)) {
       setMessage("请选择文件");
+      notify.error("请选择文件");
       return;
     }
     try {
@@ -53,10 +56,12 @@ export default function ImportPage() {
       });
       if (!res.ok) throw new Error(await res.text());
       setMessage("导入任务已创建（pending），稍后处理");
+      notify.success("导入任务已创建");
       form.reset();
       await load();
     } catch (error) {
-      setMessage("上传失败，确认大小 ≤10MB");
+      setMessage("上传失败，确认大小≤10MB");
+      notify.error("上传失败，确认大小≤10MB");
     } finally {
       setUploading(false);
     }
@@ -67,7 +72,7 @@ export default function ImportPage() {
       <div>
         <h1 className="text-2xl font-semibold text-foreground">数据导入</h1>
         <p className="text-sm text-muted-foreground">
-          支持手动导入询盘/流量/关键词/KPI 的 CSV 或 JSON，创建导入任务后可在此查看状态。
+          支持手动导入询盘/流量/关键词/KPI 的 CSV / JSON，创建导入任务后可在此查看状态。
         </p>
       </div>
 

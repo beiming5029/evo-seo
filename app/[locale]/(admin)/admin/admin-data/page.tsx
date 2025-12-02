@@ -12,7 +12,7 @@ type TrafficRow = { date: string; clicks: string; impressions?: string; ctr?: st
 type KeywordRow = { keyword: string; targetUrl: string; rank: string; trend: string };
 type DailyArticleRow = { day: number; articleId: string; title?: string; loading?: boolean; error?: string };
 
-type SectionKey = "kpi" | "posts" | "reports";
+type SectionKey = "kpi" | "posts";
 
 const getCurrentMonth = () => {
   const now = new Date();
@@ -275,13 +275,12 @@ export default function AdminDataPage() {
   };
 
   const submitReport = async (form: HTMLFormElement) => {
-    const tenantId = ensureTenantSelected();
-    if (!tenantId) {
-      setError("请选择关联站点");
+    if (!selectedUserId) {
+      setError("请选择目标用户");
       return;
     }
     const formData = new FormData(form);
-    formData.append("tenantId", tenantId);
+    formData.append("userId", selectedUserId);
     try {
       setSaving(true);
       clearAlerts();
@@ -374,7 +373,6 @@ export default function AdminDataPage() {
       <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-background p-3 shadow-sm">
         <TabButton value="kpi" label="数据录入" />
         <TabButton value="posts" label="文章上传表单" />
-        <TabButton value="reports" label="服务报告上传" />
       </div>
 
       {message && (
@@ -689,48 +687,6 @@ export default function AdminDataPage() {
 
             <Button type="submit" disabled={saving} className="w-full">
               保存当月文章排期
-            </Button>
-          </form>
-        </div>
-      )}
-
-      {section === "reports" && (
-        <div className="grid gap-6">
-          <form
-            className="space-y-4 rounded-xl border border-border bg-background p-6 shadow-sm"
-            onSubmit={async (e) => {
-              e.preventDefault();
-              await submitReport(e.currentTarget);
-            }}
-          >
-            <h2 className="text-lg font-semibold">服务报告上传</h2>
-            <div className="grid gap-2 md:grid-cols-2">
-              <div className="space-y-1">
-                <Label>报告名称</Label>
-                <Input name="title" required />
-              </div>
-              <div className="space-y-1">
-                <Label>类型</Label>
-                <select name="type" className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm">
-                  <option value="diagnosis">策略诊断</option>
-                  <option value="review">复盘</option>
-                </select>
-              </div>
-              <div className="space-y-1">
-                <Label>开始日期</Label>
-                <Input type="date" name="periodStart" required />
-              </div>
-              <div className="space-y-1">
-                <Label>结束日期</Label>
-                <Input type="date" name="periodEnd" required />
-              </div>
-            </div>
-            <div className="space-y-1">
-              <Label>上传 PDF（≤10MB）</Label>
-              <Input type="file" name="file" accept=".pdf" required />
-            </div>
-            <Button type="submit" disabled={saving} className="w-full">
-              上传报告
             </Button>
           </form>
         </div>

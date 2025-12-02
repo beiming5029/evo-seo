@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
-import { TenantSwitcher } from "@/components/tenant-switcher";
 import { FileDown, FileText } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -16,16 +15,15 @@ type Report = {
 };
 
 export default function ReportsPage() {
-  const [tenantId, setTenantId] = useState("");
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const t = useTranslations("dashboard.reportsPage");
 
-  const load = async (tenant: string) => {
+  const load = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`/api/evo/reports?tenantId=${tenant}`);
+      const res = await fetch(`/api/evo/reports`);
       if (!res.ok) throw new Error(await res.text());
       const data = await res.json();
       setReports(data.reports || []);
@@ -38,9 +36,8 @@ export default function ReportsPage() {
   };
 
   useEffect(() => {
-    if (!tenantId) return;
-    load(tenantId);
-  }, [tenantId]);
+    load();
+  }, []);
 
   const grouped = useMemo(() => {
     return {
@@ -70,7 +67,9 @@ export default function ReportsPage() {
               </div>
               <div>
                 <p className="font-semibold text-foreground">{r.title}</p>
-                <p className="text-xs text-muted-foreground">{r.periodStart}</p>
+                <p className="text-xs text-muted-foreground">
+                  {new Date(r.createdAt).toISOString().slice(0, 10)}
+                </p>
               </div>
             </div>
             <a
@@ -94,9 +93,6 @@ export default function ReportsPage() {
         <div>
           <h1 className="text-2xl font-semibold text-foreground">{t("title")}</h1>
           <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
-        </div>
-        <div className="w-72">
-          <TenantSwitcher value={tenantId} onChange={setTenantId} />
         </div>
       </div>
 

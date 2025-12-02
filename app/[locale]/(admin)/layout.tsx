@@ -13,6 +13,7 @@ const navItems = [
   { key: "account", label: "用户信息变更", path: "/admin/account" },
   // { key: "import", label: "数据导入", path: "/admin/import" },
   { key: "adminData", label: "管理员上传", path: "/admin/admin-data" },
+  { key: "serviceReports", label: "服务报告上传", path: "/admin/service-reports" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

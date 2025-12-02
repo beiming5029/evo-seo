@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { notify } from "@/lib/notify";
 import { Button } from "@/components/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -117,9 +118,10 @@ export default function AdminUsersPage() {
       resetBindForm();
       await fetchUsers({ userId });
       setMessage("操作成功");
-      setTimeout(() => setMessage(null), 3000);
+      notify.success("操作成功");
     } catch (err) {
       setError("操作失败，请检查必填项");
+      notify.error("操作失败，请检查必填项");
     } finally {
       setSaving(false);
     }
@@ -161,17 +163,6 @@ export default function AdminUsersPage() {
           </div>
         </div>
       </form>
-
-      {message && (
-        <div className="rounded-md border border-green-500/60 bg-green-50 px-3 py-2 text-sm text-green-700">
-          {message}
-        </div>
-      )}
-      {error && (
-        <div className="rounded-md border border-destructive/60 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          {error}
-        </div>
-      )}
 
       <div className="overflow-x-auto rounded-xl border border-border/60 bg-card/50">
         <table className="min-w-full text-sm">
@@ -417,7 +408,7 @@ export default function AdminUsersPage() {
                     <Label className="text-xs">WP 用户名（选填）</Label>
                     <Input
                       name="wpUsername"
-                      placeholder="wp-admin"
+                      placeholder=""
                       value={bindForm.wpUsername}
                       onChange={(e) => setBindForm((prev) => ({ ...prev, wpUsername: e.target.value }))}
                     />

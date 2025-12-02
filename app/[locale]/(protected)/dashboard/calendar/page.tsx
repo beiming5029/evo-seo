@@ -125,21 +125,20 @@ export default function CalendarPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-semibold text-foreground">{t("title")}</h1>
-            <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
-          </div>
-          <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-1 text-emerald-700">
-              <span className="h-2 w-2 rounded-full bg-emerald-500" />
-              {t("published")} {publishedCount}
-            </span>
-            <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-1 text-amber-700">
-              <span className="h-2 w-2 rounded-full bg-amber-500" />
-              {t("ready")} {scheduledCount}
-            </span>
-            {/* <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-1 text-slate-600">
-              <span className="h-2 w-2 rounded-full bg-slate-500" />
-              暂停
-            </span> */}
+            <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground rounded-2xl mt-5">
+              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-1 text-emerald-700">
+                <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                {t("published")} {publishedCount}
+              </span>
+              <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-1 text-amber-700">
+                <span className="h-2 w-2 rounded-full bg-amber-500" />
+                {t("ready")} {scheduledCount}
+              </span>
+              {/* <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-1 text-slate-600">
+                <span className="h-2 w-2 rounded-full bg-slate-500" />
+                暂停
+              </span> */}
+            </div>
           </div>
         </div>
       </div>
@@ -206,10 +205,10 @@ export default function CalendarPage() {
                     {selected.tenantName || t("notFound")} {selected.tenantSiteUrl ? `· ${selected.tenantSiteUrl}` : ""}
                   </p>
                   <p>
-                    {t("statusPublished")}：{selected.publishDate || t("notFound")}
+                    {t("publishDate")}：{selected.publishDate || t("notFound")}
                   </p>
                   <p>
-                    {t("statusPublished")}：
+                    {t("publishStatus")}：
                     {normalizeStatus(selected.status) === "published" ? t("statusPublished") : t("statusReady")}
                   </p>
                 </div>
@@ -240,7 +239,7 @@ export default function CalendarPage() {
         </div>
       )}
 
-      <div className="rounded-2xl border border-dashed border-border/60 bg-card/40 p-4">
+      {/* <div className="rounded-2xl border border-dashed border-border/60 bg-card/40 p-4">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-semibold text-foreground">手动触发发布（模拟定时任务）</p>
@@ -264,7 +263,7 @@ export default function CalendarPage() {
             {t("viewFull")}
           </Button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
