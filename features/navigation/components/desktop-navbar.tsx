@@ -9,6 +9,9 @@ import { Logo } from "@/components/Logo";
 import { cn } from "@/lib/utils";
 import { ModeToggle } from "@/components/mode-toggle";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { marketingNavigationKeys } from "@/features/navigation/config";
+import { NavBarItem } from "./navbar-item";
+import { NavBarItemWithDropdown } from "./navbar-item-with-dropdown";
 
 import {
   UserMenu,
@@ -21,7 +24,7 @@ export const DesktopNavbar = () => {
   const [showBackground, setShowBackground] = useState(false);
 
   useMotionValueEvent(scrollY, "change", (value) => {
-    if (value > 100) {
+    if (value > 50) {
       setShowBackground(true);
     } else {
       setShowBackground(false);
@@ -30,28 +33,34 @@ export const DesktopNavbar = () => {
   return (
     <div
       className={cn(
-        "w-full flex relative justify-between px-4 py-2 rounded-full bg-navbar transition duration-200",
-        showBackground &&
-          "shadow-[0px_-2px_0px_0px_hsl(var(--muted)),0px_2px_0px_0px_hsl(var(--muted))]"
+        "w-full flex relative justify-between px-6 py-3 transition-all duration-300 ease-in-out",
+        showBackground
+          ? "bg-background/70 backdrop-blur-lg shadow-sm"
+          : "bg-transparent"
       )}
     >
-      <AnimatePresence>
-        {showBackground && (
-          <motion.div
-            key={String(showBackground)}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{
-              duration: 1,
-            }}
-            className="absolute inset-0 h-full w-full bg-muted pointer-events-none [mask-image:linear-gradient(to_bottom,white,transparent,white)] rounded-full"
-          />
-        )}
-      </AnimatePresence>
-      <div className="flex flex-row gap-2 items-center">
+      <div className="flex flex-row gap-2 items-center z-50">
         <Logo />
+        <nav className="hidden md:flex items-center gap-1 ml-8">
+          {marketingNavigationKeys.map((item) => (
+            item.subItems ? (
+              <NavBarItemWithDropdown
+                key={item.key}
+                itemKey={item.key}
+                href={item.href}
+                subItems={item.subItems}
+              >
+                {t(item.key)}
+              </NavBarItemWithDropdown>
+            ) : (
+              <NavBarItem key={item.key} href={item.href}>
+                {t(item.key)}
+              </NavBarItem>
+            )
+          ))}
+        </nav>
       </div>
-      <div className="flex space-x-2 items-center">
+      <div className="flex space-x-2 items-center z-50">
         <LanguageSwitcher />
         <ModeToggle />
         <UserMenu />

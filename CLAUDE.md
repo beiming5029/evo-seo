@@ -228,15 +228,6 @@ BETTER_AUTH_URL="http://localhost:3000"  # 生产环境改为实际域名
 AUTH_GOOGLE_ID="your-google-client-id"
 AUTH_GOOGLE_SECRET="your-google-client-secret"
 
-# 火山引擎 (必需,用于 AI 功能)
-VOLCANO_ENGINE_API_KEY="your-volcano-engine-api-key"
-VOLCANO_ENGINE_API_URL="https://ark.cn-beijing.volces.com/api/v3"
-
-# Creem 支付 (必需,用于订阅和支付)
-CREEM_API_KEY="your-creem-api-key"
-CREEM_WEBHOOK_SECRET="whsec_..."
-# 测试环境可设置 CREEM_SIMULATE="true" 跳过实际支付
-
 # Resend 邮件 (必需,用于认证和交易邮件)
 RESEND_API_KEY="re_your_api_key"
 RESEND_FROM_EMAIL="Your App <noreply@yourdomain.com>"
@@ -264,20 +255,6 @@ user (id, email, credits, planKey, role, banned, ...)
 session (id, userId, token, expiresAt, ...)
 account (id, userId, providerId, accessToken, ...)
 
--- 支付和订阅
-payment (id, userId, providerPaymentId, amountCents, status, creditsGranted, ...)
-subscription (id, userId, providerSubId, planKey, status, currentPeriodEnd, ...)
-creditLedger (id, userId, delta, reason, paymentId, createdAt)
-subscriptionCreditSchedule (id, subscriptionId, nextGrantAt, grantsRemaining, ...)
-
--- AI 功能
-chatSession (id, userId, model, totalCreditsUsed, ...)
-chatMessage (id, sessionId, role, content, creditsUsed, ...)
-generationHistory (id, userId, type, prompt, resultUrl, status, ...)
-
--- 其他
-passwordResetToken (id, userId, token, expiresAt)
-newsletterSubscription (id, email, status, ...)
 ```
 
 完整 Schema 定义: `lib/db/schema.ts`
@@ -303,18 +280,10 @@ newsletterSubscription (id, email, status, ...)
 
 ## 安全机制
 
-1. **Webhook 签名验证**: Creem webhook 通过 HMAC-SHA256 验证 (`lib/payments/creem.ts:76-110`)
-2. **支付幂等性**: 通过 `providerPaymentId` 防止重复处理
-3. **Cron 端点保护**: 通过 `CRON_SECRET` 或 Basic Auth 验证
-4. **用户封禁**: 支持临时/永久封禁 (`user.banned`, `banReason`, `banExpires`)
-5. **SQL 注入防护**: 使用 Drizzle ORM 参数化查询
-
 ## 部署清单
 
 ### 1. 环境准备
 - [ ] PostgreSQL 数据库 (推荐 Supabase/Neon/Vercel Postgres)
-- [ ] 火山引擎 API Key (https://console.volcengine.com/ark)
-- [ ] Creem 账号和 API Key (https://creem.io)
 - [ ] Resend API Key (https://resend.com)
 - [ ] (可选) Google OAuth 凭据
 - [ ] (可选) S3 存储配置
@@ -326,77 +295,18 @@ pnpm db:push  # 首次部署
 pnpm db:migrate  # 使用迁移文件
 ```
 
-### 3. 配置 Creem Webhook
-在 Creem Dashboard 中设置 Webhook URL:
-```
-https://your-domain.com/api/payments/creem/webhook
-```
-监听事件: `checkout.completed`, `subscription.paid`, `subscription.active`
-
-### 4. 配置 Cron Job (用于年付积分发放)
-在 Vercel/服务器上设置定时任务,每小时调用:
-```bash
-curl -H "Authorization: Bearer YOUR_CRON_SECRET" \
-  https://your-domain.com/api/cron/grant-subscription-credits
-```
-
-### 5. 创建管理员账户
+### 3. 创建管理员账户
 ```bash
 pnpm admin:setup
 ```
 
-### 6. 环境变量检查
+### 4. 环境变量检查
 确保生产环境的 `BETTER_AUTH_URL`, `NEXT_PUBLIC_APP_URL`, `RESEND_FROM_EMAIL` 使用正确的域名。
 
 ## 自定义指南
 
-### 修改定价计划
-编辑 `constants/billing.ts`:
-```typescript
-starter_monthly: {
-  priceCents: 2900,        // 修改价格
-  creditsPerCycle: 1000,   // 修改积分数
-  creemPriceId: "prod_xxx" // 对应 Creem 的产品 ID
-}
-```
-
-### 修改积分消耗规则
-编辑相应文件:
-- 对话: `lib/credits.ts:5` (CHAT_CREDIT_COST)
-- 图像: `app/api/image/route.ts`
-- 视频: `app/api/video/generate/route.ts`
-
-### 替换 AI 提供商
-如需切换到 OpenAI/Anthropic:
-1. 替换 `lib/volcano-engine/` 中的 API 调用逻辑
-2. 更新环境变量
-3. 调整模型配置
-
-### 添加新的支付网关
-参考 `lib/payments/creem.ts` 的结构,创建新的支付提供商集成。
-
 ## 故障排查
 
-### Webhook 未触发
-1. 检查 Creem Dashboard 中 Webhook URL 是否正确
-2. 查看 Webhook 日志,确认签名验证通过
-3. 检查 `CREEM_WEBHOOK_SECRET` 是否匹配
-
-### 年付积分未自动发放
-1. 检查 Cron Job 是否正常运行
-2. 查看 `subscriptionCreditSchedule` 表中的 `nextGrantAt` 时间
-3. 检查 Cron 端点的认证配置
-
-### 用户无法访问管理后台
-1. 确认 `user.role = 'admin'`
-2. 检查 `features/admin/components/admin-guard.tsx` 逻辑
-
-## 性能优化建议
-
-1. **积分查询**: 高频操作,考虑使用 Redis 缓存 `user.credits`
-2. **AI API 调用**: 添加速率限制 (Rate Limiting)
-3. **数据库索引**: 已在关键字段添加索引 (如 `subscriptionCreditSchedule.nextGrantAt`)
-4. **图片/视频**: 使用 CDN 分发生成的媒体文件
 
 ## 相关文档
 
@@ -405,4 +315,3 @@ starter_monthly: {
 - [Better Auth 文档](https://better-auth.com/)
 - [Drizzle ORM 文档](https://orm.drizzle.team/)
 - [Next.js 14 文档](https://nextjs.org/docs)
-- [火山引擎 API 文档](https://www.volcengine.com/docs/82379)

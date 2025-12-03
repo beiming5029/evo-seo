@@ -58,18 +58,12 @@ export function UserMenu() {
 
   if (!user) {
     return (
-      <div className="flex items-center gap-2 z-[1]">
+      <div className="flex items-center gap-2">
         <Link
           href={`/${locale}/login`}
           className="text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
           {t("common.actions.signIn")}
-        </Link>
-        <Link
-          href={`/${locale}/signup`}
-          className="rounded-full bg-primary px-4 py-1.5 text-sm text-primary-foreground transition-opacity hover:opacity-90"
-        >
-          {t("common.actions.signUp")}
         </Link>
       </div>
     );
