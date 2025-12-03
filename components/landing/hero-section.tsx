@@ -146,7 +146,7 @@ export function HeroSection() {
             transition={{ delay: 0.3, duration: 0.6 }}
             className="flex justify-center gap-4"
           >
-            <Button size="lg" className="rounded-full px-8 py-6 text-lg bg-slate-900 dark:bg-blue-600 hover:bg-slate-800 dark:hover:bg-blue-500 text-white shadow-lg hover:shadow-xl transition-all hover:-translate-y-1" as="a" href="/login">
+            <Button size="lg" className="rounded-full px-8 py-6 text-lg bg-slate-900 dark:bg-blue-600 hover:bg-slate-800 dark:hover:bg-blue-500 text-white shadow-lg hover:shadow-xl transition-all hover:-translate-y-1" as="a" href="/dashboard">
               立即开始
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>

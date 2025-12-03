@@ -43,7 +43,7 @@ export function CTASection() {
                 加入 500+ 企业客户，AI+专家团队护航增长。立即开启您的增长之旅。
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-6 text-lg rounded-full shadow-lg shadow-blue-900/50 transition-all hover:scale-105" as="a" href="/login">
+                <Button size="lg" className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-6 text-lg rounded-full shadow-lg shadow-blue-900/50 transition-all hover:scale-105" as="a" href="/dashboard">
                   立即开始
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
