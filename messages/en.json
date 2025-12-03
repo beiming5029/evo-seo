@@ -200,6 +200,10 @@
   },
   "navigation": {
     "main": {
+      "services": "Services",
+      "features": "Features",
+      "results": "Results",
+      "contact": "Contact",
       "pricing": "Pricing",
       "blog": "Blog",
       "contact": "Contact",
