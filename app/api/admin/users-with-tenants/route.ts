@@ -42,6 +42,7 @@ export async function GET(req: NextRequest) {
         targetAudience: brandConfig.targetAudience,
         wpUsername: wpIntegration.wpUsername,
         wpAppPassword: wpIntegration.wpAppPassword,
+        userImage: user.image,
       })
       .from(user)
       .leftJoin(company, eq(user.companyId, company.id))
@@ -58,6 +59,7 @@ export async function GET(req: NextRequest) {
         id: string;
         name: string | null;
         email: string;
+        image?: string | null;
         company: {
           id?: string | null;
           name?: string | null;
@@ -89,6 +91,7 @@ export async function GET(req: NextRequest) {
           id: row.userId,
           name: row.userName,
           email: row.userEmail,
+          image: row.userImage,
           company: {
             id: row.companyId,
             name: row.companyName,

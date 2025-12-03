@@ -197,14 +197,6 @@ export const MobileNavbar = () => {
             ) : (
               <div className="flex flex-col gap-2.5 w-full">
                 <Button
-                  as={Link}
-                  href={`/${locale}/signup`}
-                  onClick={() => setOpen(false)}
-                  className="w-full justify-center"
-                >
-                  {tCommon('signUp')}
-                </Button>
-                <Button
                   variant="simple"
                   as={Link}
                   href={`/${locale}/login`}

@@ -75,14 +75,6 @@ export function LoginForm() {
       submitLoadingText={t('signingIn')}
       isLoading={isLoading}
       error={error}
-      footer={
-        <p className="mt-4 text-center text-sm text-muted-foreground">
-          {t('noAccount')}{" "}
-          <Link href={`/${locale}/signup`} className="text-foreground hover:underline">
-            {t('signUpLink')}
-          </Link>
-        </p>
-      }
       socialSlot={<SocialAuthButtons onGoogleSignIn={handleGoogleSignIn} isLoading={isLoading} />}
     >
       <FormTextField
