@@ -20,7 +20,7 @@ export function Pricing() {
 
   const handleTierClick = (tierId: string) => {
     if (tierId === "tier-free") {
-      return () => router.push(`/${locale}/signup`);
+      return () => router.push(`/${locale}/login`);
     }
     if (tierId === "tier-enterprise") {
       return () => router.push(`/${locale}/contact`);

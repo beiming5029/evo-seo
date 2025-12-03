@@ -1,5 +1,5 @@
-import { SignupForm } from "@/features/auth/components/signup-form";
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { getTranslations } from 'next-intl/server';
 import type { Locale } from "@/i18n.config";
 
@@ -19,6 +19,6 @@ export async function generateMetadata({
   };
 }
 
-export default function SignupPage() {
-  return <SignupForm />;
+export default function SignupPage({ params }: { params: { locale: Locale } }) {
+  redirect(`/${params.locale}/login`);
 }

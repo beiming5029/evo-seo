@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import { notify } from "@/lib/notify";
 import { Button } from "@/components/button";
 import { Input } from "@/components/ui/input";
@@ -23,7 +24,7 @@ type CompanyInfo = {
   tenants?: TenantInfo[];
 };
 
-type AdminUser = { id: string; name: string | null; email: string; company?: CompanyInfo; tenants?: TenantInfo[] };
+type AdminUser = { id: string; name: string | null; email: string; image?: string | null; company?: CompanyInfo; tenants?: TenantInfo[] };
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<AdminUser[]>([]);
@@ -33,7 +34,6 @@ export default function AdminUsersPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [query, setQuery] = useState({ userId: "", email: "" });
   const fetchedOnce = useRef(false);
-
   const [viewUser, setViewUser] = useState<AdminUser | null>(null);
   const [viewTenantId, setViewTenantId] = useState<string | null>(null);
 
@@ -45,6 +45,15 @@ export default function AdminUsersPage() {
     wpUsername: "",
     wpAppPassword: "",
   });
+
+  const [editUser, setEditUser] = useState<AdminUser | null>(null);
+  const [editForm, setEditForm] = useState({
+    name: "",
+    imageUrl: "",
+    password: "",
+  });
+  const [editUploading, setEditUploading] = useState(false);
+  const [editSaving, setEditSaving] = useState(false);
 
   const getTenantList = (u: AdminUser | null) =>
     u?.company?.tenants?.length ? u.company.tenants : u?.tenants || [];
@@ -79,6 +88,91 @@ export default function AdminUsersPage() {
       userId: query.userId.trim() || undefined,
       email: query.email.trim() || undefined,
     });
+  };
+
+  const resetCreateForm = () =>
+    setCreateForm({
+      name: "",
+      email: "",
+      password: "",
+      imageUrl: "",
+    });
+
+  const openEditUser = (u: AdminUser) => {
+    setEditUser(u);
+    setEditForm({
+      name: u.name || "",
+      imageUrl: u.image || "",
+      password: "",
+    });
+  };
+
+  const handleEditAvatarUpload = async (file: File | null) => {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setError("头像仅支持图片文件");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      setEditUploading(true);
+      setError(null);
+      const res = await fetch("/api/upload/image", {
+        method: "POST",
+        body: formData,
+      });
+      if (!res.ok) throw new Error(await res.text());
+      const data = await res.json();
+      setEditForm((prev) => ({ ...prev, imageUrl: data.url || "" }));
+      setMessage("头像上传成功");
+      notify.success("头像上传成功");
+    } catch (err) {
+      console.error(err);
+      setError("头像上传失败，请重试");
+      notify.error("头像上传失败，请重试");
+    } finally {
+      setEditUploading(false);
+    }
+  };
+
+  const submitEditUser = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!editUser) return;
+    if (!editForm.name.trim()) {
+      setError("请填写姓名");
+      return;
+    }
+    if (editForm.password && editForm.password.length < 8) {
+      setError("密码至少 8 位");
+      return;
+    }
+    try {
+      setEditSaving(true);
+      setError(null);
+      setMessage(null);
+      const res = await fetch("/api/admin/users/update", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: editUser.id,
+          name: editForm.name.trim(),
+          imageUrl: editForm.imageUrl || undefined,
+          password: editForm.password || undefined,
+        }),
+      });
+      if (!res.ok) throw new Error(await res.text());
+      setEditUser(null);
+      setEditForm({ name: "", imageUrl: "", password: "" });
+      await fetchUsers({ userId: editUser.id });
+      setMessage("用户信息已更新");
+      notify.success("用户信息已更新");
+    } catch (err) {
+      setError("更新失败，请稍后重试");
+      notify.error("更新失败，请稍后重试");
+    } finally {
+      setEditSaving(false);
+    }
   };
 
   const resetBindForm = () =>
@@ -138,7 +232,13 @@ export default function AdminUsersPage() {
         </div>
       </div>
 
-      <form className="rounded-xl border border-border/60 bg-card/50 p-4" onSubmit={submitSearch}>
+      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-end">
+        <Button as={Link} href="/admin/users/create" className="bg-primary text-primary-foreground hover:bg-primary/90" variant="primary">
+          新增用户
+        </Button>
+      </div>
+
+<form className="rounded-xl border border-border/60 bg-card/50 p-4" onSubmit={submitSearch}>
         <div className="grid gap-4 md:grid-cols-3">
           <div className="space-y-1">
             <Label>用户 ID</Label>
@@ -225,7 +325,22 @@ export default function AdminUsersPage() {
                     </td>
                     <td className="px-3 py-3">
                       <div className="flex gap-2">
-                        {tenantList.length > 0 && (
+                        <Button
+                          as={Link}
+                          href={`/admin/users/${u.id}`}
+                          size="sm"
+                          variant="outline"
+                        >
+                          详情
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => openEditUser(u)}
+                        >
+                          编辑
+                        </Button>
+                        {/* {tenantList.length > 0 && (
                           <Button
                             size="sm"
                             variant="outline"
@@ -236,7 +351,7 @@ export default function AdminUsersPage() {
                           >
                             查看
                           </Button>
-                        )}
+                        )} */}
                         <Button
                           size="sm"
                           variant="outline"
@@ -429,6 +544,94 @@ export default function AdminUsersPage() {
                 </Button>
               </form>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* 编辑用户信息弹窗 */}
+      {editUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-3xl rounded-xl bg-background p-6 shadow-lg">
+            <div className="flex items-start justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-foreground">编辑用户信息</h3>
+                <p className="text-sm text-muted-foreground">
+                  邮箱不可修改，如需变更请新建账户 · {editUser.email}
+                </p>
+              </div>
+              <Button variant="simple" onClick={() => setEditUser(null)}>
+                关闭
+              </Button>
+            </div>
+
+            <form className="mt-4 grid gap-4 md:grid-cols-2" onSubmit={submitEditUser}>
+              <div className="space-y-1">
+                <Label className="text-xs">姓名</Label>
+                <Input
+                  value={editForm.name}
+                  onChange={(e) => setEditForm((prev) => ({ ...prev, name: e.target.value }))}
+                  placeholder="用户姓名"
+                  required
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">密码（选填，至少 8 位）</Label>
+                <Input
+                  type="password"
+                  value={editForm.password}
+                  onChange={(e) => setEditForm((prev) => ({ ...prev, password: e.target.value }))}
+                  placeholder="********"
+                />
+              </div>
+              <div className="space-y-1 md:col-span-2">
+                <Label className="text-xs">头像（选填）</Label>
+                <div className="flex items-center gap-3">
+                  {editForm.imageUrl ? (
+                    <img
+                      src={editForm.imageUrl}
+                      alt="avatar preview"
+                      className="h-12 w-12 rounded-full border border-border object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full border border-dashed border-border text-xs text-muted-foreground">
+                      无
+                    </div>
+                  )}
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] || null;
+                      handleEditAvatarUpload(file);
+                      e.target.value = "";
+                    }}
+                    disabled={editUploading || editSaving}
+                    className="max-w-xs"
+                  />
+                  {editForm.imageUrl && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setEditForm((prev) => ({ ...prev, imageUrl: "" }))}
+                      disabled={editUploading || editSaving}
+                    >
+                      移除
+                    </Button>
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground">如需改邮箱，请新建账户再迁移数据</p>
+              </div>
+              <div className="md:col-span-2 flex items-center gap-3">
+                <Button type="submit" size="sm" disabled={editSaving || editUploading}>
+                  {editSaving ? "保存中..." : "保存修改"}
+                </Button>
+                <Button type="button" variant="outline" size="sm" onClick={() => setEditUser(null)} disabled={editSaving}>
+                  取消
+                </Button>
+                {editUploading && <span className="text-xs text-muted-foreground">头像正在上传...</span>}
+              </div>
+            </form>
           </div>
         </div>
       )}
