@@ -90,14 +90,6 @@ export default function AdminUsersPage() {
     });
   };
 
-  const resetCreateForm = () =>
-    setCreateForm({
-      name: "",
-      email: "",
-      password: "",
-      imageUrl: "",
-    });
-
   const openEditUser = (u: AdminUser) => {
     setEditUser(u);
     setEditForm({

@@ -11,7 +11,9 @@ const subscribeSchema = z.object({
   email: z.string().email("Invalid email address"),
 });
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = process.env.RESEND_API_KEY
+  ? new Resend(process.env.RESEND_API_KEY)
+  : null;
 
 export async function POST(request: NextRequest) {
   try {
@@ -47,7 +49,7 @@ export async function POST(request: NextRequest) {
         .where(eq(newsletterSubscription.id, subscription.id));
 
       // Update Resend Audience if configured
-      if (process.env.RESEND_AUDIENCE_ID) {
+      if (process.env.RESEND_AUDIENCE_ID && resend) {
         try {
           // Try to update existing contact
           await resend.contacts.update({
@@ -103,7 +105,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Add to Resend Audience if configured
-    if (process.env.RESEND_AUDIENCE_ID) {
+    if (process.env.RESEND_AUDIENCE_ID && resend) {
       try {
         await resend.contacts.create({
           email,
