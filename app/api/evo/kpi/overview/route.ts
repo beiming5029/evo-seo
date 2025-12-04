@@ -1,14 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import {
-  inquiryStat,
-  trafficStat,
-  keywordRanking,
-  kpiSnapshot,
-} from "@/lib/db/schema";
+import { inquiryStat, trafficStat, keywordRanking } from "@/lib/db/schema";
 import { ensureTenantForUser } from "@/lib/db/tenant";
-import { desc, eq, asc } from "drizzle-orm";
+import { eq, asc } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
 
@@ -22,13 +17,7 @@ export async function GET(req: NextRequest) {
     const tenantIdParam = url.searchParams.get("tenantId") || undefined;
     const { tenantId } = await ensureTenantForUser(session.session.userId, tenantIdParam);
 
-    const [kpis, inquiries, traffic, keywords] = await Promise.all([
-      db
-        .select()
-        .from(kpiSnapshot)
-        .where(eq(kpiSnapshot.tenantId, tenantId))
-        .orderBy(desc(kpiSnapshot.periodStart))
-        .limit(50),
+    const [inquiries, traffic, keywords] = await Promise.all([
       db
         .select()
         .from(inquiryStat)
@@ -50,7 +39,6 @@ export async function GET(req: NextRequest) {
     ]);
 
     return NextResponse.json({
-      kpis,
       inquiries,
       traffic,
       keywords,

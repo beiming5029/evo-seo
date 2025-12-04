@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
+import { LoadingIndicator } from "@/components/loading-indicator";
 
 type BrandConfig = {
   brandVoice?: string | null;
@@ -80,7 +81,9 @@ export default function SettingsPage() {
             <p className="text-sm text-muted-foreground">{t("brandDesc")}</p>
           </div>
           {loading ? (
-            <p className="mt-4 text-sm text-muted-foreground">{t("loading")}</p>
+           <div className="py-1">
+              <LoadingIndicator label={t("loading")} className="border-0 bg-transparent px-0 shadow-none" rounded={false} />
+            </div>
           ) : (
             <div className="mt-4 space-y-4 text-sm text-foreground">
               <div>
@@ -105,7 +108,9 @@ export default function SettingsPage() {
             <p className="text-sm text-muted-foreground">{t("accountDesc")}</p>
           </div>
           {loading ? (
-            <p className="mt-4 text-sm text-muted-foreground">{t("loading")}</p>
+           <div className="py-1">
+              <LoadingIndicator label={t("loading")} className="border-0 bg-transparent px-0 shadow-none" rounded={false} />
+            </div>
           ) : (
             <div className="mt-4 grid gap-3 text-sm text-foreground md:grid-cols-2">
               <div>

@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto";
+﻿import { randomUUID } from "crypto";
 import {
   pgTable,
   text,
@@ -22,6 +22,9 @@ export const company = pgTable("company", {
   contactEmail: text("contact_email"),
   validUntil: date("valid_until"),
   cooperationStartDate: date("cooperation_start_date"),
+  brandVoice: text("brand_voice"),
+  productDesc: text("product_desc"),
+  targetAudience: text("target_audience"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -129,10 +132,6 @@ export const tenant = pgTable("tenant", {
   name: text("name").notNull(),
   companyId: text("company_id").references(() => company.id, { onDelete: "cascade" }),
   siteUrl: text("site_url"),
-  // 兼容旧数据：站点级的联系邮箱/合作期（推荐使用 company 表字段）
-  contactEmail: text("contact_email"),
-  validUntil: date("valid_until"),
-  cooperationStartDate: date("cooperation_start_date"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -155,28 +154,6 @@ export const tenantMembership = pgTable(
       table.tenantId,
       table.userId
     ),
-  }),
-);
-
-// 品牌知识库：品牌语调/产品描述/客户画像
-export const brandConfig = pgTable(
-  "brand_config",
-  {
-    id: text("id").primaryKey().$defaultFn(() => randomUUID()),
-    companyId: text("company_id")
-      .notNull()
-      .references(() => company.id, { onDelete: "cascade" }),
-    brandVoice: text("brand_voice"),
-    productDesc: text("product_desc"),
-    targetAudience: text("target_audience"),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at")
-      .defaultNow()
-      .$onUpdate(() => new Date())
-      .notNull(),
-  },
-  (table) => ({
-    companyUniqueIdx: uniqueIndex("brand_config_company_unique_idx").on(table.companyId),
   }),
 );
 
@@ -239,7 +216,8 @@ export const contentSchedule = pgTable(
     }),
     title: text("title").notNull(),
     summary: text("summary"),
-    contentUrl: text("content_url").notNull(),
+    slug: text("slug").notNull(),
+    fileUrl: text("file_url"),
     publishDate: date("publish_date").notNull(),
     status: varchar("status", { length: 16 }).default("ready").notNull(), // ready | published | draft
     platform: varchar("platform", { length: 32 }).default("wordpress").notNull(),
@@ -252,28 +230,6 @@ export const contentSchedule = pgTable(
       table.tenantId,
       table.publishDate
     ),
-  }),
-);
-
-// 文章上传内容记录（存储 URL/预览）
-export const postUpload = pgTable(
-  "post_upload",
-  {
-    id: text("id").primaryKey().$defaultFn(() => randomUUID()),
-    tenantId: text("tenant_id")
-      .notNull()
-      .references(() => tenant.id, { onDelete: "cascade" }),
-    postId: text("post_id")
-      .notNull()
-      .references(() => contentSchedule.id, { onDelete: "cascade" }),
-    storageUrl: text("storage_url").notNull(),
-    previewUrl: text("preview_url"),
-    sizeBytes: integer("size_bytes"),
-    uploadedBy: text("uploaded_by").references(() => user.id, { onDelete: "set null" }),
-    uploadedAt: timestamp("uploaded_at").defaultNow().notNull(),
-  },
-  (table) => ({
-    postIdx: index("post_upload_post_idx").on(table.postId),
   }),
 );
 
@@ -298,31 +254,6 @@ export const postPublishLog = pgTable(
   }),
 );
 
-// KPI 快照（询盘/流量等汇总）
-export const kpiSnapshot = pgTable(
-  "kpi_snapshot",
-  {
-    id: text("id").primaryKey().$defaultFn(() => randomUUID()),
-    tenantId: text("tenant_id")
-      .notNull()
-      .references(() => tenant.id, { onDelete: "cascade" }),
-    periodStart: date("period_start").notNull(),
-    periodEnd: date("period_end").notNull(),
-    type: varchar("type", { length: 32 }).notNull(), // inquiries | traffic | keywords | tasks
-    valueNumeric: numeric("value_numeric", { precision: 20, scale: 4 }).default("0").notNull(),
-    deltaNumeric: numeric("delta_numeric", { precision: 20, scale: 4 }).default("0").notNull(),
-    meta: jsonb("meta"),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-  },
-  (table) => ({
-    tenantTypePeriodIdx: index("kpi_snapshot_tenant_type_period_idx").on(
-      table.tenantId,
-      table.type,
-      table.periodStart
-    ),
-  }),
-);
-
 // 询盘月度统计
 export const inquiryStat = pgTable(
   "inquiry_stat",
@@ -336,7 +267,10 @@ export const inquiryStat = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => ({
-    tenantPeriodIdx: index("inquiry_stat_tenant_period_idx").on(table.tenantId, table.period),
+    tenantPeriodUnique: uniqueIndex("inquiry_stat_tenant_period_unique").on(
+      table.tenantId,
+      table.period
+    ),
   }),
 );
 
@@ -356,7 +290,10 @@ export const trafficStat = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => ({
-    tenantPeriodIdx: index("traffic_stat_tenant_period_idx").on(table.tenantId, table.period),
+    tenantPeriodUnique: uniqueIndex("traffic_stat_tenant_period_unique").on(
+      table.tenantId,
+      table.period
+    ),
   }),
 );
 
@@ -378,6 +315,11 @@ export const keywordRanking = pgTable(
     tenantCapturedIdx: index("keyword_ranking_tenant_captured_idx").on(
       table.tenantId,
       table.capturedAt
+    ),
+    tenantCapturedRankIdx: index("keyword_ranking_tenant_captured_rank_idx").on(
+      table.tenantId,
+      table.capturedAt,
+      table.rank
     ),
   }),
 );
@@ -403,7 +345,7 @@ export const report = pgTable(
   }),
 );
 
-// 数据导入任务队列（导入 CSV/JSON）
+// 数据导入任务队列（导入 CSV/JSON） TODO: implement worker or remove if unused
 export const dataImportJob = pgTable(
   "data_import_job",
   {

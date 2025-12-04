@@ -1,8 +1,10 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/button";
 import { notify } from "@/lib/notify";
+import { LoadingIndicator } from "@/components/loading-indicator";
 
 type Job = {
   id: string;
@@ -60,8 +62,8 @@ export default function ImportPage() {
       form.reset();
       await load();
     } catch (error) {
-      setMessage("上传失败，确认大小≤10MB");
-      notify.error("上传失败，确认大小≤10MB");
+      setMessage("上传失败，请确认文件 ≤10MB");
+      notify.error("上传失败，请确认文件 ≤10MB");
     } finally {
       setUploading(false);
     }
@@ -72,7 +74,7 @@ export default function ImportPage() {
       <div>
         <h1 className="text-2xl font-semibold text-foreground">数据导入</h1>
         <p className="text-sm text-muted-foreground">
-          支持手动导入询盘/流量/关键词/KPI 的 CSV / JSON，创建导入任务后可在此查看状态。
+          支持手动导入询盘/流量/关键词/KPI 的 CSV 或 JSON，创建导入任务后可在下方查看状态。
         </p>
       </div>
 
@@ -89,7 +91,6 @@ export default function ImportPage() {
               <option value="inquiries">询盘</option>
               <option value="traffic">自然流量</option>
               <option value="keywords">关键词</option>
-              <option value="kpi">KPI 汇总</option>
             </select>
           </div>
           <div className="flex flex-col gap-2">
@@ -98,16 +99,37 @@ export default function ImportPage() {
           </div>
           <div className="flex items-end">
             <Button type="submit" disabled={uploading}>
-              {uploading ? "上传中..." : "上传并创建任务"}
+              {uploading ? (
+                <span className="inline-flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  上传中...
+                </span>
+              ) : (
+                "上传并创建任务"
+              )}
             </Button>
           </div>
         </form>
       </div>
 
       <div className="rounded-xl border border-border/60 bg-card/50 p-4">
-        <h3 className="text-lg font-semibold text-foreground">导入任务</h3>
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold text-foreground">导入任务</h3>
+          <Button size="sm" variant="outline" onClick={load} disabled={loading}>
+            {loading ? (
+              <span className="inline-flex items-center gap-2">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                刷新中...
+              </span>
+            ) : (
+              "刷新"
+            )}
+          </Button>
+        </div>
         {loading ? (
-          <p className="text-sm text-muted-foreground">加载中...</p>
+          <div className="mt-4">
+            <LoadingIndicator label="加载中..." />
+          </div>
         ) : jobs.length ? (
           <div className="mt-3 space-y-2">
             {jobs.map((job) => (
@@ -119,12 +141,17 @@ export default function ImportPage() {
                   <p className="font-semibold text-foreground">{job.type}</p>
                   <p className="text-xs text-muted-foreground">{job.createdAt}</p>
                 </div>
-                <span className="text-xs text-muted-foreground">状态：{job.status}</span>
+                <div className="text-right text-xs text-muted-foreground md:text-left">
+                  <p>状态：{job.status}</p>
+                  {job.summary && (
+                    <p className="mt-1 max-h-10 overflow-hidden text-[11px] text-foreground/80">摘要：{job.summary}</p>
+                  )}
+                </div>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-sm text-muted-foreground">暂无导入任务</p>
+          <p className="mt-3 text-sm text-muted-foreground">暂无导入任务</p>
         )}
       </div>
     </div>

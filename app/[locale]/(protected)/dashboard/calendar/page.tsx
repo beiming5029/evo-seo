@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import "@/styles/fullcalendar.css";
 import { Button } from "@/components/button";
 import { useTranslations } from "next-intl";
+import { LoadingIndicator } from "@/components/loading-indicator";
 
 const FullCalendar = dynamic(() => import("@fullcalendar/react"), { ssr: false });
 
@@ -24,11 +25,6 @@ type Post = {
   articleSlug?: string | null;
 };
 
-const statusLabel: Record<"ready" | "published", string> = {
-  ready: "待发布",
-  published: "已发布",
-};
-
 const normalizeStatus = (s: string | null | undefined): "ready" | "published" => {
   if (s === "published") return "published";
   return "ready";
@@ -38,7 +34,6 @@ export default function CalendarPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState<Post | null>(null);
-  const [currentTitle, setCurrentTitle] = useState("");
   const fetchKeyRef = useRef<string>("");
   const t = useTranslations("dashboard.calendar");
 
@@ -59,10 +54,6 @@ export default function CalendarPage() {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    loadPosts();
-  }, []);
 
   const events = useMemo(
     () =>
@@ -92,7 +83,7 @@ export default function CalendarPage() {
             articleTitle: p.articleTitle,
           },
         })),
-    [posts]
+    [posts, t]
   );
 
   const fetchDetail = async (id: string | number) => {
@@ -105,9 +96,9 @@ export default function CalendarPage() {
         tenantId: data.post?.tenantId,
         tenantName: data.post?.tenantName,
         tenantSiteUrl: data.post?.tenantSiteUrl,
-        title: data.post?.title || data.article?.title || "未命名文章",
+        title: data.post?.title || data.article?.title || t("notFound"),
         excerpt: data.post?.summary || data.article?.excerpt,
-        slug: data.article?.slug || data.post?.contentUrl,
+        slug: data.article?.slug || data.post?.slug,
         publishDate: data.post?.publishDate,
         status: data.post?.status,
       });
@@ -125,7 +116,7 @@ export default function CalendarPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-semibold text-foreground">{t("title")}</h1>
-            <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground rounded-2xl mt-5">
+            <div className="mt-5 flex flex-wrap items-center gap-3 rounded-2xl text-xs text-muted-foreground">
               <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-1 text-emerald-700">
                 <span className="h-2 w-2 rounded-full bg-emerald-500" />
                 {t("published")} {publishedCount}
@@ -134,18 +125,24 @@ export default function CalendarPage() {
                 <span className="h-2 w-2 rounded-full bg-amber-500" />
                 {t("ready")} {scheduledCount}
               </span>
-              {/* <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-1 text-slate-600">
-                <span className="h-2 w-2 rounded-full bg-slate-500" />
-                暂停
-              </span> */}
+              {/* {loading && (
+                <LoadingIndicator
+                  size="sm"
+                  label={t("loading")}
+                  className="border-dashed bg-background/70"
+                />
+              )} */}
             </div>
           </div>
         </div>
       </div>
 
-      {loading && <div className="text-sm text-muted-foreground">{t("loading")}</div>}
-
-      <div className="overflow-hidden rounded-2xl border border-border/60 bg-card/60">
+      <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-card/60">
+        {loading && (
+          <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-background/40 backdrop-blur-[1px]">
+            <LoadingIndicator label={t("loading")} />
+          </div>
+        )}
         <FullCalendar
           plugins={[dayGridPlugin]}
           initialView="dayGridMonth"
@@ -174,7 +171,7 @@ export default function CalendarPage() {
                   ${arg.event.title}
                 </div>
                 <div style="font-size:11px;color:#6b7280;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                  ${tenantName || ""} ${tenantSiteUrl ? "· " + tenantSiteUrl : ""}
+                  ${tenantName || ""} ${tenantSiteUrl ? " - " + tenantSiteUrl : ""}
                 </div>
                 <div style="font-size:11px;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${
                   normalizedStatus === "published" ? t("statusPublished") : t("statusReady")
@@ -185,7 +182,6 @@ export default function CalendarPage() {
           datesSet={(info) => {
             const start = info.startStr.slice(0, 10);
             const end = info.endStr.slice(0, 10);
-            setCurrentTitle(info.view.title);
             loadPosts(start, end);
           }}
           height="auto"
@@ -202,14 +198,14 @@ export default function CalendarPage() {
                 <h3 className="text-xl font-semibold leading-7 text-foreground">{selected.title}</h3>
                 <div className="space-y-1 text-xs text-muted-foreground">
                   <p className="font-medium text-foreground">
-                    {selected.tenantName || t("notFound")} {selected.tenantSiteUrl ? `· ${selected.tenantSiteUrl}` : ""}
+                    {selected.tenantName || t("notFound")} {selected.tenantSiteUrl ? `- ${selected.tenantSiteUrl}` : ""}
                   </p>
                   <p>
-                    {t("publishDate")}：{selected.publishDate || t("notFound")}
+                    {t("publishDate")}: {selected.publishDate || t("notFound")}
                   </p>
                   <p>
-                    {t("publishStatus")}：
-                    {normalizeStatus(selected.status) === "published" ? t("statusPublished") : t("statusReady")}
+                    {t("publishStatus")}:
+                    {normalizeStatus(selected.status) === "published" ? ` ${t("statusPublished")}` : ` ${t("statusReady")}`}
                   </p>
                 </div>
               </div>
@@ -238,32 +234,6 @@ export default function CalendarPage() {
           </div>
         </div>
       )}
-
-      {/* <div className="rounded-2xl border border-dashed border-border/60 bg-card/40 p-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-semibold text-foreground">手动触发发布（模拟定时任务）</p>
-            <p className="text-xs text-muted-foreground">调用 /api/cron/publish 立即处理当天待发布的文章。</p>
-          </div>
-          <Button
-            variant="primary"
-            onClick={async () => {
-              try {
-                const res = await fetch("/api/cron/publish", { method: "POST" });
-                if (!res.ok) throw new Error(await res.text());
-                const data = await res.json();
-                alert(
-                  `Trigger publish: processed ${data.processed}, success ${data.published?.length || 0}, skipped ${data.skipped?.length || 0}, failed ${data.failed?.length || 0}`
-                );
-              } catch (err: any) {
-                alert(`Trigger failed: ${err?.message || err}`);
-              }
-            }}
-          >
-            {t("viewFull")}
-          </Button>
-        </div>
-      </div> */}
     </div>
   );
 }

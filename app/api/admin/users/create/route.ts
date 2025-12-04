@@ -34,12 +34,13 @@ export async function POST(req: NextRequest) {
     }
 
     const { name, email, password, imageUrl } = parsed.data;
+    const normalizedEmail = email.trim().toLowerCase();
     const now = new Date();
 
     const existingUser = await db
       .select({ id: user.id })
       .from(user)
-      .where(eq(user.email, email))
+      .where(eq(user.email, normalizedEmail))
       .limit(1);
 
     if (existingUser[0]) {
@@ -55,7 +56,7 @@ export async function POST(req: NextRequest) {
         .values({
           id: newUserId,
           name,
-          email,
+          email: normalizedEmail,
           emailVerified: true,
           image: imageUrl || null,
           createdAt: now,
@@ -70,8 +71,8 @@ export async function POST(req: NextRequest) {
 
       await tx.insert(account).values({
         id: randomUUID(),
-        accountId: email,
-        providerId: "email",
+        accountId: normalizedEmail,
+        providerId: "credential",
         userId: newUserId,
         password: hashedPassword,
         createdAt: now,

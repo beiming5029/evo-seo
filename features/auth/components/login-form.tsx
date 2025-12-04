@@ -34,9 +34,12 @@ export function LoginForm() {
       setIsLoading(true);
       setError(null);
 
+      const email = values.email.trim().toLowerCase();
+      const password = values.password;
+
       const { error } = await signIn.email({
-        email: values.email,
-        password: values.password,
+        email,
+        password,
       });
 
       if (error) {

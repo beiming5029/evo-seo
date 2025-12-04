@@ -1,4 +1,4 @@
-import { headers } from "next/headers";
+﻿import { headers } from "next/headers";
 import Link from "next/link";
 import { Button } from "@/components/button";
 import { PostCopyActions } from "@/components/post-copy-actions";
@@ -10,7 +10,7 @@ type ScheduleWithArticle = {
   tenantSiteUrl?: string | null;
   title?: string | null;
   summary?: string | null;
-  contentUrl?: string | null;
+  slug?: string | null;
   publishDate?: string | null;
   status?: string | null;
   article?: {
@@ -22,8 +22,7 @@ type ScheduleWithArticle = {
   } | null;
 };
 
-const normalizeStatus = (s: string | null | undefined) =>
-  s === "published" ? "已发布" : "待发布";
+const normalizeStatus = (s: string | null | undefined) => (s === "published" ? "已发布" : "待发布");
 
 async function getPost(id: string): Promise<ScheduleWithArticle | null> {
   const cookie = headers().get("cookie") || "";
@@ -41,7 +40,7 @@ async function getPost(id: string): Promise<ScheduleWithArticle | null> {
     tenantSiteUrl: data.post.tenantSiteUrl,
     title: data.post.title || data.article?.title,
     summary: data.post.summary || data.article?.excerpt,
-    contentUrl: data.post.contentUrl,
+    slug: data.post.slug,
     publishDate: data.post.publishDate,
     status: data.post.status,
     article: data.article || null,
@@ -79,7 +78,7 @@ export default async function BlogPostPage({ params }: { params: { id: string } 
           </p>
           <h1 className="text-2xl font-semibold text-foreground">{title}</h1>
           <div className="space-x-3 text-sm text-muted-foreground">
-            <span>发布日期：{post.publishDate || "未设置"}</span>
+            <span>发布时间：{post.publishDate || "未设置"}</span>
             <span>状态：{status}</span>
           </div>
         </div>

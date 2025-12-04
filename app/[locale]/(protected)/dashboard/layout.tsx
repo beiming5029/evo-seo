@@ -18,6 +18,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     path: key === "home" ? "" : `/${key}`,
   }));
 
+  // 兼容场景：usePathname 可能返回不含 locale 的路径
+  const normalizedPath = (() => {
+    const match = pathname.match(/^\/[^/]+(\/.*)$/);
+    return match ? match[1] : pathname;
+  })();
+
   return (
     <div className="flex min-h-screen flex-row bg-background/80">
       <aside className="sticky top-0 hidden h-screen w-56 flex-shrink-0 border-r border-border/60 bg-card/50 p-4 md:flex md:flex-col">
@@ -32,12 +38,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {navItems.map((item) => {
             const href = `/${locale}/dashboard${item.path}`;
             const active =
-              pathname === href ||
-              (item.path !== "" && pathname.startsWith(`/${locale}/dashboard${item.path}`));
+              normalizedPath === `/dashboard${item.path}` ||
+              (item.path !== "" && normalizedPath.startsWith(`/dashboard${item.path}`));
             return (
               <Link
                 key={item.key}
                 href={href}
+                prefetch
                 className={cn(
                   "block rounded-md px-3 py-2 text-sm font-medium transition-colors",
                   active

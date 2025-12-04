@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { blogPosts, contentSchedule, tenant } from "@/lib/db/schema";
 import { ensureTenantForUser, listTenantsForUser } from "@/lib/db/tenant";
-import { and, asc, eq, gte, inArray, lte, getTableColumns } from "drizzle-orm";
+import { and, asc, eq, gte, inArray, lte } from "drizzle-orm";
 
 function getMonthDateRange(year?: number, month?: number) {
   const now = new Date();
@@ -23,6 +23,10 @@ export async function GET(req: NextRequest) {
     }
 
     const url = new URL(req.url);
+    const startParam = url.searchParams.get("start");
+    const endParam = url.searchParams.get("end");
+    const normalizeDateParam = (v: string | null) => (v ? v.slice(0, 10) : null);
+
     // 聚合当前用户所有可访问站点（先确保有 tenant/company）
     await ensureTenantForUser(session.session.userId);
     const list = await listTenantsForUser(session.session.userId);
@@ -30,12 +34,20 @@ export async function GET(req: NextRequest) {
     if (!tenantIds.length) {
       return NextResponse.json({ posts: [] });
     }
-    // 固定返回当前月份的排期
-    const { start: startDate, end: endDate } = getMonthDateRange();
+    // 默认当前月份，可被 start/end 覆盖
+    const { start: defaultStart, end: defaultEnd } = getMonthDateRange();
+    const startDate = normalizeDateParam(startParam) || defaultStart;
+    const endDate = normalizeDateParam(endParam) || defaultEnd;
 
     const rows = await db
       .select({
-        ...getTableColumns(contentSchedule),
+        id: contentSchedule.id,
+        tenantId: contentSchedule.tenantId,
+        title: contentSchedule.title,
+        summary: contentSchedule.summary,
+        slug: contentSchedule.slug,
+        publishDate: contentSchedule.publishDate,
+        status: contentSchedule.status,
         tenantName: tenant.name,
         tenantSiteUrl: tenant.siteUrl,
         articleTitle: blogPosts.title,
@@ -78,7 +90,7 @@ export async function POST(req: NextRequest) {
     const {
       title,
       summary,
-      contentUrl,
+      slug,
       publishDate,
       status = "ready",
       platform = "wordpress",
@@ -86,7 +98,7 @@ export async function POST(req: NextRequest) {
     } = body;
     const { tenantId } = await ensureTenantForUser(session.session.userId, tenantIdFromBody);
 
-    if (!title || !contentUrl || !publishDate) {
+    if (!title || !slug || !publishDate) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
@@ -96,7 +108,7 @@ export async function POST(req: NextRequest) {
         tenantId,
         title,
         summary,
-        contentUrl,
+        slug,
         publishDate,
         status,
         platform,

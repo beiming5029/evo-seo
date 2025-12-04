@@ -142,7 +142,7 @@ export async function POST(req: NextRequest) {
             articleId: meta.id,
             title: meta.title,
             summary: meta.excerpt,
-            contentUrl: meta.slug || String(meta.id),
+            slug: meta.slug || String(meta.id),
             publishDate,
             status:
               meta.status === "published"
@@ -171,7 +171,7 @@ export async function POST(req: NextRequest) {
       userId,
       title,
       summary,
-      contentUrl,
+      slug,
       publishDate,
       status = "ready",
     } = body as {
@@ -180,12 +180,12 @@ export async function POST(req: NextRequest) {
       userId?: string;
       title: string;
       summary?: string;
-      contentUrl: string;
+      slug: string;
       publishDate: string;
       status?: "ready" | "published" | "draft";
     };
 
-    if (!title || !contentUrl || !publishDate) {
+    if (!title || !slug || !publishDate) {
       return NextResponse.json({ error: "缺少必要字段" }, { status: 400 });
     }
 
@@ -207,7 +207,7 @@ export async function POST(req: NextRequest) {
         tenantId: resolvedTenantId,
         title,
         summary,
-        contentUrl,
+        slug,
         publishDate,
         status,
         platform: "wordpress",

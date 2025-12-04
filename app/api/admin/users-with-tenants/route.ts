@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { requireAdmin } from "@/lib/auth/admin";
 import { db } from "@/lib/db";
-import { brandConfig, company, tenant, tenantMembership, user, wpIntegration } from "@/lib/db/schema";
+import { company, tenant, tenantMembership, user, wpIntegration } from "@/lib/db/schema";
 import { and, eq, ilike, sql } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
@@ -37,9 +37,9 @@ export async function GET(req: NextRequest) {
         tenantCompanyId: tenant.companyId,
         tenantName: tenant.name,
         siteUrl: sql<string | null>`coalesce(${wpIntegration.siteUrl}, ${tenant.siteUrl})`,
-        brandVoice: brandConfig.brandVoice,
-        productDesc: brandConfig.productDesc,
-        targetAudience: brandConfig.targetAudience,
+        brandVoice: company.brandVoice,
+        productDesc: company.productDesc,
+        targetAudience: company.targetAudience,
         wpUsername: wpIntegration.wpUsername,
         wpAppPassword: wpIntegration.wpAppPassword,
         userImage: user.image,
@@ -49,7 +49,6 @@ export async function GET(req: NextRequest) {
       .leftJoin(tenantMembership, eq(tenantMembership.userId, user.id))
       // 只返回与用户公司匹配的租户，避免同一租户挂载到多个公司
       .leftJoin(tenant, and(eq(tenantMembership.tenantId, tenant.id), eq(tenant.companyId, company.id)))
-      .leftJoin(brandConfig, eq(brandConfig.companyId, company.id))
       .leftJoin(wpIntegration, eq(wpIntegration.tenantId, tenant.id))
       .where(conditions.length ? and(...conditions) : undefined);
 

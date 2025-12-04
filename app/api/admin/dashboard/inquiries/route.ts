@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { requireAdmin } from "@/lib/auth/admin";
 import { db } from "@/lib/db";
-import { inquiryStat, kpiSnapshot, user as userTable } from "@/lib/db/schema";
+import { inquiryStat, user as userTable } from "@/lib/db/schema";
 import { ensureTenantForUser } from "@/lib/db/tenant";
-import { and, eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,14 +15,12 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { tenantId, userEmail, userId, periodStart, periodEnd, value, delta, data } = body as {
+    const { tenantId, userEmail, userId, periodStart, value, data } = body as {
       tenantId?: string;
       userEmail?: string;
       userId?: string;
       periodStart?: string;
-      periodEnd?: string;
       value?: number;
-      delta?: number;
       data?: Array<{ date?: string; period?: string; count?: number }>;
     };
 
@@ -42,56 +40,43 @@ export async function POST(req: NextRequest) {
       { allowCrossCompany: true }
     );
 
-    if (Array.isArray(data) && data.length) {
-      const inserted = [];
-      for (const item of data) {
-        const period = item.date || item.period;
-        if (!period) continue;
-        const count = item.count ?? 0;
-        await db
-          .delete(inquiryStat)
-          .where(and(eq(inquiryStat.tenantId, resolvedTenantId), eq(inquiryStat.period, period)));
-        const [row] = await db
-          .insert(inquiryStat)
-          .values({
-            tenantId: resolvedTenantId,
-            period,
-            count,
-          })
-          .returning();
-        inserted.push(row);
+    const records = (() => {
+      if (Array.isArray(data) && data.length) {
+        return data
+          .map((item) => ({
+            period: item.date || item.period,
+            count: item.count ?? 0,
+          }))
+          .filter((item) => Boolean(item.period)) as Array<{ period: string; count: number }>;
       }
-      return NextResponse.json({ inquiries: inserted });
-    }
+      if (periodStart && value !== undefined && value !== null) {
+        return [{ period: periodStart, count: value }];
+      }
+      return [];
+    })();
 
-    if (!periodStart || !periodEnd || value === undefined || value === null) {
+    if (!records.length) {
       return NextResponse.json({ error: "缺少参数" }, { status: 400 });
     }
 
-    await db
-      .delete(kpiSnapshot)
-      .where(
-        and(
-          eq(kpiSnapshot.tenantId, resolvedTenantId),
-          eq(kpiSnapshot.type, "inquiries"),
-          eq(kpiSnapshot.periodStart, periodStart),
-          eq(kpiSnapshot.periodEnd, periodEnd)
-        )
-      );
-
-    const payload: typeof kpiSnapshot.$inferInsert = {
+    const values = records.map((item) => ({
       tenantId: resolvedTenantId,
-      type: "inquiries",
-      periodStart,
-      periodEnd,
-      valueNumeric: value.toString(),
-      deltaNumeric: (delta ?? 0).toString(),
-      meta: null,
-    };
+      period: item.period,
+      count: item.count ?? 0,
+    }));
 
-    const [inserted] = await db.insert(kpiSnapshot).values(payload).returning();
+    const inserted = await db
+      .insert(inquiryStat)
+      .values(values)
+      .onConflictDoUpdate({
+        target: [inquiryStat.tenantId, inquiryStat.period],
+        set: {
+          count: sql`excluded.count`,
+        },
+      })
+      .returning();
 
-    return NextResponse.json({ kpi: inserted });
+    return NextResponse.json({ inquiries: inserted });
   } catch (error) {
     console.error("[admin/inquiries] error", error);
     return NextResponse.json({ error: "服务器错误" }, { status: 500 });

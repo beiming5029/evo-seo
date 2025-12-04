@@ -8,6 +8,7 @@ import { Button } from "@/components/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { notify } from "@/lib/notify";
+import { LoadingIndicator } from "@/components/loading-indicator";
 
 type TenantInfo = {
   id: string;
@@ -321,7 +322,9 @@ export default function AdminUserDetailPage() {
         <div className="rounded-xl border border-border/60 bg-card/50 p-4 shadow-sm md:col-span-2">
           <h2 className="text-lg font-semibold text-foreground mb-3">用户详情（只读）</h2>
           {loading ? (
-            <p className="text-sm text-muted-foreground">加载中...</p>
+            <div className="py-1">
+              <LoadingIndicator label="加载中..." className="border-0 bg-transparent px-0 shadow-none" rounded={false} />
+            </div>
           ) : user ? (
             <div className="space-y-3 text-sm">
               <div className="flex flex-col gap-1">
@@ -364,7 +367,9 @@ export default function AdminUserDetailPage() {
         <div className="rounded-xl border border-border/60 bg-card/50 p-4 shadow-sm">
           <h2 className="text-lg font-semibold text-foreground mb-3">站点列表</h2>
           {loading ? (
-            <p className="text-sm text-muted-foreground">加载中...</p>
+            <div className="py-1">
+              <LoadingIndicator label="加载中..." className="border-0 bg-transparent px-0 shadow-none" rounded={false} />
+            </div>
           ) : tenantList.length ? (
             <div className="space-y-2">
               {tenantList.map((t) => (

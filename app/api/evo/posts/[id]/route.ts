@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { blogPosts, contentSchedule, postUpload, tenant } from "@/lib/db/schema";
-import { asc, eq, and, inArray, getTableColumns } from "drizzle-orm";
+import { blogPosts, contentSchedule, tenant } from "@/lib/db/schema";
+import { eq, and, inArray, getTableColumns } from "drizzle-orm";
 import { listTenantsForUser } from "@/lib/db/tenant";
 
 export async function GET(
@@ -39,12 +39,6 @@ export async function GET(
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
 
-    const uploads = await db
-      .select()
-      .from(postUpload)
-      .where(eq(postUpload.postId, item.id))
-      .orderBy(asc(postUpload.uploadedAt));
-
     const article =
       item?.articleTitle || item?.articleContent
         ? {
@@ -57,7 +51,7 @@ export async function GET(
           }
         : null;
 
-    return NextResponse.json({ post: item, uploads, article });
+    return NextResponse.json({ post: item, article });
   } catch (error) {
     console.error("[evo/posts/:id] GET error", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
@@ -94,7 +88,8 @@ export async function PATCH(
 
     if (body.title !== undefined) updatePayload.title = body.title;
     if (body.summary !== undefined) updatePayload.summary = body.summary;
-    if (body.contentUrl !== undefined) updatePayload.contentUrl = body.contentUrl;
+    if (body.slug !== undefined) updatePayload.slug = body.slug;
+    if (body.fileUrl !== undefined) updatePayload.fileUrl = body.fileUrl;
     if (body.publishDate !== undefined) updatePayload.publishDate = body.publishDate;
     if (body.status !== undefined) {
       if (!allowedStatus.includes(body.status)) {

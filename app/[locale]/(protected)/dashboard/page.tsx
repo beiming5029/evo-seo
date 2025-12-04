@@ -1,68 +1,76 @@
-"use client";
-
-import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
-import { useTranslations } from "next-intl";
-import { Button } from "@/components/button";
+﻿import Link from "next/link";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { Suspense } from "react";
+import { getTranslations } from "next-intl/server";
 import { CalendarRange, FileText, MessageCircle, TrendingUp } from "lucide-react";
+import { auth } from "@/lib/auth";
+import { listTenantsForUser } from "@/lib/db/tenant";
+import { getCompanyDashboardOverview } from "@/lib/services/dashboard";
+import { CopyWechatButton } from "@/components/copy-wechat-button";
 
-type OverviewResponse = {
-  siteCount: number;
-  currentMonthInquiries: number;
-  currentMonthArticles: number;
-  latestReport: { id: string; title: string; date?: string; fileUrl: string } | null;
-};
+function normalizeDate(value?: string | Date | null) {
+  if (!value) return null;
+  if (value instanceof Date) return value.toISOString().slice(0, 10);
+  return value.slice(0, 10);
+}
 
-export default function DashboardPage() {
-  const [overview, setOverview] = useState<OverviewResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [copyMessage, setCopyMessage] = useState<string | null>(null);
-  const t = useTranslations("dashboard.home");
+export default async function DashboardPage() {
+  const session = await auth.api.getSession({ headers: headers() });
+  if (!session?.session?.userId) {
+    redirect("/login");
+  }
+
+  const tenants = await listTenantsForUser(session.session.userId);
+  const overviewPromise = getCompanyDashboardOverview({
+    userId: session.session.userId,
+  });
+
+  return (
+    <div className="min-h-screen bg-background p-6 text-foreground md:p-8">
+      <Suspense fallback={<DashboardSkeleton />}>
+        <DashboardContent
+          overviewPromise={overviewPromise}
+          tenants={tenants}
+        />
+      </Suspense>
+    </div>
+  );
+}
+
+async function DashboardContent({
+  overviewPromise,
+  tenants,
+}: {
+  overviewPromise: ReturnType<typeof getCompanyDashboardOverview>;
+  tenants: Awaited<ReturnType<typeof listTenantsForUser>>;
+}) {
+  const t = await getTranslations("dashboard.home");
+  const overview = await overviewPromise;
+  const siteCountText = t("subtitle", { count: tenants.length || 1 });
+  const monthPrefix = (() => {
+    const now = new Date();
+    return `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, "0")}`;
+  })();
+
+  const currentMonthInquiries = overview.inquiries.reduce((sum, row) => {
+    const date = normalizeDate(row.period as unknown as string | Date | null);
+    if (date?.startsWith(monthPrefix)) {
+      return sum + (Number(row.count) || 0);
+    }
+    return sum;
+  }, 0);
+  const currentMonthArticles = overview.posts
+    .map((row) => normalizeDate(row.publishDate as unknown as string | Date | null))
+    .filter((date) => date?.startsWith(monthPrefix)).length;
+
+  const latestReportDate = normalizeDate(overview.latestReport?.periodEnd || overview.latestReport?.createdAt);
 
   const cardClass =
     "group relative flex h-56 flex-col justify-between rounded-xl border border-border bg-background p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md";
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(`/api/evo/dashboard/overview`);
-        if (!res.ok) throw new Error(await res.text());
-        setOverview(await res.json());
-        setError(null);
-      } catch (err) {
-        console.error("Failed to load dashboard", err);
-        setError("加载数据失败，请稍后重试");
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
-  }, []);
-
-  const siteCountText = useMemo(() => {
-    const count = overview?.siteCount ?? 1;
-    return t("subtitle", { count });
-  }, [overview, t]);
-
-  const latestReportDate = overview?.latestReport?.date
-    ? new Date(overview.latestReport.date).toISOString().slice(0, 10)
-    : null;
-
-  const handleCopyWechat = async () => {
-    try {
-      await navigator.clipboard.writeText("lsiy_lee");
-      setCopyMessage(t("copied"));
-    } catch (error) {
-      setCopyMessage(t("copyFailed"));
-    } finally {
-      setTimeout(() => setCopyMessage(null), 2000);
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-background p-6 text-foreground md:p-8">
+    <>
       <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-3xl font-bold md:text-4xl">Dashboard</h1>
@@ -71,12 +79,6 @@ export default function DashboardPage() {
           </p>
         </div>
       </div>
-
-      {error && (
-        <div className="mb-4 rounded-md border border-destructive/50 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-          {error}
-        </div>
-      )}
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Link href="/dashboard/analytics" className={cardClass}>
@@ -87,9 +89,7 @@ export default function DashboardPage() {
             </div>
             <TrendingUp className="h-5 w-5 text-muted-foreground" />
           </div>
-          <div className="text-5xl font-bold">
-            {loading ? "..." : overview?.currentMonthInquiries ?? 0}
-          </div>
+          <div className="text-5xl font-bold">{currentMonthInquiries}</div>
         </Link>
 
         <Link href="/dashboard/calendar" className={cardClass}>
@@ -100,9 +100,7 @@ export default function DashboardPage() {
             </div>
             <CalendarRange className="h-5 w-5 text-muted-foreground" />
           </div>
-          <div className="text-5xl font-bold">
-            {loading ? "..." : overview?.currentMonthArticles ?? 0}
-          </div>
+          <div className="text-5xl font-bold">{currentMonthArticles}</div>
         </Link>
       </div>
 
@@ -112,7 +110,7 @@ export default function DashboardPage() {
             <p className="text-lg font-semibold">{t("reportsTitle")}</p>
             <FileText className="h-5 w-5 text-muted-foreground" />
           </div>
-          {overview?.latestReport ? (
+          {overview.latestReport ? (
             <div className="rounded-lg border border-border/70 bg-muted/30 p-4 text-sm">
               <p className="font-semibold text-foreground">{overview.latestReport.title}</p>
               {latestReportDate && <p className="mt-1 text-muted-foreground">{latestReportDate}</p>}
@@ -129,18 +127,27 @@ export default function DashboardPage() {
             <MessageCircle className="h-5 w-5 text-muted-foreground" />
           </div>
           <p className="mt-1 text-sm text-muted-foreground">{t("expertDesc")}</p>
-          <Button
-            className="mt-6 w-full justify-center rounded-full bg-foreground text-background hover:bg-foreground/90"
-            onClick={handleCopyWechat}
-          >
-            {t("copyWechat")}
-          </Button>
-          {copyMessage && (
-            <div className="mt-3 rounded-md border border-border/60 bg-muted/40 px-3 py-2 text-xs text-foreground">
-              {copyMessage}
-            </div>
-          )}
+          <CopyWechatButton
+            className="mt-6"
+            text="lsiy_lee"
+            label={t("copyWechat")}
+            successLabel={t("copied")}
+            failureLabel={t("copyFailed")}
+          />
         </div>
+      </div>
+    </>
+  );
+}
+
+function DashboardSkeleton() {
+  return (
+    <div className="space-y-4">
+      <div className="h-10 w-48 animate-pulse rounded-md bg-muted" />
+      <div className="grid gap-4 lg:grid-cols-2">
+        {[0, 1, 2, 3].map((i) => (
+          <div key={i} className="h-56 rounded-xl border border-border bg-muted/40" />
+        ))}
       </div>
     </div>
   );

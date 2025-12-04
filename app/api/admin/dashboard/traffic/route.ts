@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { requireAdmin } from "@/lib/auth/admin";
 import { db } from "@/lib/db";
 import { trafficStat, user as userTable } from "@/lib/db/schema";
 import { ensureTenantForUser } from "@/lib/db/tenant";
-import { and, eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 export async function POST(req: NextRequest) {
   try {
@@ -52,26 +52,43 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const inserted = [];
-    for (const item of data) {
-      const period = item.date || item.period;
-      if (!period) continue;
-      await db
-        .delete(trafficStat)
-        .where(and(eq(trafficStat.tenantId, targetTenantId), eq(trafficStat.period, period)));
-
-      const payload: typeof trafficStat.$inferInsert = {
-        tenantId: targetTenantId,
-        period,
-        clicks: item.clicks ?? item.count ?? 0,
-        impressions: item.impressions ?? 0,
-        ctr: (item.ctr ?? 0).toString(),
-        position: item.position !== undefined && item.position !== null ? item.position.toString() : null,
-      };
-
-      const [row] = await db.insert(trafficStat).values(payload).returning();
-      inserted.push(row);
+    if (!targetTenantId) {
+      return NextResponse.json({ error: "缺少目标租户" }, { status: 400 });
     }
+
+    const values = data
+      .map((item) => {
+        const period = item.date || item.period;
+        if (!period) return null;
+        return {
+          tenantId: targetTenantId!,
+          period,
+          clicks: item.clicks ?? item.count ?? 0,
+          impressions: item.impressions ?? 0,
+          ctr: (item.ctr ?? 0).toString(),
+          position:
+            item.position !== undefined && item.position !== null ? item.position.toString() : null,
+        } satisfies typeof trafficStat.$inferInsert;
+      })
+      .filter(Boolean) as typeof trafficStat.$inferInsert[];
+
+    if (!values.length) {
+      return NextResponse.json({ error: "无有效 period" }, { status: 400 });
+    }
+
+    const inserted = await db
+      .insert(trafficStat)
+      .values(values)
+      .onConflictDoUpdate({
+        target: [trafficStat.tenantId, trafficStat.period],
+        set: {
+          clicks: sql`excluded.clicks`,
+          impressions: sql`excluded.impressions`,
+          ctr: sql`excluded.ctr`,
+          position: sql`excluded.position`,
+        },
+      })
+      .returning();
 
     return NextResponse.json({ items: inserted });
   } catch (error) {

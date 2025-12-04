@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { brandConfig, company, tenant, wpIntegration } from "@/lib/db/schema";
+import { company, tenant, wpIntegration } from "@/lib/db/schema";
 import { ensureTenantForUser } from "@/lib/db/tenant";
 import { eq } from "drizzle-orm";
 
@@ -27,6 +27,9 @@ export async function GET(req: NextRequest) {
           contactEmail: company.contactEmail,
           validUntil: company.validUntil,
           cooperationStartDate: company.cooperationStartDate,
+          brandVoice: company.brandVoice,
+          productDesc: company.productDesc,
+          targetAudience: company.targetAudience,
         })
         .from(tenant)
         .leftJoin(company, eq(tenant.companyId, company.id))
@@ -36,11 +39,6 @@ export async function GET(req: NextRequest) {
     ]);
 
     const tenantData = tenantRow[0] || null;
-
-    // 品牌按公司 ID 查询
-    const brandRow = tenantData?.companyId
-      ? await db.select().from(brandConfig).where(eq(brandConfig.companyId, tenantData.companyId)).limit(1)
-      : [];
 
     return NextResponse.json({
       account: tenantData
@@ -52,7 +50,13 @@ export async function GET(req: NextRequest) {
             cooperationStartDate: tenantData.cooperationStartDate,
           }
         : null,
-      brand: brandRow[0] || null,
+      brand: tenantData
+        ? {
+            brandVoice: tenantData.brandVoice,
+            productDesc: tenantData.productDesc,
+            targetAudience: tenantData.targetAudience,
+          }
+        : null,
       wp: wpRow[0] || null,
     });
   } catch (error) {

@@ -6,6 +6,7 @@ import { notify } from "@/lib/notify";
 import { Button } from "@/components/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LoadingIndicator } from "@/components/loading-indicator";
 
 type TenantInfo = {
   id: string;
@@ -89,14 +90,6 @@ export default function AdminUsersPage() {
       email: query.email.trim() || undefined,
     });
   };
-
-  const resetCreateForm = () =>
-    setCreateForm({
-      name: "",
-      email: "",
-      password: "",
-      imageUrl: "",
-    });
 
   const openEditUser = (u: AdminUser) => {
     setEditUser(u);
@@ -280,7 +273,9 @@ export default function AdminUsersPage() {
             {loading && (
               <tr>
                 <td colSpan={6} className="px-3 py-3 text-center text-muted-foreground">
-                  加载中...
+                  <div className="flex justify-center">
+                    <LoadingIndicator label="加载中..." className="border-0 bg-transparent px-0 shadow-none" rounded={false} />
+                  </div>
                 </td>
               </tr>
             )}

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { contentSchedule, postUpload } from "@/lib/db/schema";
+import { contentSchedule } from "@/lib/db/schema";
 import { ensureTenantForUser } from "@/lib/db/tenant";
 import { eq } from "drizzle-orm";
 import { uploadBufferToR2 } from "@/lib/r2-storage";
@@ -43,19 +43,16 @@ export async function POST(req: NextRequest) {
     const key = `posts/${tenantId}/${postId}/${Date.now()}-${file.name}`;
     const storageUrl = await uploadBufferToR2(key, buffer, file.type || "application/octet-stream");
 
-    const [uploaded] = await db
-      .insert(postUpload)
-      .values({
-        tenantId,
-        postId,
-        storageUrl,
-        previewUrl: storageUrl,
-        sizeBytes: buffer.byteLength,
-        uploadedBy: session.session.userId,
+    const [updated] = await db
+      .update(contentSchedule)
+      .set({
+        fileUrl: storageUrl,
+        updatedAt: new Date(),
       })
+      .where(eq(contentSchedule.id, postId))
       .returning();
 
-    return NextResponse.json({ upload: uploaded });
+    return NextResponse.json({ fileUrl: storageUrl, post: updated });
   } catch (error) {
     console.error("[evo/posts/upload] POST error", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

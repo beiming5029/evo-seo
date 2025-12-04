@@ -3,6 +3,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { FileDown, FileText } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { LoadingIndicator } from "@/components/loading-indicator";
 
 type Report = {
   id: string;
@@ -47,7 +48,12 @@ export default function ReportsPage() {
   }, [reports]);
 
   const renderList = (items: Report[]) => {
-    if (loading) return <p className="text-sm text-muted-foreground">{t("loading")}</p>;
+    if (loading) return (
+      <div className="py-1">
+        <LoadingIndicator label={t("loading")} className="border-0 bg-transparent px-0 shadow-none" rounded={false} />
+      </div>
+    );
+    // if (loading) return <p className="text-sm text-muted-foreground">{t("loading")}</p>;
     if (!items.length)
       return (
         <div className="flex min-h-[80px] items-center rounded-xl bg-background/70 px-4 py-3 text-sm text-muted-foreground shadow-sm">
