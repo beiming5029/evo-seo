@@ -41,7 +41,7 @@ export const DesktopNavbar = () => {
     >
       <div className="flex flex-row gap-2 items-center z-50">
         <Logo />
-        <nav className="hidden md:flex items-center gap-1 ml-8">
+        {/* <nav className="hidden md:flex items-center gap-1 ml-8">
           {marketingNavigationKeys.map((item) => (
             item.subItems ? (
               <NavBarItemWithDropdown
@@ -58,7 +58,7 @@ export const DesktopNavbar = () => {
               </NavBarItem>
             )
           ))}
-        </nav>
+        </nav> */}
       </div>
       <div className="flex space-x-2 items-center z-50">
         <LanguageSwitcher />

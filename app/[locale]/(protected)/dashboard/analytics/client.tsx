@@ -1,6 +1,6 @@
-﻿"use client";
+"use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { ArrowDownRight, ArrowUpRight, Minus } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
@@ -12,15 +12,90 @@ type KeywordRanking = { keyword: string; targetUrl: string | null; rank: number 
 type Tenant = { id: string; name: string | null; siteUrl?: string | null; role?: string };
 
 type Props = {
-  inquiries: InquiryStat[];
-  traffic: TrafficStat[];
-  keywords: KeywordRanking[];
   tenants: Tenant[];
   selectedTenantId?: string;
 };
 
-export default function AnalyticsClient({ inquiries, traffic, keywords, tenants, selectedTenantId }: Props) {
+type OverviewData = {
+  inquiries: InquiryStat[];
+  traffic: TrafficStat[];
+  keywords: KeywordRanking[];
+};
+
+export default function AnalyticsClient({ tenants, selectedTenantId }: Props) {
   const t = useTranslations("dashboard.analytics");
+  const [data, setData] = useState<OverviewData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [showSkeleton, setShowSkeleton] = useState<boolean>(true);
+  const [hasLoaded, setHasLoaded] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [selected, setSelected] = useState<string | undefined>(selectedTenantId);
+
+  useEffect(() => {
+    if (selectedTenantId) {
+      setSelected(selectedTenantId);
+    } else if (tenants[0]?.id) {
+      setSelected((prev) => prev || tenants[0].id);
+    }
+  }, [selectedTenantId, tenants]);
+
+  useEffect(() => {
+    const targetId = selected || tenants[0]?.id;
+    if (!targetId) {
+      setLoading(false);
+      setHasLoaded(false);
+      setShowSkeleton(false);
+      return;
+    }
+    let cancelled = false;
+    const startedAt = Date.now();
+    const controller = new AbortController();
+    const load = async () => {
+      setLoading(true);
+      setHasLoaded(false);
+      setShowSkeleton(true);
+      setError(null);
+      try {
+        const res = await fetch(`/api/dashboard/analytics?tenantId=${targetId}`, {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+        if (!res.ok) {
+          throw new Error(`请求失败: ${res.status}`);
+        }
+        const json = await res.json();
+        if (!cancelled) {
+          setData({
+            inquiries: json.inquiries || [],
+            traffic: json.traffic || [],
+            keywords: json.keywords || [],
+          });
+        }
+      } catch (err: any) {
+        if (err.name === "AbortError" || cancelled) return;
+        setError(err.message || "加载失败");
+        setData(null);
+      } finally {
+        if (cancelled) return;
+        setLoading(false);
+        setHasLoaded(true);
+        const elapsed = Date.now() - startedAt;
+        const remaining = Math.max(0, 300 - elapsed); // 至少展示 300ms 骨架
+        setTimeout(() => {
+          if (!cancelled) setShowSkeleton(false);
+        }, remaining);
+      }
+    };
+    load();
+    return () => {
+      cancelled = true;
+      controller.abort();
+    };
+  }, [selected, tenants]);
+
+  const inquiries = data?.inquiries || [];
+  const traffic = data?.traffic || [];
+  const keywords = data?.keywords || [];
 
   const latestDate = useMemo(() => {
     const dates: string[] = [];
@@ -38,7 +113,11 @@ export default function AnalyticsClient({ inquiries, traffic, keywords, tenants,
     [traffic]
   );
 
+  const skeletoning = showSkeleton || loading || !hasLoaded;
+
   const renderChart = (data: { period: string; value: number }[], color: string, label: string) => {
+    if (skeletoning) return <ChartSkeleton />;
+    if (error) return <p className="text-sm text-amber-700">{error}</p>;
     if (!data.length) return <p className="text-sm text-muted-foreground">{t("noData")}</p>;
     return (
       <div className="space-y-3">
@@ -66,7 +145,11 @@ export default function AnalyticsClient({ inquiries, traffic, keywords, tenants,
           </p>
         </div>
         <div className="w-72">
-          <TenantSwitcher tenants={tenants} value={selectedTenantId} />
+          <TenantSwitcher
+            tenants={tenants}
+            value={selected}
+            onChange={(id) => setSelected(id)}
+          />
         </div>
       </div>
 
@@ -95,7 +178,11 @@ export default function AnalyticsClient({ inquiries, traffic, keywords, tenants,
             <p className="text-xs text-muted-foreground">{t("keywordsSub")}</p>
           </div>
         </div>
-        {keywords.length ? (
+        {skeletoning ? (
+          <TableSkeleton />
+        ) : error ? (
+          <p className="text-sm text-amber-700">{error}</p>
+        ) : keywords.length ? (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead className="text-left text-muted-foreground">
@@ -149,6 +236,26 @@ export default function AnalyticsClient({ inquiries, traffic, keywords, tenants,
           <p className="text-sm text-muted-foreground">{t("noData")}</p>
         )}
       </div>
+
+      {error && hasLoaded && !skeletoning && (
+        <div className="rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-700">
+          {error}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ChartSkeleton() {
+  return <div className="h-64 w-full animate-pulse rounded-xl bg-muted/60" />;
+}
+
+function TableSkeleton() {
+  return (
+    <div className="space-y-2">
+      {[0, 1, 2, 3].map((i) => (
+        <div key={i} className="h-10 w-full animate-pulse rounded-md bg-muted/60" />
+      ))}
     </div>
   );
 }

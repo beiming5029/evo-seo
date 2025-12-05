@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { notify } from "@/lib/notify";
 
 type TenantOption = { id: string; name: string; siteUrl?: string | null };
 type UserOption = { id: string; name: string; tenants: TenantOption[] };
@@ -44,8 +45,6 @@ export default function AdminDataPage() {
   const [users, setUsers] = useState<UserOption[]>([]);
   const [selectedUserId, setSelectedUserId] = useState("");
   const [selectedTenantId, setSelectedTenantId] = useState("");
-  const [message, setMessage] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const [section, setSection] = useState<SectionKey>("kpi");
   const [seoType, setSeoType] = useState<"inquiries" | "traffic" | "keywords">("inquiries");
   const [inquiryRows, setInquiryRows] = useState<InquiryRow[]>([{ date: "", count: "" }]);
@@ -74,7 +73,7 @@ export default function AdminDataPage() {
           if (data.users[0].tenants?.[0]) setSelectedTenantId(data.users[0].tenants[0].id);
         }
       } catch (err) {
-        setError("加载用户列表失败");
+        notify.error("加载用户列表失败");
       }
     };
     if (fetchedOnce.current) return;
@@ -103,10 +102,7 @@ export default function AdminDataPage() {
     return selectedTenantId;
   };
 
-  const clearAlerts = () => {
-    setMessage(null);
-    setError(null);
-  };
+  const clearAlerts = () => {};
 
   const updateArticleRow = (day: number, updater: (row: DailyArticleRow) => DailyArticleRow) => {
     setArticleRows((prev) => prev.map((row) => (row.day === day ? updater(row) : row)));
@@ -160,7 +156,7 @@ export default function AdminDataPage() {
   const submitSeo = async () => {
     const tenantId = ensureTenantSelected();
     if (!tenantId) {
-      setError("请选择关联站点");
+      notify.error("请选择关联站点");
       return;
     }
     try {
@@ -214,10 +210,9 @@ export default function AdminDataPage() {
         });
         if (!res.ok) throw new Error(await res.text());
       }
-      setMessage("提交成功");
-      setTimeout(() => setMessage(null), 3000);
+      notify.success("提交成功");
     } catch (err) {
-      setError("提交失败，请检查输入");
+      notify.error("提交失败，请检查输入");
     } finally {
       setSaving(false);
     }
@@ -226,23 +221,23 @@ export default function AdminDataPage() {
   const submitMonthlyPosts = async () => {
     const tenantId = ensureTenantSelected();
     if (!tenantId) {
-      setError("请选择关联站点");
+      notify.error("请选择关联站点");
       return;
     }
     if (!/^\d{4}-\d{2}$/.test(selectedMonth)) {
-      setError("请选择有效月份");
+      notify.error("请选择有效月份");
       return;
     }
     const filled = articleRows
       .map((row) => ({ ...row, numericId: Number(row.articleId.trim()) }))
       .filter((row) => row.articleId.trim().length > 0);
     if (!filled.length) {
-      setError("请至少填写一个文章 ID");
+      notify.error("请至少填写一个文章 ID");
       return;
     }
     const invalid = filled.filter((row) => !Number.isFinite(row.numericId));
     if (invalid.length) {
-      setError("文章 ID 需为数字");
+      notify.error("文章 ID 需为数字");
       return;
     }
     try {
@@ -265,10 +260,12 @@ export default function AdminDataPage() {
         throw new Error(text || "提交失败");
       }
       const data = await res.json();
-      setMessage(`已保存当月排期（${data?.daysHandled ?? filled.length} 天）`);
-      setTimeout(() => setMessage(null), 3000);
+      // 清空当月表单数据与缓存
+      articleTitleCache.current = {};
+      setArticleRows(buildRowsForMonth(selectedMonth));
+      notify.success(`已保存当月排期（${data?.daysHandled ?? filled.length} 天）`);
     } catch (err: any) {
-      setError(err?.message || "提交失败，请检查文章 ID");
+      notify.error(err?.message || "提交失败，请检查文章 ID");
     } finally {
       setSaving(false);
     }
@@ -276,7 +273,7 @@ export default function AdminDataPage() {
 
   const submitReport = async (form: HTMLFormElement) => {
     if (!selectedUserId) {
-      setError("请选择目标用户");
+      notify.error("请选择目标用户");
       return;
     }
     const formData = new FormData(form);
@@ -286,11 +283,10 @@ export default function AdminDataPage() {
       clearAlerts();
       const res = await fetch("/api/admin/reports", { method: "POST", body: formData });
       if (!res.ok) throw new Error(await res.text());
-      setMessage("报告上传成功");
-      setTimeout(() => setMessage(null), 3000);
+      notify.success("报告上传成功");
       form.reset();
     } catch (err) {
-      setError("报告上传失败，请检查文件大小与必填项");
+      notify.error("报告上传失败，请检查文件大小与必填项");
     } finally {
       setSaving(false);
     }
@@ -300,7 +296,7 @@ export default function AdminDataPage() {
     // 公司信息按用户所属的公司（首个关联站点）保存，无需手选
     const tenantId = ensureTenantSelected();
     if (!tenantId) {
-      setError("当前用户未关联公司/站点，无法保存");
+      notify.error("当前用户未关联公司/站点，无法保存");
       return;
     }
     const formData = new FormData(form);
@@ -314,10 +310,10 @@ export default function AdminDataPage() {
         body: JSON.stringify({ tenantId, ...payload }),
       });
       if (!res.ok) throw new Error(await res.text());
-      setMessage("设置已保存");
-      setTimeout(() => setMessage(null), 3000);
+      notify.success("设置已保存");
     } catch (err) {
       setError("保存失败，请检查输入");
+      notify.error("");
     } finally {
       setSaving(false);
     }
@@ -375,16 +371,11 @@ export default function AdminDataPage() {
         <TabButton value="posts" label="文章上传表单" />
       </div>
 
-      {message && (
-        <div className="rounded-md border border-green-500/60 bg-green-50 px-3 py-2 text-sm text-green-700">
-          {message}
-        </div>
-      )}
-      {error && (
+      {/* {error && (
         <div className="rounded-md border border-destructive/60 bg-destructive/10 px-3 py-2 text-sm text-destructive">
           {error}
         </div>
-      )}
+      )} */}
 
       {section === "kpi" && (
         <div className="grid gap-6">
@@ -686,7 +677,7 @@ export default function AdminDataPage() {
             </div>
 
             <Button type="submit" disabled={saving} className="w-full">
-              保存当月文章排期
+              {saving ? "保存中..." : "保存当月文章排期"}
             </Button>
           </form>
         </div>

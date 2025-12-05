@@ -21,17 +21,24 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const tenants = await listTenantsForUser(session.session.userId);
-  const overviewPromise = getCompanyDashboardOverview({
-    userId: session.session.userId,
-  });
+  const tenantIdsPromise = listTenantsForUser(session.session.userId).then((items) => items.map((t) => t.id));
+  const overviewPromise = tenantIdsPromise.then((tenantIds) =>
+    getCompanyDashboardOverview({
+      userId: session.session.userId,
+      tenantIds,
+      options: {
+        includeTraffic: false,
+        includeKeywords: false,
+        lookbackMonths: 3,
+      },
+    })
+  );
 
   return (
     <div className="min-h-screen bg-background p-6 text-foreground md:p-8">
       <Suspense fallback={<DashboardSkeleton />}>
         <DashboardContent
           overviewPromise={overviewPromise}
-          tenants={tenants}
         />
       </Suspense>
     </div>
@@ -40,14 +47,15 @@ export default async function DashboardPage() {
 
 async function DashboardContent({
   overviewPromise,
-  tenants,
 }: {
   overviewPromise: ReturnType<typeof getCompanyDashboardOverview>;
-  tenants: Awaited<ReturnType<typeof listTenantsForUser>>;
 }) {
-  const t = await getTranslations("dashboard.home");
-  const overview = await overviewPromise;
-  const siteCountText = t("subtitle", { count: tenants.length || 1 });
+  const [t, overview] = await Promise.all([
+    getTranslations("dashboard.home"),
+    overviewPromise,
+  ]);
+
+  const siteCountText = t("subtitle", { count: overview.tenantIds.length || 1 });
   const monthPrefix = (() => {
     const now = new Date();
     return `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, "0")}`;
