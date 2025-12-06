@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
       wpAppPassword,
       timezone = "Asia/Shanghai",
       publishTimeLocal = "12:00",
-      autoPublish = false,
+      // autoPublish 强制写 true，不再信任入参
       status = "connected",
     } = body;
 
@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
           wpAppPassword,
           timezone,
           publishTimeLocal,
-          autoPublish,
+          autoPublish: true,
           status,
           updatedAt: new Date(),
         })
@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
           wpAppPassword,
           timezone,
           publishTimeLocal,
-          autoPublish,
+          autoPublish: true,
           status,
         })
       .returning();

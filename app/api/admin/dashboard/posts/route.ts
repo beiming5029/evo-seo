@@ -129,12 +129,29 @@ export async function POST(req: NextRequest) {
       }
 
       const inserted: any[] = [];
+      const skippedExisting: any[] = [];
       for (const item of validItems) {
         const publishDate = formatDate(month, item.day);
         const meta = articleMap.get(item.articleId)!;
-        await db
-          .delete(contentSchedule)
-          .where(and(eq(contentSchedule.tenantId, resolvedTenantId), eq(contentSchedule.publishDate, publishDate)));
+        // 允许同一天绑定多条；如同一篇文章已存在则跳过
+        const existing = await db
+          .select()
+          .from(contentSchedule)
+          .where(
+            and(
+              eq(contentSchedule.tenantId, resolvedTenantId),
+              eq(contentSchedule.publishDate, publishDate),
+              eq(contentSchedule.articleId, meta.id)
+            )
+          )
+          .limit(1);
+
+        if (existing[0]) {
+          skippedExisting.push(existing[0]);
+          inserted.push(existing[0]);
+          continue;
+        }
+
         const [row] = await db
           .insert(contentSchedule)
           .values({
@@ -161,6 +178,11 @@ export async function POST(req: NextRequest) {
         posts: inserted,
         month,
         daysHandled: inserted.length,
+        skippedExisting: skippedExisting.map((row) => row.id),
+        message:
+          skippedExisting.length > 0
+            ? `已跳过 ${skippedExisting.length} 条重复（同租户同日同文章），其余已新增`
+            : "全部新增完成",
       });
     }
 

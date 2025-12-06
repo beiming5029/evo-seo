@@ -1,6 +1,8 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const resend = RESEND_API_KEY ? new Resend(RESEND_API_KEY) : null;
+const missingResendError = new Error('RESEND_API_KEY is not configured');
 
 // 获取默认发件邮箱的函数
 const getDefaultFromEmail = () => {
@@ -50,6 +52,11 @@ export async function sendEmail({
   from = DEFAULT_FROM_EMAIL,
   replyTo,
 }: SendEmailOptions) {
+  if (!resend) {
+    console.warn('Resend API key not configured; skipping email send.');
+    return { success: false, error: missingResendError };
+  }
+
   try {
     const data = await resend.emails.send({
       to,
@@ -215,4 +222,3 @@ export async function sendLowCreditsNotification(email: string, remainingCredits
     `,
   });
 }
-

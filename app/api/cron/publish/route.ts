@@ -1,14 +1,14 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { Buffer } from "node:buffer";
 import { db } from "@/lib/db";
 import { blogPosts, contentSchedule, postPublishLog, wpIntegration, tenant } from "@/lib/db/schema";
-import { and, eq, gte, lte, asc } from "drizzle-orm";
+import { and, eq, gte, lte, asc, sql, inArray } from "drizzle-orm";
 import { auth } from "@/lib/auth";
 
 const CRON_SECRET = process.env.CRON_SECRET;
 const CRON_JOBS_USERNAME = process.env.CRON_JOBS_USERNAME;
 const CRON_JOBS_PASSWORD = process.env.CRON_JOBS_PASSWORD;
-const CRON_MAX_POSTS_PER_RUN = Math.max(1, Number.parseInt(process.env.CRON_MAX_POSTS_PER_RUN || "50", 10));
+const CRON_MAX_POSTS_PER_RUN = Math.max(1, Number.parseInt(process.env.CRON_MAX_POSTS_PER_RUN || "500", 10));
 
 async function isAuthorized(req: NextRequest) {
   const authHeader = req.headers.get("authorization") ?? "";
@@ -67,43 +67,128 @@ function getDayBoundsByTimezone(baseDate: Date, timezone = "Asia/Shanghai") {
 
 async function publishToWordPress(post: any, integration: any) {
   const site = (integration.siteUrl || "").replace(/\/$/, "");
-  const endpoint = `${site}/wp-json/wp/v2/posts`;
+  const endpoints = [
+    `${site}/wp-json/wp/v2/posts`, // 标准 REST 路径
+    `${site}/index.php/wp-json/wp/v2/posts`, // 某些站点需要 index.php
+  ];
   const username = integration.wpUsername;
   const appPassword = integration.wpAppPassword;
   if (!username || !appPassword) throw new Error("Missing WP credentials");
   const auth = Buffer.from(`${username}:${appPassword}`).toString("base64");
 
-  const res = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Basic ${auth}`,
-    },
-    body: JSON.stringify({
-      title: post.title,
-      content: post.content || post.excerpt || "",
-      status: "publish",
-    }),
+  const content =
+    post.articleContent ||
+    post.articleExcerpt ||
+    post.content ||
+    post.excerpt ||
+    post.summary ||
+    "";
+  const title = post.title || post.articleTitle || "Untitled";
+  const categories = (() => {
+    const raw = post.articleCategory || post.category || "";
+    if (!raw) return [];
+    return String(raw)
+      .split(",")
+      .map((v: string) => Number.parseInt(v.trim(), 10))
+      .filter((n: number) => Number.isFinite(n));
+  })();
+
+  const payload = {
+    title,
+    content,
+    ...(categories.length ? { categories } : {}),
+    status: "publish",
+  };
+
+  let lastStatus: number | null = null;
+  let lastBody: string | null = null;
+
+  console.info("[Cron publish] WP publish attempt", {
+    postId: post.id,
+    tenantId: post.tenantId,
+    site,
+    endpoints,
   });
 
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`WP publish failed: ${res.status} ${text}`);
+  for (const endpoint of endpoints) {
+    try {
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Basic ${auth}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        console.info("[Cron publish] WP publish success", { endpoint, postId: post.id, tenantId: post.tenantId });
+        return data?.link || `${site}`;
+      }
+
+      lastStatus = res.status;
+      lastBody = await res.text();
+      console.error("[Cron publish] WP endpoint failed", { endpoint, status: res.status, body: lastBody });
+      // 尝试下一个 endpoint
+    } catch (err: any) {
+      lastStatus = lastStatus ?? 0;
+      lastBody = err?.message || String(err);
+      console.error("[Cron publish] WP endpoint error", { endpoint, error: lastBody });
+    }
   }
-  const data = await res.json();
-  return data?.link || `${site}`;
+
+  throw new Error(`WP publish failed: ${lastStatus ?? "unknown"} ${lastBody ?? ""}`.trim());
 }
 
 export async function POST(req: NextRequest) {
-  if (!isAuthorized(req)) {
+  if (!(await isAuthorized(req))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const session = await auth.api.getSession({ headers: req.headers });
+    const authHeader = req.headers.get("authorization") || "";
+    const authType = authHeader.split(" ")[0] || null;
+    console.info("[Cron publish] auth info", {
+      sessionUserId: session?.session?.userId ?? null,
+      authType,
+    });
+  } catch (err) {
+    console.info("[Cron publish] auth info", { sessionUserId: null, authType: null, error: String(err) });
   }
 
   const now = new Date();
   const { start, end, dateStr } = getDayBoundsByTimezone(now, "Asia/Shanghai");
+  console.info("[Cron publish] start", {
+    now: now.toISOString(),
+    dateStr,
+    windowStart: start.toISOString(),
+    windowEnd: end.toISOString(),
+    maxPerRun: CRON_MAX_POSTS_PER_RUN,
+  });
   try {
     // Get tenants with WP integration
     const integrations = await db.select().from(wpIntegration);
+    const statusCounts = await db
+      .select({ status: contentSchedule.status, count: sql<number>`count(*)` })
+      .from(contentSchedule)
+      .groupBy(contentSchedule.status);
+    const todayDraftReadyCount = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(contentSchedule)
+      .where(
+        and(
+          inArray(contentSchedule.status, ["ready", "draft"]),
+          gte(contentSchedule.publishDate, dateStr),
+          lte(contentSchedule.publishDate, dateStr)
+        )
+      )
+      .limit(1);
+    console.info("[Cron publish] status counts", statusCounts);
+    console.info("[Cron publish] today draft/ready count", {
+      count: todayDraftReadyCount?.[0]?.count ?? 0,
+    });
     let processed = 0;
     const published: string[] = [];
     const skipped: string[] = [];
@@ -126,19 +211,22 @@ export async function POST(req: NextRequest) {
         articleTitle: blogPosts.title,
         articleContent: blogPosts.content,
         articleExcerpt: blogPosts.excerpt,
+        articleCategory: blogPosts.category,
       })
       .from(contentSchedule)
       .leftJoin(tenant, eq(contentSchedule.tenantId, tenant.id))
       .leftJoin(blogPosts, eq(contentSchedule.articleId, blogPosts.id))
       .where(
         and(
-          eq(contentSchedule.status, "ready"),
+          inArray(contentSchedule.status, ["ready", "draft"]),
           gte(contentSchedule.publishDate, dateStr),
           lte(contentSchedule.publishDate, dateStr)
         )
       )
       .orderBy(asc(contentSchedule.publishDate))
       .limit(CRON_MAX_POSTS_PER_RUN);
+
+    console.info("[Cron publish] posts fetched", { count: postsToHandle.length });
 
     for (const post of postsToHandle) {
       processed += 1;
@@ -148,6 +236,15 @@ export async function POST(req: NextRequest) {
         ? buildPublishDateTime(dateStr, integration.publishTimeLocal || "12:00", integration.timezone)
         : null;
       const isDue = autoPublish ? now >= (scheduledAt as Date) : false;
+      console.info("[Cron publish] handling post", {
+        id: post.id,
+        tenantId: post.tenantId,
+        publishDate: post.publishDate,
+        status: post.status,
+        autoPublish: Boolean(integration?.autoPublish),
+        scheduledAt: scheduledAt?.toISOString?.() ?? null,
+        isDue,
+      });
 
       // 如果没有集成或 autoPublish 关闭，直接标记已发布（不推送）
       if (!integration || !integration.autoPublish) {
@@ -164,14 +261,15 @@ export async function POST(req: NextRequest) {
           message: "Marked as published without WordPress auto-push",
         });
         published.push(String(post.id));
+        console.info("[Cron publish] marked published without push", { id: post.id });
         continue;
       }
 
       // 有集成但还未到时间
-      if (!isDue) {
-        skipped.push(String(post.id));
-        continue;
-      }
+      // if (!isDue) {
+      //   skipped.push(String(post.id));
+      //   continue;
+      // }
 
       try {
         const link = await publishToWordPress(post, integration);
@@ -189,6 +287,7 @@ export async function POST(req: NextRequest) {
           message: "Published via WordPress auto-push",
         });
         published.push(String(post.id));
+        console.info("[Cron publish] publish success", { id: post.id, link });
       } catch (err: any) {
         console.error("[Cron publish] push error", err);
         failed.push(String(post.id));
@@ -217,5 +316,5 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  return POST(req);
+  return await POST(req);
 }
