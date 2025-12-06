@@ -23,7 +23,7 @@ type FormTextFieldProps<TFieldValues extends FieldValues> = BaseProps &
   };
 
 const inputClasses =
-  "block w-full rounded-md border-0 bg-input px-4 py-1.5 text-foreground shadow-aceternity placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring";
+  "block w-full rounded-xl border border-white/60 bg-white/60 px-4 py-3 text-foreground shadow-[0_1px_0_rgba(255,255,255,0.35)] shadow-slate-900/5 backdrop-blur-md placeholder:text-muted-foreground transition duration-200 focus:-translate-y-[1px] focus:border-blue-500/50 focus:bg-white/80 focus:outline-none focus:ring-2 focus:ring-blue-500/40 dark:border-slate-800/70 dark:bg-slate-950/50 dark:shadow-black/20 dark:focus:border-blue-400/50 dark:focus:ring-blue-400/30";
 
 export function FormTextField<TFieldValues extends FieldValues>({
   control,
@@ -70,7 +70,7 @@ export function FormTextField<TFieldValues extends FieldValues>({
 }
 
 const textareaClasses =
-  "block w-full resize-none rounded-md border-0 bg-input px-4 py-2 text-foreground shadow-aceternity placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring";
+  "block w-full resize-none rounded-xl border border-white/60 bg-white/60 px-4 py-3 text-foreground shadow-[0_1px_0_rgba(255,255,255,0.35)] shadow-slate-900/5 backdrop-blur-md placeholder:text-muted-foreground transition duration-200 focus:-translate-y-[1px] focus:border-blue-500/50 focus:bg-white/80 focus:outline-none focus:ring-2 focus:ring-blue-500/40 dark:border-slate-800/70 dark:bg-slate-950/50 dark:shadow-black/20 dark:focus:border-blue-400/50 dark:focus:ring-blue-400/30";
 
 type FormTextareaFieldProps<TFieldValues extends FieldValues> = BaseProps &
   React.TextareaHTMLAttributes<HTMLTextAreaElement> & {

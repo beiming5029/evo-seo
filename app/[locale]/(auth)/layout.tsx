@@ -7,7 +7,7 @@ export default function AuthXLayout({
   return (
     <>
       <AuthLayout>
-        <main className="flex h-full min-h-screen w-full">{children}</main>
+        {children}
       </AuthLayout>
     </>
   );

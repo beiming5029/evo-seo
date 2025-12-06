@@ -1,37 +1,66 @@
 @import url("https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.19/index.global.min.css");
 @import url("https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.19/index.global.min.css");
 
-/* 头部工具栏风格 */
+/* Vibrant Intelligence calendar theme */
+.fc {
+  --fc-border-color: rgba(148, 163, 184, 0.25);
+  --fc-neutral-bg: rgba(255, 255, 255, 0.65);
+  --fc-neutral-text: #0f172a;
+  --fc-muted-text: #64748b;
+}
+
+.dark .fc {
+  --fc-border-color: rgba(148, 163, 184, 0.15);
+  --fc-neutral-bg: rgba(15, 23, 42, 0.75);
+  --fc-neutral-text: #e2e8f0;
+  --fc-muted-text: #94a3b8;
+}
+
 .fc .fc-header-toolbar {
-  background: #2f3a4a;
-  color: #fff;
-  padding: 10px 12px;
-  border-radius: 12px;
-  margin: 0 0 12px 0;
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.12), rgba(79, 70, 229, 0.1));
+  color: var(--fc-neutral-text);
+  padding: 12px 14px;
+  border-radius: 16px;
+  margin: 0 0 16px 0;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+  backdrop-filter: blur(14px);
+}
+
+.dark .fc .fc-header-toolbar {
+  background: rgba(15, 23, 42, 0.75);
+  border-color: rgba(148, 163, 184, 0.28);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
 }
 
 .fc .fc-toolbar-title {
   font-size: 20px;
-  font-weight: 700;
-  color: #fff;
+  font-weight: 800;
+  color: var(--fc-neutral-text);
+  letter-spacing: -0.01em;
 }
 
 .fc .fc-button {
-  border-radius: 8px;
+  border-radius: 999px;
   border: none;
-  padding: 6px 12px;
-  font-weight: 600;
+  padding: 8px 13px;
+  font-weight: 700;
   text-transform: none;
+  box-shadow: 0 6px 18px rgba(79, 70, 229, 0.16);
 }
 
 .fc .fc-button-primary {
-  background: #455066;
+  background: linear-gradient(90deg, #2563eb, #4f46e5);
   color: #fff;
+}
+
+.fc .fc-button-primary:disabled {
+  opacity: 0.65;
 }
 
 .fc .fc-button-primary:hover,
 .fc .fc-button-primary:focus {
-  background: #56627a;
+  background: linear-gradient(90deg, #1d4ed8, #4338ca);
 }
 
 .fc .fc-button-primary.fc-prev-button,
@@ -40,50 +69,64 @@
   padding: 0;
   font-size: 18px;
   line-height: 1;
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.16);
 }
 
 .fc .fc-button-primary.fc-today-button {
   text-transform: none;
 }
 
-/* 日历网格 */
-.fc .fc-daygrid-day-frame {
-  padding: 6px;
-}
-
 .fc .fc-col-header-cell-cushion {
-  color: #4b5563;
+  color: var(--fc-muted-text);
   font-weight: 700;
 }
 
 .fc-theme-standard td,
 .fc-theme-standard th {
-  border-color: #e5e7eb;
+  border-color: var(--fc-border-color);
 }
 
 .fc-theme-standard .fc-scrollgrid {
-  border-radius: 14px;
-  border-color: #e5e7eb;
+  border-radius: 18px;
+  border-color: var(--fc-border-color);
+  background: var(--fc-neutral-bg);
 }
 
-/* 事件卡片样式（背景色由事件配置提供，这里统一阴影和圆角） */
+.fc .fc-daygrid-day-frame {
+  padding: 8px;
+}
+
+.fc .fc-daygrid-day-number {
+  color: var(--fc-neutral-text);
+  font-weight: 600;
+}
+
+.fc .fc-day-today {
+  background: radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.14), transparent 50%);
+}
+
+.dark .fc .fc-day-today {
+  background: radial-gradient(circle at 20% 20%, rgba(96, 165, 250, 0.12), transparent 50%);
+}
+
 .fc-daygrid-event {
-  border: none !important;
-  border-radius: 6px !important;
-  padding: 2px 4px !important;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.7) !important;
+  border-radius: 12px !important;
+  padding: 4px 6px !important;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+  backdrop-filter: blur(6px);
+  overflow: hidden;
+}
+
+.dark .fc-daygrid-event {
+  border-color: rgba(148, 163, 184, 0.32) !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
 }
 
 .fc-daygrid-event:hover {
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
 }
 
-/* 今天高亮 */
-.fc .fc-day-today {
-  background-color: #fff8e1;
-}
-
-/* 标题过长省略 */
 .fc .fc-daygrid-event-dot {
   display: none;
 }
