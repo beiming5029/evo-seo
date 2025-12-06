@@ -217,32 +217,50 @@ export default function AdminUsersPage() {
   const flatUsers = useMemo(() => users, [users]);
 
   return (
-    <div className="space-y-6 p-6">
-      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-foreground">用户管理</h1>
-          <p className="text-sm text-muted-foreground">按用户 ID 或邮箱搜索，查看公司与站点，支持新增/更新网站</p>
+    <div className="relative min-h-screen overflow-hidden bg-slate-50/60 px-4 py-6 text-foreground dark:bg-black md:px-8 lg:px-10">
+      <div className="pointer-events-none absolute -left-20 top-10 h-64 w-64 rounded-full bg-blue-500/15 blur-[120px] dark:opacity-0" />
+      <div className="pointer-events-none absolute bottom-[-10%] right-[-6%] h-72 w-72 rounded-full bg-indigo-500/15 blur-[140px] dark:opacity-0" />
+      <div className="pointer-events-none absolute inset-0 bg-[url('/noise.webp')] opacity-[0.04] dark:opacity-0" />
+
+      <div className="relative mb-6 overflow-hidden rounded-3xl border border-white/60 bg-white/70 p-6 shadow-xl shadow-slate-900/10 backdrop-blur-xl dark:border-slate-800/70 dark:bg-slate-900/70 dark:shadow-black/40">
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-blue-500/12 via-white/10 to-indigo-500/10" />
+        <div className="relative flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full bg-blue-100/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-blue-700 ring-1 ring-white/70 backdrop-blur-sm dark:bg-blue-900/40 dark:text-blue-200 dark:ring-white/10">
+              Directory
+            </div>
+            <h1 className="mt-3 text-3xl font-bold leading-tight text-slate-900 dark:text-white">
+              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">用户管理</span>
+            </h1>
+            <p className="mt-2 text-sm text-muted-foreground">按用户 ID 或邮箱搜索，查看公司与站点，支持新增/更新网站。</p>
+          </div>
+          <Button
+            as={Link}
+            href="/admin/users/create"
+            className="rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-indigo-600/35"
+            variant="primary"
+          >
+            新增用户
+          </Button>
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-end">
-        <Button as={Link} href="/admin/users/create" className="bg-primary text-primary-foreground hover:bg-primary/90" variant="primary">
-          新增用户
-        </Button>
-      </div>
-
-<form className="rounded-xl border border-border/60 bg-card/50 p-4" onSubmit={submitSearch}>
-        <div className="grid gap-4 md:grid-cols-3">
+      <form
+        className="relative rounded-2xl border border-white/60 bg-white/70 p-5 shadow-lg shadow-slate-900/10 backdrop-blur-xl dark:border-slate-800/70 dark:bg-slate-900/70 dark:shadow-black/40"
+        onSubmit={submitSearch}
+      >
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-blue-500/10 via-white/8 to-indigo-500/10" />
+        <div className="relative grid gap-4 md:grid-cols-3">
           <div className="space-y-1">
-            <Label>用户 ID</Label>
+            <Label className="text-xs">用户 ID</Label>
             <Input
               value={query.userId}
               onChange={(e) => setQuery((prev) => ({ ...prev, userId: e.target.value }))}
-              placeholder="按 ID 精确查询"
+              placeholder="用 ID 精确查询"
             />
           </div>
           <div className="space-y-1">
-            <Label>用户邮箱</Label>
+            <Label className="text-xs">用户邮箱</Label>
             <Input
               value={query.email}
               onChange={(e) => setQuery((prev) => ({ ...prev, email: e.target.value }))}
@@ -250,23 +268,28 @@ export default function AdminUsersPage() {
             />
           </div>
           <div className="flex items-end">
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button
+              type="submit"
+              className="w-full rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-indigo-500/25 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-600/35"
+              disabled={loading}
+            >
               {loading ? "查询中..." : "查询"}
             </Button>
           </div>
         </div>
       </form>
 
-      <div className="overflow-x-auto rounded-xl border border-border/60 bg-card/50">
-        <table className="min-w-full text-sm">
-          <thead className="bg-muted/60 text-left text-muted-foreground">
+      <div className="relative overflow-x-auto rounded-2xl border border-white/60 bg-white/70 shadow-lg shadow-slate-900/10 backdrop-blur-xl dark:border-slate-800/70 dark:bg-slate-900/70 dark:shadow-black/40">
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/30 via-white/5 to-transparent dark:from-slate-900/50" />
+        <table className="relative min-w-full text-sm">
+          <thead className="bg-white/70 text-left text-muted-foreground dark:bg-slate-900/60">
             <tr>
-              <th className="px-3 py-2">用户 ID</th>
-              <th className="px-3 py-2">姓名</th>
-              <th className="px-3 py-2">邮箱</th>
-              <th className="px-3 py-2">公司</th>
-              <th className="px-3 py-2">关联站点</th>
-              <th className="px-3 py-2">操作</th>
+              <th className="px-3 py-3 font-semibold">用户 ID</th>
+              <th className="px-3 py-3 font-semibold">姓名</th>
+              <th className="px-3 py-3 font-semibold">邮箱</th>
+              <th className="px-3 py-3 font-semibold">公司</th>
+              <th className="px-3 py-3 font-semibold">关联站点</th>
+              <th className="px-3 py-3 font-semibold">操作</th>
             </tr>
           </thead>
           <tbody>
@@ -281,7 +304,7 @@ export default function AdminUsersPage() {
             )}
             {!loading && flatUsers.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-3 py-3 text-center text-muted-foreground">
+                <td colSpan={6} className="px-3 py-5 text-center text-muted-foreground">
                   暂无数据
                 </td>
               </tr>
@@ -290,7 +313,7 @@ export default function AdminUsersPage() {
               flatUsers.map((u) => {
                 const tenantList = getTenantList(u);
                 return (
-                  <tr key={u.id} className="border-t border-border/40 align-top">
+                  <tr key={u.id} className="border-t border-white/60 align-top dark:border-slate-800/60">
                     <td className="px-3 py-3 font-mono text-xs text-muted-foreground break-all">{u.id}</td>
                     <td className="px-3 py-3 text-foreground">{u.name || "-"}</td>
                     <td className="px-3 py-3 text-foreground break-all">{u.email}</td>
@@ -309,7 +332,7 @@ export default function AdminUsersPage() {
                           ? tenantList.map((t) => (
                               <div
                                 key={t.id}
-                                className="rounded-md border border-border/50 bg-background px-2 py-1 text-xs"
+                                className="rounded-md border border-white/60 bg-white/80 px-2 py-1 text-xs shadow-sm dark:border-slate-800/60 dark:bg-slate-900/70"
                               >
                                 <div className="font-semibold text-foreground">{t.name}</div>
                                 <div className="text-muted-foreground">{t.siteUrl || "未配置站点 URL"}</div>
@@ -319,37 +342,28 @@ export default function AdminUsersPage() {
                       </div>
                     </td>
                     <td className="px-3 py-3">
-                      <div className="flex gap-2">
+                      <div className="flex flex-wrap gap-2">
                         <Button
                           as={Link}
                           href={`/admin/users/${u.id}`}
                           size="sm"
                           variant="outline"
+                          className="rounded-full"
                         >
                           详情
                         </Button>
                         <Button
                           size="sm"
                           variant="outline"
+                          className="rounded-full"
                           onClick={() => openEditUser(u)}
                         >
                           编辑
                         </Button>
-                        {/* {tenantList.length > 0 && (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => {
-                              setViewUser(u);
-                              setViewTenantId(tenantList[0]?.id || null);
-                            }}
-                          >
-                            查看
-                          </Button>
-                        )} */}
                         <Button
                           size="sm"
                           variant="outline"
+                          className="rounded-full"
                           onClick={() => {
                             setBindUser(u);
                             resetBindForm();
@@ -366,10 +380,9 @@ export default function AdminUsersPage() {
         </table>
       </div>
 
-      {/* 查看弹窗 */}
       {viewUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-4xl rounded-xl bg-background p-6 shadow-lg">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-4xl overflow-hidden rounded-2xl border border-white/40 bg-white/90 p-6 shadow-2xl backdrop-blur-xl dark:border-slate-800/80 dark:bg-slate-900/85 dark:shadow-black/50">
             <div className="flex items-start justify-between">
               <div>
                 <h3 className="text-lg font-semibold text-foreground">用户详情</h3>
@@ -384,13 +397,13 @@ export default function AdminUsersPage() {
 
             <div className="mt-4 grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <p className="text-muted-foreground">已绑定站点</p>
-                <div className="rounded-md border border-border/60 bg-muted/40 p-2 space-y-1">
+                <p className="text-muted-foreground">已关联站点</p>
+                <div className="rounded-md border border-white/60 bg-white/70 p-2 space-y-1 dark:border-slate-800/60 dark:bg-slate-900/70">
                   {getTenantList(viewUser).map((t) => (
                     <div
                       key={t.id}
                       className={`cursor-pointer rounded px-2 py-1 text-sm ${
-                        viewTenantId === t.id ? "bg-background font-semibold" : "hover:bg-background/60"
+                        viewTenantId === t.id ? "bg-white/90 font-semibold dark:bg-slate-800" : "hover:bg-white/70 dark:hover:bg-slate-800/70"
                       }`}
                       onClick={() => setViewTenantId(t.id)}
                     >
@@ -410,7 +423,7 @@ export default function AdminUsersPage() {
                   const t = list.find((item) => item.id === viewTenantId);
                   if (!t) return <p className="text-muted-foreground">未选择站点</p>;
                   return (
-                    <div className="space-y-2 rounded-md border border-border/50 bg-background px-3 py-3">
+                    <div className="space-y-2 rounded-md border border-white/60 bg-white/80 px-3 py-3 shadow-sm dark:border-slate-800/60 dark:bg-slate-900/70">
                       <div>
                         <p className="text-xs text-muted-foreground">站点名称</p>
                         <p className="text-base font-semibold text-foreground">{t.name}</p>
@@ -438,10 +451,9 @@ export default function AdminUsersPage() {
         </div>
       )}
 
-      {/* 绑定/更新弹窗 */}
       {bindUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-3xl rounded-xl bg-background p-6 shadow-lg">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-3xl overflow-hidden rounded-2xl border border-white/40 bg-white/90 p-6 shadow-2xl backdrop-blur-xl dark:border-slate-800/80 dark:bg-slate-900/85 dark:shadow-black/50">
             <div className="flex items-start justify-between">
               <div>
                 <h3 className="text-lg font-semibold text-foreground">绑定/更新网站</h3>
@@ -461,7 +473,7 @@ export default function AdminUsersPage() {
                   getTenantList(bindUser).map((t) => (
                     <div
                       key={t.id}
-                      className="cursor-pointer rounded-md border border-border/50 bg-background px-3 py-2 hover:border-primary/50"
+                      className="cursor-pointer rounded-md border border-white/60 bg-white/70 px-3 py-2 hover:border-blue-200/70 dark:border-slate-800/60 dark:bg-slate-900/70 dark:hover:border-blue-500/40"
                       onClick={() =>
                         setBindForm({
                           tenantId: t.id,
@@ -485,13 +497,13 @@ export default function AdminUsersPage() {
               <form className="space-y-2 text-sm" onSubmit={(e) => submitBind(e, bindUser.id)}>
                 <p className="text-muted-foreground">绑定/更新网站</p>
                 {bindForm.tenantId && (
-                  <div className="rounded-md border border-dashed border-border/70 bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
+                  <div className="rounded-md border border-dashed border-white/60 bg-white/60 px-3 py-2 text-xs text-muted-foreground dark:border-slate-800/60 dark:bg-slate-900/70">
                     正在编辑：{bindForm.siteName || "未命名站点"}（更新后生效，如需新增请点击左侧“重置”）
                   </div>
                 )}
                 <div className="flex justify-end">
                   <Button type="button" size="sm" variant="outline" onClick={() => resetBindForm()} disabled={saving}>
-                    重置为新建
+                    重置为新增
                   </Button>
                 </div>
                 <div className="space-y-1">
@@ -518,7 +530,6 @@ export default function AdminUsersPage() {
                     <Label className="text-xs">WP 用户名（选填）</Label>
                     <Input
                       name="wpUsername"
-                      placeholder=""
                       value={bindForm.wpUsername}
                       onChange={(e) => setBindForm((prev) => ({ ...prev, wpUsername: e.target.value }))}
                     />
@@ -528,13 +539,12 @@ export default function AdminUsersPage() {
                     <Input
                       name="wpAppPassword"
                       type="password"
-                      placeholder=""
                       value={bindForm.wpAppPassword}
                       onChange={(e) => setBindForm((prev) => ({ ...prev, wpAppPassword: e.target.value }))}
                     />
                   </div>
                 </div>
-                <Button type="submit" size="sm" disabled={saving}>
+                <Button type="submit" size="sm" disabled={saving} className="rounded-full">
                   {saving ? "提交中..." : bindForm.tenantId ? "更新" : "绑定"}
                 </Button>
               </form>
@@ -543,15 +553,14 @@ export default function AdminUsersPage() {
         </div>
       )}
 
-      {/* 编辑用户信息弹窗 */}
       {editUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-3xl rounded-xl bg-background p-6 shadow-lg">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-3xl overflow-hidden rounded-2xl border border-white/40 bg-white/90 p-6 shadow-2xl backdrop-blur-xl dark:border-slate-800/80 dark:bg-slate-900/85 dark:shadow-black/50">
             <div className="flex items-start justify-between">
               <div>
                 <h3 className="text-lg font-semibold text-foreground">编辑用户信息</h3>
                 <p className="text-sm text-muted-foreground">
-                  邮箱不可修改，如需变更请新建账户 · {editUser.email}
+                  邮箱不可修改，如需变更请新建账户再迁移数据 · {editUser.email}
                 </p>
               </div>
               <Button variant="simple" onClick={() => setEditUser(null)}>
@@ -585,10 +594,10 @@ export default function AdminUsersPage() {
                     <img
                       src={editForm.imageUrl}
                       alt="avatar preview"
-                      className="h-12 w-12 rounded-full border border-border object-cover"
+                      className="h-12 w-12 rounded-full border border-white/60 object-cover shadow-sm dark:border-slate-800/60"
                     />
                   ) : (
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full border border-dashed border-border text-xs text-muted-foreground">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full border border-dashed border-white/60 text-xs text-muted-foreground dark:border-slate-800/60">
                       无
                     </div>
                   )}
@@ -610,6 +619,7 @@ export default function AdminUsersPage() {
                       size="sm"
                       onClick={() => setEditForm((prev) => ({ ...prev, imageUrl: "" }))}
                       disabled={editUploading || editSaving}
+                      className="rounded-full"
                     >
                       移除
                     </Button>
@@ -618,10 +628,10 @@ export default function AdminUsersPage() {
                 <p className="text-xs text-muted-foreground">如需改邮箱，请新建账户再迁移数据</p>
               </div>
               <div className="md:col-span-2 flex items-center gap-3">
-                <Button type="submit" size="sm" disabled={editSaving || editUploading}>
+                <Button type="submit" size="sm" disabled={editSaving || editUploading} className="rounded-full">
                   {editSaving ? "保存中..." : "保存修改"}
                 </Button>
-                <Button type="button" variant="outline" size="sm" onClick={() => setEditUser(null)} disabled={editSaving}>
+                <Button type="button" variant="outline" size="sm" onClick={() => setEditUser(null)} disabled={editSaving} className="rounded-full">
                   取消
                 </Button>
                 {editUploading && <span className="text-xs text-muted-foreground">头像正在上传...</span>}

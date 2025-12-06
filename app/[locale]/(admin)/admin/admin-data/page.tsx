@@ -329,7 +329,7 @@ export default function AdminDataPage() {
     <div className="space-y-6 p-6 text-foreground">
       <div className="space-y-2">
         <h1 className="text-2xl font-semibold">管理员上传</h1>
-        <p className="text-sm text-muted-foreground">录入 询盘、流量、关键词、文章排期、服务报告信息</p>
+        <p className="text-sm text-muted-foreground">录入 询盘、流量、关键词、文章排期</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">

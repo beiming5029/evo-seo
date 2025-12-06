@@ -140,7 +140,7 @@ export async function getCompanyDashboardOverview({ userId, tenantIds, options }
           return (await listTenantsForUser(userId)).map((t) => t.id);
         })());
   if (!tenantList.length) {
-    return { tenantIds: [], inquiries: [], traffic, keywords: [], posts: [], latestReport: null };
+    return { tenantIds: [], inquiries: [], traffic: [], keywords: [], posts: [], latestReport: null };
   }
 
   const now = new Date();
