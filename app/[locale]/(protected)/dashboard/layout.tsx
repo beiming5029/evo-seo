@@ -69,7 +69,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Link
                 key={item.key}
                 href={href}
-                prefetch
+                prefetch={false}
                 className={cn(
                   "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-200",
                   active
