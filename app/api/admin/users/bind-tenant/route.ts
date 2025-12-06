@@ -104,6 +104,7 @@ export async function POST(req: NextRequest) {
               siteUrl,
               wpUsername,
               wpAppPassword,
+              autoPublish: true,
               status: "connected",
               updatedAt: new Date(),
             })
@@ -114,6 +115,7 @@ export async function POST(req: NextRequest) {
             siteUrl,
             wpUsername,
             wpAppPassword,
+            autoPublish: true,
             status: "connected",
           });
         }
@@ -149,6 +151,7 @@ export async function POST(req: NextRequest) {
         siteUrl,
         wpUsername,
         wpAppPassword,
+        autoPublish: true,
         status: "connected",
       });
     }
