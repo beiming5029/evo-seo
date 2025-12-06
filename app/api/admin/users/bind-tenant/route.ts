@@ -119,6 +119,17 @@ export async function POST(req: NextRequest) {
             status: "connected",
           });
         }
+      } else if (existingWp[0]) {
+        // 没有提供 WP 凭据时，关闭自动发布
+        await db
+          .update(wpIntegration)
+          .set({
+            siteUrl: siteUrl || existingWp[0].siteUrl,
+            autoPublish: false,
+            status: "disconnected",
+            updatedAt: new Date(),
+          })
+          .where(eq(wpIntegration.id, existingWp[0].id));
       }
 
       return NextResponse.json({ tenant: updatedTenant });
