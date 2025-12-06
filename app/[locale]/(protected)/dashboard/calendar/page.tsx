@@ -239,7 +239,7 @@ export default function CalendarPage() {
         </div>
       )}
 
-      {/* <div className="rounded-2xl border border-dashed border-border/60 bg-card/40 p-4">
+      <div className="rounded-2xl border border-dashed border-border/60 bg-card/40 p-4">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-semibold text-foreground">手动触发发布（模拟定时任务）</p>
@@ -263,7 +263,7 @@ export default function CalendarPage() {
             {t("viewFull")}
           </Button>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 }

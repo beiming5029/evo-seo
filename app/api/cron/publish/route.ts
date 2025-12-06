@@ -2,7 +2,7 @@
 import { Buffer } from "node:buffer";
 import { db } from "@/lib/db";
 import { blogPosts, contentSchedule, postPublishLog, wpIntegration, tenant } from "@/lib/db/schema";
-import { and, eq, asc } from "drizzle-orm";
+import { and, eq, gte, lte, asc, sql, inArray } from "drizzle-orm";
 import { auth } from "@/lib/auth";
 
 const CRON_SECRET = process.env.CRON_SECRET;
@@ -99,11 +99,72 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  try {
+    const session = await auth.api.getSession({ headers: req.headers });
+    const authHeader = req.headers.get("authorization") || "";
+    const authType = authHeader.split(" ")[0] || null;
+    console.info("[Cron publish] auth info", {
+      sessionUserId: session?.session?.userId ?? null,
+      authType,
+    });
+  } catch (err) {
+    console.info("[Cron publish] auth info", { sessionUserId: null, authType: null, error: String(err) });
+  }
+
   const now = new Date();
   const { start, end, dateStr } = getDayBoundsByTimezone(now, "Asia/Shanghai");
+  console.info("[Cron publish] start", {
+    now: now.toISOString(),
+    dateStr,
+    windowStart: start.toISOString(),
+    windowEnd: end.toISOString(),
+  });
   try {
     // Get tenants with WP integration
     const integrations = await db.select().from(wpIntegration);
+    const statusCounts = await db
+      .select({ status: contentSchedule.status, count: sql<number>`count(*)` })
+      .from(contentSchedule)
+      .groupBy(contentSchedule.status);
+    const readySample = await db
+      .select({
+        id: contentSchedule.id,
+        publishDate: contentSchedule.publishDate,
+        status: contentSchedule.status,
+        tenantId: contentSchedule.tenantId,
+      })
+      .from(contentSchedule)
+      .where(inArray(contentSchedule.status, ["ready", "draft"]))
+      .limit(5);
+    const anySample = await db
+      .select({
+        id: contentSchedule.id,
+        publishDate: contentSchedule.publishDate,
+        status: contentSchedule.status,
+        tenantId: contentSchedule.tenantId,
+      })
+      .from(contentSchedule)
+      .orderBy(asc(contentSchedule.publishDate))
+      .limit(5);
+    const todayDraftReady = await db
+      .select({
+        id: contentSchedule.id,
+        publishDate: contentSchedule.publishDate,
+        status: contentSchedule.status,
+        tenantId: contentSchedule.tenantId,
+      })
+      .from(contentSchedule)
+      .where(
+        and(
+          inArray(contentSchedule.status, ["ready", "draft"]),
+          gte(contentSchedule.publishDate, dateStr),
+          lte(contentSchedule.publishDate, dateStr)
+        )
+      );
+    console.info("[Cron publish] status counts", statusCounts);
+    console.info("[Cron publish] ready sample", { count: readySample.length, items: readySample });
+    console.info("[Cron publish] any sample", { count: anySample.length, items: anySample });
+    console.info("[Cron publish] today draft/ready", { count: todayDraftReady.length, items: todayDraftReady });
     let processed = 0;
     const published: string[] = [];
     const skipped: string[] = [];
@@ -131,12 +192,15 @@ export async function POST(req: NextRequest) {
       .leftJoin(blogPosts, eq(contentSchedule.articleId, blogPosts.id))
       .where(
         and(
-          eq(contentSchedule.status, "ready"),
-          eq(contentSchedule.publishDate, dateStr)
+          inArray(contentSchedule.status, ["ready", "draft"]),
+          gte(contentSchedule.publishDate, dateStr),
+          lte(contentSchedule.publishDate, dateStr)
         )
       )
       .orderBy(asc(contentSchedule.publishDate))
       .limit(CRON_MAX_POSTS_PER_RUN);
+
+    console.info("[Cron publish] posts fetched", { count: postsToHandle.length });
 
     for (const post of postsToHandle) {
       processed += 1;
@@ -146,6 +210,15 @@ export async function POST(req: NextRequest) {
         ? buildPublishDateTime(dateStr, integration.publishTimeLocal || "12:00", integration.timezone)
         : null;
       const isDue = autoPublish ? now >= (scheduledAt as Date) : false;
+      console.info("[Cron publish] handling post", {
+        id: post.id,
+        tenantId: post.tenantId,
+        publishDate: post.publishDate,
+        status: post.status,
+        autoPublish: Boolean(integration?.autoPublish),
+        scheduledAt: scheduledAt?.toISOString?.() ?? null,
+        isDue,
+      });
 
       // 如果没有集成或 autoPublish 关闭，直接标记已发布（不推送）
       if (!integration || !integration.autoPublish) {
@@ -162,6 +235,7 @@ export async function POST(req: NextRequest) {
           message: "Marked as published without WordPress auto-push",
         });
         published.push(String(post.id));
+        console.info("[Cron publish] marked published without push", { id: post.id });
         continue;
       }
 
@@ -187,6 +261,7 @@ export async function POST(req: NextRequest) {
           message: "Published via WordPress auto-push",
         });
         published.push(String(post.id));
+        console.info("[Cron publish] publish success", { id: post.id, link });
       } catch (err: any) {
         console.error("[Cron publish] push error", err);
         failed.push(String(post.id));
