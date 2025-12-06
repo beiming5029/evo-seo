@@ -2,17 +2,17 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { key: "home", label: "概要", path: "/admin" },
-  { key: "users", label: "用户管理", path: "/admin/users" },
-  { key: "account", label: "用户信息变更", path: "/admin/account" },
-  { key: "adminData", label: "管理员上传", path: "/admin/admin-data" },
-  { key: "serviceReports", label: "服务报告上传", path: "/admin/service-reports" },
+  { key: "home", path: "/admin" },
+  { key: "users", path: "/admin/users" },
+  { key: "account", path: "/admin/account" },
+  { key: "adminData", path: "/admin/admin-data" },
+  { key: "serviceReports", path: "/admin/service-reports" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -23,6 +23,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const user = session.data?.user;
   const [adminChecked, setAdminChecked] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const tNav = useTranslations("adminPortal.nav");
 
   useEffect(() => {
     const check = async () => {
@@ -102,7 +103,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 >
                   {item.key === "home" ? "🏠" : item.key === "users" ? "👥" : item.key === "account" ? "🧾" : "📁"}
                 </span>
-                <span>{item.label}</span>
+                <span>{tNav(item.key as any)}</span>
               </Link>
             );
           })}

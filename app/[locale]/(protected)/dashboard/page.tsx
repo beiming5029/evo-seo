@@ -15,10 +15,14 @@ function normalizeDate(value?: string | Date | null) {
   return value.slice(0, 10);
 }
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
   const session = await auth.api.getSession({ headers: headers() });
   if (!session?.session?.userId) {
-    redirect("/login");
+    redirect(`/${locale}/login`);
   }
 
   const tenantIdsPromise = listTenantsForUser(session.session.userId).then((items) => items.map((t) => t.id));
@@ -41,7 +45,7 @@ export default async function DashboardPage() {
       <div className="pointer-events-none absolute inset-0 bg-[url('/noise.webp')] opacity-[0.04] dark:opacity-0" />
 
       <Suspense fallback={<DashboardSkeleton />}>
-        <DashboardContent overviewPromise={overviewPromise} />
+        <DashboardContent overviewPromise={overviewPromise} locale={locale} />
       </Suspense>
     </div>
   );
@@ -49,11 +53,13 @@ export default async function DashboardPage() {
 
 async function DashboardContent({
   overviewPromise,
+  locale,
 }: {
   overviewPromise: ReturnType<typeof getCompanyDashboardOverview>;
+  locale: string;
 }) {
   const [t, overview] = await Promise.all([
-    getTranslations("dashboard.home"),
+    getTranslations({ locale, namespace: "dashboard.home" }),
     overviewPromise,
   ]);
 
@@ -84,10 +90,10 @@ async function DashboardContent({
       <div className="relative mb-6 flex flex-col gap-4 rounded-3xl border border-white/60 bg-white/70 p-6 shadow-xl shadow-slate-900/10 backdrop-blur-xl dark:border-slate-800/70 dark:bg-slate-900/70 dark:shadow-black/40 md:flex-row md:items-center md:justify-between">
         <div>
           <div className="inline-flex items-center gap-2 rounded-full bg-blue-100/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-blue-700 ring-1 ring-white/70 backdrop-blur-sm dark:bg-blue-900/40 dark:text-blue-200 dark:ring-white/10">
-            Realtime
+            {t("badge")}
           </div>
           <h1 className="mt-3 text-3xl font-bold leading-tight text-slate-900 dark:text-white md:text-4xl">
-            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Dashboard</span>
+            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">{t("title")}</span>
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
             {t("welcome")} · {siteCountText}

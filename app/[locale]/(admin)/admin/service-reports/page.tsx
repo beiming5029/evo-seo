@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,6 +10,7 @@ import { notify } from "@/lib/notify";
 type UserOption = { id: string; name?: string | null; email?: string | null };
 
 export default function ServiceReportUploadPage() {
+  const t = useTranslations("adminPortal.serviceReports");
   const [users, setUsers] = useState<UserOption[]>([]);
   const [selectedUserId, setSelectedUserId] = useState("");
   const [saving, setSaving] = useState(false);
@@ -30,15 +32,15 @@ export default function ServiceReportUploadPage() {
         setUsers(list);
         if (list[0]) setSelectedUserId(list[0].id);
       } catch {
-        setError("加载用户列表失败");
+        setError(t("errors.loadUsers"));
       }
     };
     loadUsers();
-  }, []);
+  }, [t]);
 
   const handleSubmit = async (form: HTMLFormElement) => {
     if (!selectedUserId) {
-      setError("请选择目标账户");
+      setError(t("errors.noUser"));
       return;
     }
     const formData = new FormData(form);
@@ -49,10 +51,12 @@ export default function ServiceReportUploadPage() {
       setError(null);
       const res = await fetch("/api/admin/reports", { method: "POST", body: formData });
       if (!res.ok) throw new Error(await res.text());
-      notify.success("上传成功");
+      notify.success(t("messages.success"));
+      setMessage(t("messages.success"));
       form.reset();
     } catch (err) {
-      notify.error("上传失败，请检查文件与必填项");
+      notify.error(t("messages.failure"));
+      setError(t("messages.failure"));
     } finally {
       setSaving(false);
     }
@@ -68,14 +72,12 @@ export default function ServiceReportUploadPage() {
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-blue-500/12 via-white/10 to-indigo-500/10" />
         <div className="relative flex flex-col gap-3">
           <div className="inline-flex items-center gap-2 rounded-full bg-blue-100/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-blue-700 ring-1 ring-white/70 backdrop-blur-sm dark:bg-blue-900/40 dark:text-blue-200 dark:ring-white/10">
-            Upload
+            {t("badge")}
           </div>
           <h1 className="text-3xl font-bold leading-tight text-slate-900 dark:text-white">
-            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">服务报告上传</span>
+            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">{t("title")}</span>
           </h1>
-          <p className="text-sm text-muted-foreground">
-            报告按公司维度存储，自动记录上传时间，避免跨站点查询性能问题。
-          </p>
+          <p className="text-sm text-muted-foreground">{t("desc")}</p>
           {error && (
             <div className="mt-1 rounded-xl border border-red-200/70 bg-red-50/80 px-3 py-2 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200">
               {error}
@@ -99,7 +101,7 @@ export default function ServiceReportUploadPage() {
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-blue-500/10 via-white/8 to-indigo-500/10" />
         <div className="relative grid gap-3 md:grid-cols-2">
           <div className="space-y-1">
-            <Label className="text-xs">目标账户</Label>
+            <Label className="text-xs">{t("fields.targetUser")}</Label>
             <select
               className="w-full rounded-xl border border-white/60 bg-white/80 px-3 py-2 text-sm shadow-inner shadow-slate-900/5 backdrop-blur-sm dark:border-slate-800/60 dark:bg-slate-900/70"
               value={selectedUserId}
@@ -107,28 +109,28 @@ export default function ServiceReportUploadPage() {
             >
               {users.map((u) => (
                 <option key={u.id} value={u.id}>
-                  {u.name || u.email || "未命名账户"}
+                  {u.name || u.email || t("common.unnamed")}
                 </option>
               ))}
             </select>
           </div>
           <div />
           <div className="space-y-1">
-            <Label className="text-xs">报告名称</Label>
+            <Label className="text-xs">{t("fields.title")}</Label>
             <Input name="title" required className="rounded-xl" />
           </div>
           <div className="space-y-1">
-            <Label className="text-xs">报告类型</Label>
+            <Label className="text-xs">{t("fields.type")}</Label>
             <select
               name="type"
               className="w-full rounded-xl border border-white/60 bg-white/80 px-3 py-2 text-sm shadow-inner shadow-slate-900/5 backdrop-blur-sm dark:border-slate-800/60 dark:bg-slate-900/70"
             >
-              <option value="diagnosis">策略诊断</option>
-              <option value="review">复盘</option>
+              <option value="diagnosis">{t("fields.types.diagnosis")}</option>
+              <option value="review">{t("fields.types.review")}</option>
             </select>
           </div>
           <div className="md:col-span-2 space-y-1">
-            <Label className="text-xs">上传 PDF（≤10MB）</Label>
+            <Label className="text-xs">{t("fields.upload")}</Label>
             <Input type="file" name="file" accept=".pdf" required className="rounded-xl" />
           </div>
         </div>
@@ -138,7 +140,7 @@ export default function ServiceReportUploadPage() {
           disabled={saving}
           className="w-full rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition hover:-translate-y-0.5 hover:shadow-xl hover:shadow-indigo-600/35"
         >
-          {saving ? "上传中..." : "上传报告"}
+          {saving ? t("cta.submitting") : t("cta.submit")}
         </Button>
       </form>
     </div>

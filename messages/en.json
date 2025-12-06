@@ -118,6 +118,8 @@
     "home": {
       "welcome": "Welcome back",
       "subtitle": "See your growth board. {count} sites are acquiring leads.",
+      "badge": "Realtime",
+      "title": "Dashboard",
       "inquiriesTitle": "Inquiries this month",
       "inquiriesDesc": "Overview of this month",
       "calendarTitle": "Article calendar (month)",
@@ -208,6 +210,7 @@
       "blog": "Blog",
       "contact": "Contact",
       "dashboard": "Dashboard",
+      "admin": "Admin Console",
       "demo": "Demo",
       "chat": "Chat",
       "image": "Image",
@@ -1184,6 +1187,172 @@
       "title": "Ready to boost your SEO?",
       "desc": "Join 500+ customers. AI + experts, transparent delivery.",
       "tip": "14-day free trial · No credit card · Cancel anytime"
+    }
+  },
+  "adminPortal": {
+    "nav": {
+      "home": "Overview",
+      "users": "User Management",
+      "account": "Account Updates",
+      "adminData": "Admin Uploads",
+      "serviceReports": "Service Reports"
+    },
+    "home": {
+      "badge": "Realtime",
+      "title": "Admin Console",
+      "desc": "Control panel for imports, user binding, sites and report uploads.",
+      "enter": "Enter",
+      "cards": {
+        "users": {
+          "title": "User Management",
+          "desc": "Search users, view linked sites, bind new sites."
+        },
+        "account": {
+          "title": "Account Updates",
+          "desc": "Refresh company/brand info to keep client records accurate."
+        },
+        "adminData": {
+          "title": "Admin Uploads",
+          "desc": "Enter traffic, keywords, drafts, and service reports."
+        }
+      }
+    },
+    "users": {
+      "badge": "Directory",
+      "title": "User Management",
+      "desc": "Search by user ID or email; view companies and sites; add or update sites.",
+      "cta": "Create user",
+      "form": {
+        "userId": "User ID",
+        "userIdPlaceholder": "Exact ID query",
+        "email": "User email",
+        "emailPlaceholder": "Supports fuzzy match",
+        "search": "Search",
+        "searching": "Searching..."
+      },
+      "table": {
+        "headers": {
+          "userId": "User ID",
+          "name": "Name",
+          "email": "Email",
+          "company": "Company",
+          "sites": "Sites",
+          "actions": "Actions"
+        },
+        "noData": "No data"
+      },
+      "company": {
+        "none": "No company",
+        "contactMissing": "No contact email",
+        "cooperationPrefix": "Cooperation",
+        "to": "to"
+      },
+      "sites": {
+        "none": "No sites bound",
+        "urlMissing": "Site URL not set"
+      },
+      "actions": {
+        "detail": "Detail",
+        "edit": "Edit",
+        "bind": "Bind site"
+      },
+      "view": {
+        "title": "User details",
+        "linkedSites": "Linked sites",
+        "siteDetails": "Site details",
+        "noSiteSelected": "No site selected"
+      },
+      "bind": {
+        "title": "Bind/Update site",
+        "currentSites": "Current linked sites",
+        "noSites": "No linked sites yet, bind on the right",
+        "clickToEdit": "Click to edit",
+        "formTitle": "Bind/Update site",
+        "editingHint": "Editing: {siteName} (will overwrite, reset to add new)",
+        "reset": "Reset to new",
+        "submit": "Bind",
+        "update": "Update",
+        "saving": "Submitting..."
+      },
+      "edit": {
+        "title": "Edit user info",
+        "tip": "Email cannot be changed; create a new account to move data",
+        "nameLabel": "Name",
+        "namePlaceholder": "User name",
+        "passwordLabel": "Password (optional, min 8 chars)",
+        "avatarLabel": "Avatar (optional)",
+        "avatarNone": "None",
+        "removeAvatar": "Remove",
+        "emailNote": "If you need to change email, create a new account then migrate data",
+        "save": "Save changes",
+        "saving": "Saving...",
+        "cancel": "Cancel",
+        "uploading": "Avatar uploading..."
+      },
+      "fields": {
+        "siteName": "Site name",
+        "siteUrl": "Site URL",
+        "wpUser": "WP username",
+        "wpPassword": "WP app password",
+        "siteNameRequired": "Site name (required)",
+        "siteNamePlaceholder": "e.g. Example Tech",
+        "siteUrlOptional": "Site URL (optional)",
+        "wpUserOptional": "WP username (optional)",
+        "wpPasswordOptional": "WP app password (optional)"
+      },
+      "errors": {
+        "load": "Failed to load users, please retry",
+        "avatarType": "Avatar only supports image files",
+        "avatarUpload": "Avatar upload failed, please retry",
+        "nameRequired": "Please enter a name",
+        "passwordLength": "Password must be at least 8 characters",
+        "siteNameRequired": "Please enter site name",
+        "bindFailed": "Operation failed, please check required fields",
+        "updateFailed": "Update failed, please retry",
+        "noUser": "Please select a target account"
+      },
+      "messages": {
+        "avatarUploaded": "Avatar uploaded",
+        "updated": "User info updated",
+        "success": "Operation successful"
+      },
+      "common": {
+        "noName": "Name not set",
+        "close": "Close",
+        "notSet": "Not set",
+        "unnamed": "Unnamed account",
+        "unnamedSite": "Unnamed site"
+      }
+    },
+    "serviceReports": {
+      "badge": "Upload",
+      "title": "Service Reports",
+      "desc": "Store reports per company and record upload time to avoid cross-site performance issues.",
+      "errors": {
+        "loadUsers": "Failed to load user list",
+        "noUser": "Please select a target account"
+      },
+      "messages": {
+        "success": "Upload successful",
+        "failure": "Upload failed, please check file and required fields"
+      },
+      "fields": {
+        "targetUser": "Target account",
+        "title": "Report title",
+        "type": "Report type",
+        "types": {
+          "diagnosis": "Strategy diagnosis",
+          "review": "Review"
+        },
+        "upload": "Upload PDF (≤10MB)"
+      },
+      "common": {
+        "unnamed": "Unnamed account"
+      },
+      "cta": {
+        "submit": "Upload report",
+        "submitting": "Uploading..."
+      }
     }
   }
 }

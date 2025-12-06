@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { notify } from "@/lib/notify";
 import { Button } from "@/components/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +29,7 @@ type CompanyInfo = {
 type AdminUser = { id: string; name: string | null; email: string; image?: string | null; company?: CompanyInfo; tenants?: TenantInfo[] };
 
 export default function AdminUsersPage() {
+  const t = useTranslations("adminPortal.users");
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -71,7 +73,7 @@ export default function AdminUsersPage() {
       setUsers(data.users || []);
       setError(null);
     } catch (err) {
-      setError("加载失败，请稍后重试");
+      setError(t("errors.load"));
     } finally {
       setLoading(false);
     }
@@ -103,7 +105,7 @@ export default function AdminUsersPage() {
   const handleEditAvatarUpload = async (file: File | null) => {
     if (!file) return;
     if (!file.type.startsWith("image/")) {
-      setError("头像仅支持图片文件");
+      setError(t("errors.avatarType"));
       return;
     }
     const formData = new FormData();
@@ -118,12 +120,12 @@ export default function AdminUsersPage() {
       if (!res.ok) throw new Error(await res.text());
       const data = await res.json();
       setEditForm((prev) => ({ ...prev, imageUrl: data.url || "" }));
-      setMessage("头像上传成功");
-      notify.success("头像上传成功");
+      setMessage(t("messages.avatarUploaded"));
+      notify.success(t("messages.avatarUploaded"));
     } catch (err) {
       console.error(err);
-      setError("头像上传失败，请重试");
-      notify.error("头像上传失败，请重试");
+      setError(t("errors.avatarUpload"));
+      notify.error(t("errors.avatarUpload"));
     } finally {
       setEditUploading(false);
     }
@@ -133,11 +135,11 @@ export default function AdminUsersPage() {
     e.preventDefault();
     if (!editUser) return;
     if (!editForm.name.trim()) {
-      setError("请填写姓名");
+      setError(t("errors.nameRequired"));
       return;
     }
     if (editForm.password && editForm.password.length < 8) {
-      setError("密码至少 8 位");
+      setError(t("errors.passwordLength"));
       return;
     }
     try {
@@ -158,11 +160,11 @@ export default function AdminUsersPage() {
       setEditUser(null);
       setEditForm({ name: "", imageUrl: "", password: "" });
       await fetchUsers({ userId: editUser.id });
-      setMessage("用户信息已更新");
-      notify.success("用户信息已更新");
+      setMessage(t("messages.updated"));
+      notify.success(t("messages.updated"));
     } catch (err) {
-      setError("更新失败，请稍后重试");
-      notify.error("更新失败，请稍后重试");
+      setError(t("errors.updateFailed"));
+      notify.error(t("errors.updateFailed"));
     } finally {
       setEditSaving(false);
     }
@@ -180,7 +182,7 @@ export default function AdminUsersPage() {
   const submitBind = async (e: React.FormEvent<HTMLFormElement>, userId: string) => {
     e.preventDefault();
     if (!bindForm.siteName.trim()) {
-      setError("请填写站点名称");
+      setError(t("errors.siteNameRequired"));
       return;
     }
     const payload = {
@@ -204,17 +206,19 @@ export default function AdminUsersPage() {
       setBindUser(null);
       resetBindForm();
       await fetchUsers({ userId });
-      setMessage("操作成功");
-      notify.success("操作成功");
+      setMessage(t("messages.success"));
+      notify.success(t("messages.success"));
     } catch (err) {
-      setError("操作失败，请检查必填项");
-      notify.error("操作失败，请检查必填项");
+      setError(t("errors.bindFailed"));
+      notify.error(t("errors.bindFailed"));
     } finally {
       setSaving(false);
     }
   };
 
   const flatUsers = useMemo(() => users, [users]);
+
+  const commonNotSet = t("common.notSet");
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-slate-50/60 px-4 py-6 text-foreground dark:bg-black md:px-8 lg:px-10">
@@ -227,12 +231,12 @@ export default function AdminUsersPage() {
         <div className="relative flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full bg-blue-100/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-blue-700 ring-1 ring-white/70 backdrop-blur-sm dark:bg-blue-900/40 dark:text-blue-200 dark:ring-white/10">
-              Directory
+              {t("badge")}
             </div>
             <h1 className="mt-3 text-3xl font-bold leading-tight text-slate-900 dark:text-white">
-              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">用户管理</span>
+              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">{t("title")}</span>
             </h1>
-            <p className="mt-2 text-sm text-muted-foreground">按用户 ID 或邮箱搜索，查看公司与站点，支持新增/更新网站。</p>
+            <p className="mt-2 text-sm text-muted-foreground">{t("desc")}</p>
           </div>
           <Button
             as={Link}
@@ -240,7 +244,7 @@ export default function AdminUsersPage() {
             className="rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-indigo-600/35"
             variant="primary"
           >
-            新增用户
+            {t("cta")}
           </Button>
         </div>
       </div>
@@ -252,19 +256,19 @@ export default function AdminUsersPage() {
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-blue-500/10 via-white/8 to-indigo-500/10" />
         <div className="relative grid gap-4 md:grid-cols-3">
           <div className="space-y-1">
-            <Label className="text-xs">用户 ID</Label>
+            <Label className="text-xs">{t("form.userId")}</Label>
             <Input
               value={query.userId}
               onChange={(e) => setQuery((prev) => ({ ...prev, userId: e.target.value }))}
-              placeholder="用 ID 精确查询"
+              placeholder={t("form.userIdPlaceholder")}
             />
           </div>
           <div className="space-y-1">
-            <Label className="text-xs">用户邮箱</Label>
+            <Label className="text-xs">{t("form.email")}</Label>
             <Input
               value={query.email}
               onChange={(e) => setQuery((prev) => ({ ...prev, email: e.target.value }))}
-              placeholder="支持模糊匹配"
+              placeholder={t("form.emailPlaceholder")}
             />
           </div>
           <div className="flex items-end">
@@ -273,7 +277,7 @@ export default function AdminUsersPage() {
               className="w-full rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-indigo-500/25 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-600/35"
               disabled={loading}
             >
-              {loading ? "查询中..." : "查询"}
+              {loading ? t("form.searching") : t("form.search")}
             </Button>
           </div>
         </div>
@@ -284,12 +288,12 @@ export default function AdminUsersPage() {
         <table className="relative min-w-full text-sm">
           <thead className="bg-white/70 text-left text-muted-foreground dark:bg-slate-900/60">
             <tr>
-              <th className="px-3 py-3 font-semibold">用户 ID</th>
-              <th className="px-3 py-3 font-semibold">姓名</th>
-              <th className="px-3 py-3 font-semibold">邮箱</th>
-              <th className="px-3 py-3 font-semibold">公司</th>
-              <th className="px-3 py-3 font-semibold">关联站点</th>
-              <th className="px-3 py-3 font-semibold">操作</th>
+              <th className="px-3 py-3 font-semibold">{t("table.headers.userId")}</th>
+              <th className="px-3 py-3 font-semibold">{t("table.headers.name")}</th>
+              <th className="px-3 py-3 font-semibold">{t("table.headers.email")}</th>
+              <th className="px-3 py-3 font-semibold">{t("table.headers.company")}</th>
+              <th className="px-3 py-3 font-semibold">{t("table.headers.sites")}</th>
+              <th className="px-3 py-3 font-semibold">{t("table.headers.actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -297,7 +301,7 @@ export default function AdminUsersPage() {
               <tr>
                 <td colSpan={6} className="px-3 py-3 text-center text-muted-foreground">
                   <div className="flex justify-center">
-                    <LoadingIndicator label="加载中..." className="border-0 bg-transparent px-0 shadow-none" rounded={false} />
+                    <LoadingIndicator label={t("form.searching")} className="border-0 bg-transparent px-0 shadow-none" rounded={false} />
                   </div>
                 </td>
               </tr>
@@ -305,7 +309,7 @@ export default function AdminUsersPage() {
             {!loading && flatUsers.length === 0 && (
               <tr>
                 <td colSpan={6} className="px-3 py-5 text-center text-muted-foreground">
-                  暂无数据
+                  {t("table.noData")}
                 </td>
               </tr>
             )}
@@ -318,27 +322,27 @@ export default function AdminUsersPage() {
                     <td className="px-3 py-3 text-foreground">{u.name || "-"}</td>
                     <td className="px-3 py-3 text-foreground break-all">{u.email}</td>
                     <td className="px-3 py-3">
-                      <div className="text-foreground">{u.company?.name || "未配置公司"}</div>
+                      <div className="text-foreground">{u.company?.name || t("company.none")}</div>
                       <div className="text-xs text-muted-foreground">
-                        {u.company?.contactEmail || "无联系邮箱"}
+                        {u.company?.contactEmail || t("company.contactMissing")}
                       </div>
                       <div className="text-[11px] text-muted-foreground">
-                        合作 {u.company?.cooperationStartDate || "-"} 至 {u.company?.validUntil || "-"}
+                        {t("company.cooperationPrefix")} {u.company?.cooperationStartDate || "-"} {t("company.to")} {u.company?.validUntil || "-"}
                       </div>
                     </td>
                     <td className="px-3 py-3">
                       <div className="space-y-1">
                         {tenantList.length
-                          ? tenantList.map((t) => (
+                          ? tenantList.map((tSite) => (
                               <div
-                                key={t.id}
+                                key={tSite.id}
                                 className="rounded-md border border-white/60 bg-white/80 px-2 py-1 text-xs shadow-sm dark:border-slate-800/60 dark:bg-slate-900/70"
                               >
-                                <div className="font-semibold text-foreground">{t.name}</div>
-                                <div className="text-muted-foreground">{t.siteUrl || "未配置站点 URL"}</div>
+                                <div className="font-semibold text-foreground">{tSite.name}</div>
+                                <div className="text-muted-foreground">{tSite.siteUrl || t("sites.urlMissing")}</div>
                               </div>
                             ))
-                          : "未绑定站点"}
+                          : t("sites.none")}
                       </div>
                     </td>
                     <td className="px-3 py-3">
@@ -350,7 +354,7 @@ export default function AdminUsersPage() {
                           variant="outline"
                           className="rounded-full"
                         >
-                          详情
+                          {t("actions.detail")}
                         </Button>
                         <Button
                           size="sm"
@@ -358,7 +362,7 @@ export default function AdminUsersPage() {
                           className="rounded-full"
                           onClick={() => openEditUser(u)}
                         >
-                          编辑
+                          {t("actions.edit")}
                         </Button>
                         <Button
                           size="sm"
@@ -369,7 +373,7 @@ export default function AdminUsersPage() {
                             resetBindForm();
                           }}
                         >
-                          关联站点
+                          {t("actions.bind")}
                         </Button>
                       </div>
                     </td>
@@ -385,61 +389,61 @@ export default function AdminUsersPage() {
           <div className="w-full max-w-4xl overflow-hidden rounded-2xl border border-white/40 bg-white/90 p-6 shadow-2xl backdrop-blur-xl dark:border-slate-800/80 dark:bg-slate-900/85 dark:shadow-black/50">
             <div className="flex items-start justify-between">
               <div>
-                <h3 className="text-lg font-semibold text-foreground">用户详情</h3>
+                <h3 className="text-lg font-semibold text-foreground">{t("view.title")}</h3>
                 <p className="text-sm text-muted-foreground">
-                  {viewUser.name || "未设置姓名"} · {viewUser.email}
+                  {viewUser.name || t("common.noName")} · {viewUser.email}
                 </p>
               </div>
               <Button variant="simple" onClick={() => setViewUser(null)}>
-                关闭
+                {t("common.close")}
               </Button>
             </div>
 
             <div className="mt-4 grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <p className="text-muted-foreground">已关联站点</p>
+                <p className="text-muted-foreground">{t("view.linkedSites")}</p>
                 <div className="rounded-md border border-white/60 bg-white/70 p-2 space-y-1 dark:border-slate-800/60 dark:bg-slate-900/70">
-                  {getTenantList(viewUser).map((t) => (
+                  {getTenantList(viewUser).map((tSite) => (
                     <div
-                      key={t.id}
+                      key={tSite.id}
                       className={`cursor-pointer rounded px-2 py-1 text-sm ${
-                        viewTenantId === t.id ? "bg-white/90 font-semibold dark:bg-slate-800" : "hover:bg-white/70 dark:hover:bg-slate-800/70"
+                        viewTenantId === tSite.id ? "bg-white/90 font-semibold dark:bg-slate-800" : "hover:bg-white/70 dark:hover:bg-slate-800/70"
                       }`}
-                      onClick={() => setViewTenantId(t.id)}
+                      onClick={() => setViewTenantId(tSite.id)}
                     >
-                      <div>{t.name}</div>
-                      <div className="text-xs text-muted-foreground">{t.siteUrl || "未配置站点 URL"}</div>
+                      <div>{tSite.name}</div>
+                      <div className="text-xs text-muted-foreground">{tSite.siteUrl || t("sites.urlMissing")}</div>
                     </div>
                   ))}
                   {!getTenantList(viewUser).length && (
-                    <p className="text-xs text-muted-foreground">暂无站点</p>
+                    <p className="text-xs text-muted-foreground">{t("sites.none")}</p>
                   )}
                 </div>
               </div>
               <div className="space-y-2">
-                <p className="text-muted-foreground">站点详情</p>
+                <p className="text-muted-foreground">{t("view.siteDetails")}</p>
                 {(() => {
                   const list = getTenantList(viewUser);
-                  const t = list.find((item) => item.id === viewTenantId);
-                  if (!t) return <p className="text-muted-foreground">未选择站点</p>;
+                  const tSite = list.find((item) => item.id === viewTenantId);
+                  if (!tSite) return <p className="text-muted-foreground">{t("view.noSiteSelected")}</p>;
                   return (
                     <div className="space-y-2 rounded-md border border-white/60 bg-white/80 px-3 py-3 shadow-sm dark:border-slate-800/60 dark:bg-slate-900/70">
                       <div>
-                        <p className="text-xs text-muted-foreground">站点名称</p>
-                        <p className="text-base font-semibold text-foreground">{t.name}</p>
+                        <p className="text-xs text-muted-foreground">{t("fields.siteName")}</p>
+                        <p className="text-base font-semibold text-foreground">{tSite.name}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-muted-foreground">站点 URL</p>
-                        <p className="text-sm text-foreground break-all">{t.siteUrl || "未配置"}</p>
+                        <p className="text-xs text-muted-foreground">{t("fields.siteUrl")}</p>
+                        <p className="text-sm text-foreground break-all">{tSite.siteUrl || t("sites.urlMissing")}</p>
                       </div>
                       <div className="grid grid-cols-2 gap-2">
                         <div>
-                          <p className="text-xs text-muted-foreground">WP 用户名</p>
-                          <p className="text-sm text-foreground">{t.wpUsername || "未配置"}</p>
+                          <p className="text-xs text-muted-foreground">{t("fields.wpUser")}</p>
+                          <p className="text-sm text-foreground">{tSite.wpUsername || commonNotSet}</p>
                         </div>
                         <div>
-                          <p className="text-xs text-muted-foreground">WP 应用密码</p>
-                          <p className="text-sm text-foreground">{t.wpAppPassword ? "******" : "未配置"}</p>
+                          <p className="text-xs text-muted-foreground">{t("fields.wpPassword")}</p>
+                          <p className="text-sm text-foreground">{tSite.wpAppPassword ? "******" : commonNotSet}</p>
                         </div>
                       </div>
                     </div>
@@ -456,68 +460,68 @@ export default function AdminUsersPage() {
           <div className="w-full max-w-3xl overflow-hidden rounded-2xl border border-white/40 bg-white/90 p-6 shadow-2xl backdrop-blur-xl dark:border-slate-800/80 dark:bg-slate-900/85 dark:shadow-black/50">
             <div className="flex items-start justify-between">
               <div>
-                <h3 className="text-lg font-semibold text-foreground">绑定/更新网站</h3>
+                <h3 className="text-lg font-semibold text-foreground">{t("bind.title")}</h3>
                 <p className="text-sm text-muted-foreground">
-                  {bindUser.name || "未设置姓名"} · {bindUser.email}
+                  {bindUser.name || t("common.noName")} · {bindUser.email}
                 </p>
               </div>
               <Button variant="simple" onClick={() => setBindUser(null)}>
-                关闭
+                {t("common.close")}
               </Button>
             </div>
 
             <div className="mt-4 grid gap-4 md:grid-cols-2">
               <div className="space-y-2 text-sm">
-                <p className="text-muted-foreground">当前关联站点</p>
+                <p className="text-muted-foreground">{t("bind.currentSites")}</p>
                 {getTenantList(bindUser).length ? (
-                  getTenantList(bindUser).map((t) => (
+                  getTenantList(bindUser).map((tSite) => (
                     <div
-                      key={t.id}
+                      key={tSite.id}
                       className="cursor-pointer rounded-md border border-white/60 bg-white/70 px-3 py-2 hover:border-blue-200/70 dark:border-slate-800/60 dark:bg-slate-900/70 dark:hover:border-blue-500/40"
                       onClick={() =>
                         setBindForm({
-                          tenantId: t.id,
-                          siteName: t.name,
-                          siteUrl: t.siteUrl || "",
-                          wpUsername: t.wpUsername || "",
-                          wpAppPassword: t.wpAppPassword || "",
+                          tenantId: tSite.id,
+                          siteName: tSite.name,
+                          siteUrl: tSite.siteUrl || "",
+                          wpUsername: tSite.wpUsername || "",
+                          wpAppPassword: tSite.wpAppPassword || "",
                         })
                       }
                     >
-                      <p className="font-semibold text-foreground">{t.name}</p>
-                      <p className="text-xs text-muted-foreground">{t.siteUrl || "未配置站点 URL"}</p>
-                      <p className="text-[11px] text-primary mt-1">点击编辑</p>
+                      <p className="font-semibold text-foreground">{tSite.name}</p>
+                      <p className="text-xs text-muted-foreground">{tSite.siteUrl || t("sites.urlMissing")}</p>
+                      <p className="text-[11px] text-primary mt-1">{t("bind.clickToEdit")}</p>
                     </div>
                   ))
                 ) : (
-                  <p className="text-muted-foreground">暂无关联站点，右侧可绑定</p>
+                  <p className="text-muted-foreground">{t("bind.noSites")}</p>
                 )}
               </div>
 
               <form className="space-y-2 text-sm" onSubmit={(e) => submitBind(e, bindUser.id)}>
-                <p className="text-muted-foreground">绑定/更新网站</p>
+                <p className="text-muted-foreground">{t("bind.formTitle")}</p>
                 {bindForm.tenantId && (
                   <div className="rounded-md border border-dashed border-white/60 bg-white/60 px-3 py-2 text-xs text-muted-foreground dark:border-slate-800/60 dark:bg-slate-900/70">
-                    正在编辑：{bindForm.siteName || "未命名站点"}（更新后生效，如需新增请点击左侧“重置”）
+                    {t("bind.editingHint", { siteName: bindForm.siteName || t("common.unnamedSite") })}
                   </div>
                 )}
                 <div className="flex justify-end">
                   <Button type="button" size="sm" variant="outline" onClick={() => resetBindForm()} disabled={saving}>
-                    重置为新增
+                    {t("bind.reset")}
                   </Button>
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-xs">站点名称（必填）</Label>
+                  <Label className="text-xs">{t("fields.siteNameRequired")}</Label>
                   <Input
                     name="siteName"
-                    placeholder="示例科技官网"
+                    placeholder={t("fields.siteNamePlaceholder")}
                     required
                     value={bindForm.siteName}
                     onChange={(e) => setBindForm((prev) => ({ ...prev, siteName: e.target.value }))}
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-xs">站点 URL（选填）</Label>
+                  <Label className="text-xs">{t("fields.siteUrlOptional")}</Label>
                   <Input
                     name="siteUrl"
                     placeholder="https://example.com"
@@ -527,7 +531,7 @@ export default function AdminUsersPage() {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div className="space-y-1">
-                    <Label className="text-xs">WP 用户名（选填）</Label>
+                    <Label className="text-xs">{t("fields.wpUserOptional")}</Label>
                     <Input
                       name="wpUsername"
                       value={bindForm.wpUsername}
@@ -535,7 +539,7 @@ export default function AdminUsersPage() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">WP 应用密码（选填）</Label>
+                    <Label className="text-xs">{t("fields.wpPasswordOptional")}</Label>
                     <Input
                       name="wpAppPassword"
                       type="password"
@@ -545,7 +549,7 @@ export default function AdminUsersPage() {
                   </div>
                 </div>
                 <Button type="submit" size="sm" disabled={saving} className="rounded-full">
-                  {saving ? "提交中..." : bindForm.tenantId ? "更新" : "绑定"}
+                  {saving ? t("bind.saving") : bindForm.tenantId ? t("bind.update") : t("bind.submit")}
                 </Button>
               </form>
             </div>
@@ -558,28 +562,28 @@ export default function AdminUsersPage() {
           <div className="w-full max-w-3xl overflow-hidden rounded-2xl border border-white/40 bg-white/90 p-6 shadow-2xl backdrop-blur-xl dark:border-slate-800/80 dark:bg-slate-900/85 dark:shadow-black/50">
             <div className="flex items-start justify-between">
               <div>
-                <h3 className="text-lg font-semibold text-foreground">编辑用户信息</h3>
+                <h3 className="text-lg font-semibold text-foreground">{t("edit.title")}</h3>
                 <p className="text-sm text-muted-foreground">
-                  邮箱不可修改，如需变更请新建账户再迁移数据 · {editUser.email}
+                  {t("edit.tip")} · {editUser.email}
                 </p>
               </div>
               <Button variant="simple" onClick={() => setEditUser(null)}>
-                关闭
+                {t("common.close")}
               </Button>
             </div>
 
             <form className="mt-4 grid gap-4 md:grid-cols-2" onSubmit={submitEditUser}>
               <div className="space-y-1">
-                <Label className="text-xs">姓名</Label>
+                <Label className="text-xs">{t("edit.nameLabel")}</Label>
                 <Input
                   value={editForm.name}
                   onChange={(e) => setEditForm((prev) => ({ ...prev, name: e.target.value }))}
-                  placeholder="用户姓名"
+                  placeholder={t("edit.namePlaceholder")}
                   required
                 />
               </div>
               <div className="space-y-1">
-                <Label className="text-xs">密码（选填，至少 8 位）</Label>
+                <Label className="text-xs">{t("edit.passwordLabel")}</Label>
                 <Input
                   type="password"
                   value={editForm.password}
@@ -588,7 +592,7 @@ export default function AdminUsersPage() {
                 />
               </div>
               <div className="space-y-1 md:col-span-2">
-                <Label className="text-xs">头像（选填）</Label>
+                <Label className="text-xs">{t("edit.avatarLabel")}</Label>
                 <div className="flex items-center gap-3">
                   {editForm.imageUrl ? (
                     <img
@@ -598,7 +602,7 @@ export default function AdminUsersPage() {
                     />
                   ) : (
                     <div className="flex h-12 w-12 items-center justify-center rounded-full border border-dashed border-white/60 text-xs text-muted-foreground dark:border-slate-800/60">
-                      无
+                      {t("edit.avatarNone")}
                     </div>
                   )}
                   <Input
@@ -621,20 +625,20 @@ export default function AdminUsersPage() {
                       disabled={editUploading || editSaving}
                       className="rounded-full"
                     >
-                      移除
+                      {t("edit.removeAvatar")}
                     </Button>
                   )}
                 </div>
-                <p className="text-xs text-muted-foreground">如需改邮箱，请新建账户再迁移数据</p>
+                <p className="text-xs text-muted-foreground">{t("edit.emailNote")}</p>
               </div>
               <div className="md:col-span-2 flex items-center gap-3">
                 <Button type="submit" size="sm" disabled={editSaving || editUploading} className="rounded-full">
-                  {editSaving ? "保存中..." : "保存修改"}
+                  {editSaving ? t("edit.saving") : t("edit.save")}
                 </Button>
                 <Button type="button" variant="outline" size="sm" onClick={() => setEditUser(null)} disabled={editSaving} className="rounded-full">
-                  取消
+                  {t("edit.cancel")}
                 </Button>
-                {editUploading && <span className="text-xs text-muted-foreground">头像正在上传...</span>}
+                {editUploading && <span className="text-xs text-muted-foreground">{t("edit.uploading")}</span>}
               </div>
             </form>
           </div>

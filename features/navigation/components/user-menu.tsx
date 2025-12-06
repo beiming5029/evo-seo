@@ -80,7 +80,7 @@ export function UserMenu() {
     : user.email.charAt(0).toUpperCase();
 
   const entryPath = isAdmin ? "/admin" : "/dashboard";
-  const entryLabel = isAdmin ? "管理后台" : t("navigation.main.dashboard");
+  const entryLabel = isAdmin ? t("navigation.main.admin") : t("navigation.main.dashboard");
 
   return (
     <div className="relative">
@@ -123,14 +123,14 @@ export function UserMenu() {
               {entryLabel}
             </Link>
             {isAdmin && (
-              <Link
-                href={`/${locale}/dashboard`}
-                onClick={() => setIsOpen(false)}
-                className="flex items-center gap-3 px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-hover"
-              >
-                <IconSettings className="h-4 w-4" />
-                仪表盘
-              </Link>
+            <Link
+              href={`/${locale}/dashboard`}
+              onClick={() => setIsOpen(false)}
+              className="flex items-center gap-3 px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-hover"
+            >
+              <IconSettings className="h-4 w-4" />
+              {t("navigation.main.dashboard")}
+            </Link>
             )}
 
             <div className="border-t border-border pt-1">
