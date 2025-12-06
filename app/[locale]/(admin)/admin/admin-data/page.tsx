@@ -312,7 +312,7 @@ export default function AdminDataPage() {
       if (!res.ok) throw new Error(await res.text());
       notify.success("设置已保存");
     } catch (err) {
-      setError("保存失败，请检查输入");
+      notify.error("保存失败，请检查输入");
       notify.error("");
     } finally {
       setSaving(false);
