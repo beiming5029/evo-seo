@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { Buffer } from "node:buffer";
 import { db } from "@/lib/db";
 import { blogPosts, contentSchedule, postPublishLog, wpIntegration, tenant } from "@/lib/db/schema";
-import { and, eq, gte, lte, asc } from "drizzle-orm";
+import { and, eq, asc } from "drizzle-orm";
 import { auth } from "@/lib/auth";
 
 const CRON_SECRET = process.env.CRON_SECRET;
@@ -95,7 +95,7 @@ async function publishToWordPress(post: any, integration: any) {
 }
 
 export async function POST(req: NextRequest) {
-  if (!isAuthorized(req)) {
+  if (!(await isAuthorized(req))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -132,8 +132,7 @@ export async function POST(req: NextRequest) {
       .where(
         and(
           eq(contentSchedule.status, "ready"),
-          gte(contentSchedule.publishDate, dateStr),
-          lte(contentSchedule.publishDate, dateStr)
+          eq(contentSchedule.publishDate, dateStr)
         )
       )
       .orderBy(asc(contentSchedule.publishDate))
@@ -167,10 +166,10 @@ export async function POST(req: NextRequest) {
       }
 
       // 有集成但还未到时间
-      if (!isDue) {
-        skipped.push(String(post.id));
-        continue;
-      }
+      // if (!isDue) {
+      //   skipped.push(String(post.id));
+      //   continue;
+      // }
 
       try {
         const link = await publishToWordPress(post, integration);
@@ -216,5 +215,5 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  return POST(req);
+  return await POST(req);
 }
